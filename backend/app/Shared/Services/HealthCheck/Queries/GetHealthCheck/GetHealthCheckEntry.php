@@ -2,7 +2,7 @@
 
 namespace App\Shared\Services\HealthCheck\Queries\GetHealthCheck;
 
-class GetHealthCheckHealthCheckEntry
+class GetHealthCheckEntry
 {
     public string $status;
 
@@ -11,5 +11,3 @@ class GetHealthCheckHealthCheckEntry
         $this->status = $status;
     }
 }
-
-?>

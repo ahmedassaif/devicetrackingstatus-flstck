@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Shared\Audits\Options;
+namespace App\Shared\Models\Audits\Options;
 
 class AuditOptions
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Shared\Audits\Queries\ExportAudits;
+namespace App\Shared\Models\Audits\Queries\ExportAudits;
 
 use App\Shared\Common\Responses\FileResponse;
 

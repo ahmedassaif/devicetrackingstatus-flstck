@@ -18,10 +18,8 @@ class GetHealthCheckResponse
     }
 
     // Optional: Method to add an entry
-    public function addEntry(string $key, GetHealthCheckHealthCheckEntry $entry): void
+    public function addEntry(string $key, GetHealthCheckEntry $entry): void
     {
         $this->entries[$key] = $entry;
     }
 }
-
-?>

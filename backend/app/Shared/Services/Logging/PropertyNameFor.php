@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Shared\Services\HealthCheck\Constants;
+namespace App\Shared\Services\Logging;
 
 class PropertyNameFor
 {

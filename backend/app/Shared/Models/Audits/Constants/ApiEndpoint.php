@@ -1,6 +1,6 @@
 <?php
 
-namespace App\MITO\Shared\Audits\Constants;
+namespace App\Shared\Models\Audits\Constants;
 
 class ApiEndpoint
 {

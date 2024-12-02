@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Shared\Audits\Queries\GetAudits;
+namespace App\Shared\Models\Audits\Queries\GetAudits;
 
 class GetAuditsAudit
 {

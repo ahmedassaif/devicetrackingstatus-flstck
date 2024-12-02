@@ -1,8 +1,6 @@
 <?php
 
-namespace App\Shared\Audits\GetAudit;
-
-use OwenIt\Auditing\Models\Audit;
+namespace App\Shared\Models\Audits\Queries\GetAudit;
 use App\Shared\Common\Responses\Response;
 
 class GetAuditResponse extends Response
