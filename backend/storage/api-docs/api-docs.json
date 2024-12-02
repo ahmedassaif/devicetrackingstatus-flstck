@@ -1,0 +1,155 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "DeviceTrackingStatus",
+        "version": "0.1"
+    },
+    "paths": {
+        "/api/audits": {
+            "get": {
+                "tags": [
+                    "Audit"
+                ],
+                "summary": "Retrieve a list of audit entries",
+                "operationId": "db0a1e94b24353174d79a38019a05c3d",
+                "responses": {
+                    "200": {
+                        "description": "List of audits",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Audit"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No audits found"
+                    }
+                }
+            }
+        },
+        "/api/audits/{id}": {
+            "get": {
+                "tags": [
+                    "Audit"
+                ],
+                "summary": "Retrieve a single audit entry",
+                "operationId": "daa15b2babe779fa0f9f6c66a4936490",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Audit ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Audit retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Audit"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Audit not found"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ApiResponse": {
+                "properties": {
+                    "success": {
+                        "description": "Indicates if the request was successful",
+                        "type": "boolean"
+                    },
+                    "data": {
+                        "description": "Contains the response data",
+                        "type": "array",
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/components/schemas/Audit"
+                                },
+                                {
+                                    "description": "Other possible data types",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "message": {
+                        "description": "Response message",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Audit": {
+                "description": "Audit schema",
+                "properties": {
+                    "id": {
+                        "description": "Unique identifier",
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "user_id": {
+                        "description": "User ID who performed the action",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "auditable_type": {
+                        "description": "Type of the audited entity",
+                        "type": "string"
+                    },
+                    "auditable_id": {
+                        "description": "ID of the audited entity",
+                        "type": "string"
+                    },
+                    "event": {
+                        "description": "Audit event type",
+                        "type": "string"
+                    },
+                    "old_values": {
+                        "description": "Previous values",
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "new_values": {
+                        "description": "New values",
+                        "type": "object"
+                    },
+                    "ip_address": {
+                        "description": "IP address from where the request was made",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Audit",
+            "description": "Audit"
+        }
+    ]
+}
