@@ -195,4 +195,7 @@ return [
     */
 
     'console' => false,
+
+    'filter_minimum_year' => env('AUDIT_FILTER_MINIMUM_YEAR', 2021),
+    'filter_maximum_year' => env('AUDIT_FILTER_MAXIMUM_YEAR', 2030)
 ];

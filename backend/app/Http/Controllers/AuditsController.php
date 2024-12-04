@@ -2,23 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use OwenIt\Auditing\Models\Audit;
 use App\Interfaces\AuditRepositoryInterface;
 use App\Classes\ApiResponseClass;
 use App\Http\Resources\AuditResource;
-use Illuminate\Support\Facades\DB;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 
 class AuditsController extends Controller
 {
-    private AuditRepositoryInterface $auditRepositoryInterface;
-    
-    public function __construct(AuditRepositoryInterface $AuditRepositoryInterface)
+    private $auditRepositoryInterface;
+
+    public function __construct(AuditRepositoryInterface $_auditRepositoryInterface)
     {
-        $this->auditRepositoryInterface = $AuditRepositoryInterface;
+        $this->auditRepositoryInterface = $_auditRepositoryInterface;
     }
-    
+
     /**
      * @OA\Get(
      *     path="/api/audits",
@@ -41,11 +39,22 @@ class AuditsController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = $this->auditRepositoryInterface->index();
+        // Retrieve filtering and pagination parameters
+        $fromYear = $request->input('from', Config::get('audits.filter_minimum_year'));
+        $toYear = $request->input('to', Config::get('audits.filter_maximum_year'));
+        $page = $request->input('page', 1);
+        $pageSize = $request->input('page_size', 15);
 
-        return ApiResponseClass::sendResponse(AuditResource::collection($data),'',200);
+        // Get filtered and paginated audit data from the repository
+        $audits = $this->auditRepositoryInterface->index($fromYear, $toYear, $page, $pageSize);
+
+        return ApiResponseClass::sendResponse(AuditResource::collection($audits['data']), '', 200, [
+            'total' => $audits['total'],
+            'current_page' => $audits['current_page'],
+            'last_page' => $audits['last_page']
+        ]);
     }
 
     /**
