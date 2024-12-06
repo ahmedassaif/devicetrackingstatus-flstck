@@ -8,5 +8,8 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource('/audits',AuditsController::class);
-Route::get('/audits', [AuditsController::class, 'index']);
+// Use apiResource for RESTful API routes
+Route::apiResource('/audits', AuditsController::class);
+
+// Route::middleware('auth:sanctum')->apiResource('/audits', AuditsController::class);
+
