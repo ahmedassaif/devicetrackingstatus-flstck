@@ -10,19 +10,16 @@ class Audit extends Model implements Auditable
     use \OwenIt\Auditing\Auditable;
 
     protected $fillable = [
-        'auditable_type',
-        'auditable_id',
-        'event',
+        'table_name',
+        'entity_name',
+        'action_type',
+        'action_name',
+        'entity_id',
         'old_values',
         'new_values',
-        'url',
-        'ip_address',
-        'user_agent',
-        'tags',
+        'client_application_id',
+        'from_ip_address',
     ];
 
-    protected $casts = [
-        'old_values' => 'array',
-        'new_values' => 'array',
-    ];
+    protected $dates = ['created_at'];
 }

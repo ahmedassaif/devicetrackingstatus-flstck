@@ -1,4 +1,4 @@
-export interface PaginatedListResponse<T> {
+export interface PaginatedListResponse<T> extends Response {
     items: T[];
     pageIndex: number;
     totalPages: number;
@@ -6,3 +6,7 @@ export interface PaginatedListResponse<T> {
     hasPreviousPage: boolean;
     hasNextPage: boolean;
 } 
+
+interface Response {
+    timestamp: Date;
+  }

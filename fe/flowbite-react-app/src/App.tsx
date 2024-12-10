@@ -1,32 +1,21 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { DarkThemeToggle } from "flowbite-react";
-import AuditPagination from "./components/AuditPagination";
+import AuditList from "./components/Audits/AuditList";
 
 function App() {
   return (
-    <Router>
-      <main className="flex min-h-screen items-center justify-center gap-2 dark:bg-gray-800">
-      <h1 className="text-2xl dark:text-white">
-        Flowbite React + Create React App
-      </h1>
-      <DarkThemeToggle />
-    </main>
-        <Routes>
-          {/* Define the routes for the app */}
-          <Route
-            path="/"
-            element={
-              <main>
-                <p className="text-lg dark:text-gray-200">
-                  Welcome! Navigate to <a href="/audits" className="text-blue-500">/audits</a> to view the audit list.
-                </p>
-              </main>
-            }
-          />
-          <Route path="/audits" element={<AuditPagination />} />
-        </Routes>
-    </Router>    
+    <main className="flex min-h-screen items-center justify-center gap-2 dark:bg-gray-800">
+      <script src="http://localhost:8097"></script>
+        <h1 className="text-2xl dark:text-white">
+          Flowbite React + Create React App
+        </h1>
+        <DarkThemeToggle />
+        <div className="App">
+          <div className="container mx-auto p-4">
+            <h1 className="mb-8 text-center text-3xl">Audit Logs</h1>
+            <AuditList /> {/* Pass baseUrl as a prop */}
+          </div>
+        </div>
+      </main>    
   );
 }
 

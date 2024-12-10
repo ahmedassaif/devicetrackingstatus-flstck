@@ -1,16 +1,15 @@
 export interface GetAuditsAudit {
-    id: number; // bigserial
-    userType?: string; // character varying(255)
-    userId?: number; // bigint
+    user_type?: string; // character varying(255)
+    user_id?: number; // bigint
     event: string; // character varying(255)
-    auditableType: string; // character varying(255)
-    auditableId: number; // bigint
-    oldValues?: Record<string, any>; // text
-    newValues?: Record<string, any>; // text
+    auditable_type: string; // character varying(255)
+    auditable_id: number; // bigint
+    old_values?: Record<string, any>; // text
+    new_values?: Record<string, any>; // text
     url?: string; // text
-    ipAddress?: string; // inet
-    userAgent?: string; // character varying(1023)
+    ip_address?: string; // inet
+    user_agent?: string; // character varying(1023)
     tags?: string; // character varying(255)
-    createdAt?: string; // timestamp without time zone (ISO string)
-    updatedAt?: string; // timestamp without time zone (ISO string)
+    created_at?: Date; // timestamp without time zone (ISO string)
+    updated_at?: Date; // timestamp without time zone (ISO string)
 }

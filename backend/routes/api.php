@@ -9,7 +9,10 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 // Use apiResource for RESTful API routes
-Route::apiResource('/audits', AuditsController::class);
+// Route::apiResource('/audits', AuditsController::class);
+Route::prefix('v1')->group(function () {
+    Route::get('audits', [AuditsController::class, 'getAudits']);
+});
 
 // Route::middleware('auth:sanctum')->apiResource('/audits', AuditsController::class);
 

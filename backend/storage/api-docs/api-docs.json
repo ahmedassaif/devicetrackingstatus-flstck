@@ -5,65 +5,83 @@
         "version": "0.1"
     },
     "paths": {
-        "/api/audits": {
+        "/api/v1/audits": {
             "get": {
                 "tags": [
-                    "Audit"
+                    "Audits"
                 ],
-                "summary": "Retrieve a list of audit entries",
-                "operationId": "db0a1e94b24353174d79a38019a05c3d",
-                "responses": {
-                    "200": {
-                        "description": "List of audits",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Audit"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "No audits found"
-                    }
-                }
-            }
-        },
-        "/api/audits/{id}": {
-            "get": {
-                "tags": [
-                    "Audit"
-                ],
-                "summary": "Retrieve a single audit entry",
-                "operationId": "daa15b2babe779fa0f9f6c66a4936490",
+                "summary": "Get Audits",
+                "description": "Returns a paginated list of audits with filters",
+                "operationId": "481064864f13ff389c90197fb133c7a9",
                 "parameters": [
                     {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Audit ID",
-                        "required": true,
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Start date for filter",
+                        "required": false,
                         "schema": {
                             "type": "string",
-                            "format": "uuid"
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "description": "End date for filter",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Audit retrieved successfully",
+                        "description": "Returns a paginated list of audits",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Audit"
+                                    "properties": {
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Audit"
+                                            }
+                                        },
+                                        "totalCount": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
                     },
-                    "404": {
-                        "description": "Audit not found"
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
                     }
                 }
             }
@@ -148,8 +166,8 @@
     },
     "tags": [
         {
-            "name": "Audit",
-            "description": "Audit"
+            "name": "Audits",
+            "description": "Audits"
         }
     ]
 }
