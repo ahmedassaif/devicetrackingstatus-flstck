@@ -21,8 +21,8 @@ class GetAuditsQuery
         $to = optional($request)->to ?? $this->auditOptions->getFilterMaximumCreated();
 
         $page = (int) $request->query('page', 0);
-        $limit = (int) $request->query('limit', 10);
-        $offset = $limit * $page;
+        $pageSize = (int) $request->query('pageSize', 10);
+        $offset = $pageSize * $page;
 
         $query = Audit::query()
             ->whereBetween('created_at', [$from, $to]);
@@ -46,11 +46,11 @@ class GetAuditsQuery
         $totalRows = $query->count();
 
         // Calculate total pages
-        $totalPages = ceil($totalRows / $limit);
+        $totalPages = ceil($totalRows / $pageSize);
 
         // Fetch the paginated results
         $audits = $query->offset($offset)
-                         ->limit($limit)
+                         ->limit($pageSize)
                          ->get();
 
 

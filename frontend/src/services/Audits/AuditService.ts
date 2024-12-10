@@ -1,13 +1,12 @@
-import { ApiEndpoint } from './ApiEndpoint';
+import { ApiEndpoint } from './Constants/ApiEndpoint';
 import { ResponseResult } from '../Responses/ResponseResult';
 import { PaginatedListResponse } from '../Responses/PaginatedListResponse';
 import { GetAuditsAudit } from './Requests/GetAuditsAudit';
 import { GetAuditsRequest } from './Requests/GetAuditsRequest';
-import api from '../../api';  // Import the api instance from api.ts
+import api from '../api';  // Import the api instance from api.ts
 
 // Import the utility functions
 import { AddQueryParameters } from '../utils/AddQueryParameters';
-// import { ToResponseResult } from '../utils/ToResponseResult';
  import { toResponseResult } from '../utils/RestResponseExtensions';
 import { HandleError } from '../utils/HandleError';
 

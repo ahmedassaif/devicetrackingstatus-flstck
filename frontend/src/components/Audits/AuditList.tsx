@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Pagination } from 'flowbite-react'; // Flowbite Pagination component
+import { Pagination, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from 'flowbite-react'; // Flowbite Pagination component
 import { GetAuditsRequest } from '../../services/Audits/Requests/GetAuditsRequest';
 import { GetAuditsAudit } from '../../services/Audits/Requests/GetAuditsAudit';
 import { ResponseResult } from '../../services/Responses/ResponseResult';
@@ -17,6 +17,7 @@ const AuditList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
+  const [rows, setRows] = useState<number>(10);
 
   // Memoize handleAuditResponse to avoid unnecessary re-renders
   const handleAuditResponse = useCallback(
@@ -41,7 +42,7 @@ const AuditList: React.FC = () => {
           console.warn('API returned no data:', response.result);
           setAudits([]); // Clear audits when no data is returned
         }  
-        
+        setRows(tableData.totalItems);
         setTotalPages(Math.ceil(tableData.totalItems / pageSize)); // Update total pages
       } else {
         console.warn('API returned an unexpected response format:', response);
@@ -148,71 +149,53 @@ const AuditList: React.FC = () => {
 
       {/* Audit Table */}
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-          <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              <th scope="col" className="px-6 py-3">User Type</th>
-              <th scope="col" className="px-6 py-3">User ID</th>
-              <th scope="col" className="px-6 py-3">Event</th>
-              <th scope="col" className="px-6 py-3">Auditable Type</th>
-              <th scope="col" className="px-6 py-3">Auditable ID</th>
-              <th scope="col" className="px-6 py-3">Old Values</th>
-              <th scope="col" className="px-6 py-3">New Values</th>
-              <th scope="col" className="px-6 py-3">URL</th>
-              <th scope="col" className="px-6 py-3">IP Address</th>
-              <th scope="col" className="px-6 py-3">User Agent</th>
-              <th scope="col" className="px-6 py-3">Tags</th>
-              <th scope="col" className="px-6 py-3">Created At</th>
-              <th scope="col" className="px-6 py-3">Modified At</th>
-            </tr>
-          </thead>
-          <tbody>
-            {audits.map((audit, index) => {
-              console.log(audit); // This will show the full data for each audit
-              return (
-                <tr key={`${audit.user_id || index}-${audit.auditable_id || index}`} className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
-                <td className="px-6 py-4">{audit.user_type || 'N/A'}</td>
-                <td className="px-6 py-4">{audit.user_id || 'N/A'}</td>
-                <td className="px-6 py-4">{audit.event || 'N/A'}</td>
-                <td className="px-6 py-4">{audit.auditable_type || 'N/A'}</td>
-                <td className="px-6 py-4">{audit.auditable_id}</td>
-                <td className="px-6 py-4">{audit.old_values ? JSON.stringify(audit.old_values) : 'N/A'}</td>
-                <td className="px-6 py-4">{audit.new_values ? JSON.stringify(audit.new_values) : 'N/A'}</td>
-                <td className="px-6 py-4">{audit.url || 'N/A'}</td>
-                <td className="px-6 py-4">{audit.ip_address || 'N/A'}</td>
-                <td className="px-6 py-4">{audit.user_agent || 'N/A'}</td>
-                <td className="px-6 py-4">{audit.tags || 'N/A'}</td>
-                <td className="px-6 py-4">
+        <Table striped>
+          <TableHead className='sticky bg-gray-100 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400'>
+            <TableHeadCell>User Type</TableHeadCell>
+            <TableHeadCell>User ID</TableHeadCell>
+            <TableHeadCell>Event</TableHeadCell>
+            <TableHeadCell>Auditable Type</TableHeadCell>
+            <TableHeadCell>Auditable ID</TableHeadCell>
+            <TableHeadCell>Old Values</TableHeadCell>
+            <TableHeadCell>New Values</TableHeadCell>
+            <TableHeadCell>URL</TableHeadCell>
+            <TableHeadCell>IP Address</TableHeadCell>
+            <TableHeadCell>User Agent</TableHeadCell>
+            <TableHeadCell>Tags</TableHeadCell>
+            <TableHeadCell>Created At</TableHeadCell>
+            <TableHeadCell>Modified At</TableHeadCell>
+          </TableHead>
+          <TableBody className="h-80 divide-y overflow-y-auto">
+            {audits.map((audit, index) => (
+              <TableRow
+                key={`${audit.user_id || index}-${audit.auditable_id || index}`}
+                className="bg-white dark:border-gray-700 dark:bg-gray-800"
+              >
+                <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                  {audit.user_type || 'N/A'}
+                </TableCell>
+                <TableCell>{audit.user_id || 'N/A'}</TableCell>
+                <TableCell>{audit.event || 'N/A'}</TableCell>
+                <TableCell>{audit.auditable_type || 'N/A'}</TableCell>
+                <TableCell>{audit.auditable_id}</TableCell>
+                <TableCell>{audit.old_values ? JSON.stringify(audit.old_values) : 'N/A'}</TableCell>
+                <TableCell>{audit.new_values ? JSON.stringify(audit.new_values) : 'N/A'}</TableCell>
+                <TableCell>{audit.url || 'N/A'}</TableCell>
+                <TableCell>{audit.ip_address || 'N/A'}</TableCell>
+                <TableCell>{audit.user_agent || 'N/A'}</TableCell>
+                <TableCell>{audit.tags || 'N/A'}</TableCell>
+                <TableCell>
                   {audit.created_at ? new Date(audit.created_at).toLocaleString() : 'N/A'}
-                </td>
-                <td className="px-6 py-4">
+                </TableCell>
+                <TableCell>
                   {audit.updated_at ? new Date(audit.updated_at).toLocaleString() : 'N/A'}
-                </td>
-              </tr>
-              );
-            })}
-            {/* {audits.map((audit, index) => (
-              <tr key={`${audit.userId || index}-${audit.auditableId || index}`} className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
-                <td className="px-6 py-4">{audit.userType || 'N/A'}</td>
-                <td className="px-6 py-4">{audit.userId || 'N/A'}</td>
-                <td className="px-6 py-4">{audit.event || 'N/A'}</td>
-                <td className="px-6 py-4">{audit.auditableType || 'N/A'}</td>
-                <td className="px-6 py-4">{audit.auditableId}</td>
-                <td className="px-6 py-4">{audit.oldValues ? JSON.stringify(audit.oldValues) : 'N/A'}</td>
-                <td className="px-6 py-4">{audit.newValues ? JSON.stringify(audit.newValues) : 'N/A'}</td>
-                <td className="px-6 py-4">{audit.url || 'N/A'}</td>
-                <td className="px-6 py-4">{audit.ipAddress || 'N/A'}</td>
-                <td className="px-6 py-4">{audit.userAgent || 'N/A'}</td>
-                <td className="px-6 py-4">{audit.tags || 'N/A'}</td>
-                <td className="px-6 py-4">
-                  {audit.createdAt ? new Date(audit.createdAt).toLocaleString() : 'N/A'}
-                </td>
-              </tr>
-            ))} */}
-          </tbody>
-        </table>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>        
       </div>
-
+      <p>Total Rows: {rows}, Page {currentPage} of {totalPages}</p>
       {/* Pagination Component */}
       <div className="mt-4 flex justify-center">
         <Pagination
