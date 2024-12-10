@@ -5,14 +5,17 @@ return [
     'documentations' => [
         'default' => [
             'api' => [
-                'title' => 'L5 Swagger UI',
+                'title' => 'DeviceTrackigStatus API Docs',
             ],
 
             'routes' => [
                 /*
                  * Route for accessing api documentation interface
                  */
-                'api' => 'api/documentation',
+                'api' => 'api/docs',
+            ],
+            'swagger' => [
+                'doc' => 'swagger.json', // API docs in JSON format
             ],
             'paths' => [
                 /*

@@ -1,0 +1,173 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "DeviceTrackingStatus",
+        "version": "0.1"
+    },
+    "paths": {
+        "/api/v1/audits": {
+            "get": {
+                "tags": [
+                    "Audits"
+                ],
+                "summary": "Get Audits",
+                "description": "Returns a paginated list of audits with filters",
+                "operationId": "481064864f13ff389c90197fb133c7a9",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Start date for filter",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "description": "End date for filter",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns a paginated list of audits",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Audit"
+                                            }
+                                        },
+                                        "totalCount": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ApiResponse": {
+                "properties": {
+                    "success": {
+                        "description": "Indicates if the request was successful",
+                        "type": "boolean"
+                    },
+                    "data": {
+                        "description": "Contains the response data",
+                        "type": "array",
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/components/schemas/Audit"
+                                },
+                                {
+                                    "description": "Other possible data types",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "message": {
+                        "description": "Response message",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Audit": {
+                "description": "Audit schema",
+                "properties": {
+                    "id": {
+                        "description": "Unique identifier",
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "user_id": {
+                        "description": "User ID who performed the action",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "auditable_type": {
+                        "description": "Type of the audited entity",
+                        "type": "string"
+                    },
+                    "auditable_id": {
+                        "description": "ID of the audited entity",
+                        "type": "string"
+                    },
+                    "event": {
+                        "description": "Audit event type",
+                        "type": "string"
+                    },
+                    "old_values": {
+                        "description": "Previous values",
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "new_values": {
+                        "description": "New values",
+                        "type": "object"
+                    },
+                    "ip_address": {
+                        "description": "IP address from where the request was made",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Audits",
+            "description": "Audits"
+        }
+    ]
+}
