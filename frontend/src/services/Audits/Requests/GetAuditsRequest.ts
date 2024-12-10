@@ -1,5 +1,3 @@
-import { AuditOptions } from './AuditOptions';
-
 export class GetAuditsRequest {
     page: number | undefined;
     pageSize: number | undefined;

@@ -1,8 +1,8 @@
 import { ApiEndpoint } from './ApiEndpoint';
 import { ResponseResult } from '../Responses/ResponseResult';
 import { PaginatedListResponse } from '../Responses/PaginatedListResponse';
-import { GetAuditsAudit } from '../Audits/Requests/GetAuditsAudit';
-import { GetAuditsRequest } from '../Audits/Requests/GetAuditsRequest';
+import { GetAuditsAudit } from './Requests/GetAuditsAudit';
+import { GetAuditsRequest } from './Requests/GetAuditsRequest';
 import api from '../../api';  // Import the api instance from api.ts
 
 // Import the utility functions
