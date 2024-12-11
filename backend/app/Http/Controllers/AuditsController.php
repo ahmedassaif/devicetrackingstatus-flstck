@@ -36,6 +36,20 @@ class AuditsController extends Controller
      *         @OA\Schema(type="integer", default=10)
      *     ),
      *     @OA\Parameter(
+     *         name="searchText",
+     *         in="query",
+     *         description="search data",
+     *         required=false,
+     *         @OA\Schema(type="text")
+     *     ),
+     *     @OA\Parameter(
+     *         name="sortField",
+     *         in="query",
+     *         description="sorting field",
+     *         required=false,
+     *         @OA\Schema(type="text")
+     *     ),       
+     *     @OA\Parameter(
      *         name="from",
      *         in="query",
      *         description="Start date for filter",

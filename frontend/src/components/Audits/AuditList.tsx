@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Pagination, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from 'flowbite-react'; // Flowbite Pagination component
+import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, Button, TextInput } from 'flowbite-react'; // Flowbite Pagination component
 import { GetAuditsRequest } from '../../services/Audits/Requests/GetAuditsRequest';
 import { GetAuditsAudit } from '../../services/Audits/Requests/GetAuditsAudit';
 import { ResponseResult } from '../../services/Responses/ResponseResult';
@@ -7,6 +7,8 @@ import { PaginatedListResponse } from '../../services/Responses/PaginatedListRes
 import AuditService from '../../services/Audits/AuditService';
 import { toTableData } from '../../services/utils/PaginatedListResponseExtensions';
 import axios, { CancelTokenSource } from 'axios';
+import { FiSearch } from "react-icons/fi";
+import { FaPlus } from "react-icons/fa";
 
 const AuditList: React.FC = () => {
   console.log('AuditList component rendering');
@@ -18,6 +20,9 @@ const AuditList: React.FC = () => {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [rows, setRows] = useState<number>(10);
+  const [query, setQuery] = useState("");
+  const [keyword, setKeyword] = useState("");
+  const [notification, setNotification] = useState<string | null>(null);
 
   // Memoize handleAuditResponse to avoid unnecessary re-renders
   const handleAuditResponse = useCallback(
@@ -61,11 +66,11 @@ const AuditList: React.FC = () => {
       console.log('fetchAudits function started');
       setLoading(true);
       setError(null); // Reset previous errors on new fetch
-    
+            
       const request: GetAuditsRequest = {
         page: currentPage,
         pageSize: pageSize,
-        searchText: undefined,
+        searchText: keyword?.trim() ? keyword : undefined,
         sortField: undefined,
         sortOrder: undefined,
         from: undefined,
@@ -97,7 +102,7 @@ const AuditList: React.FC = () => {
     fetchAudits();
   
     return () => source.cancel('Request canceled by the user.');
-  }, [currentPage, handleAuditResponse, pageSize]);
+  }, [currentPage, handleAuditResponse, pageSize, keyword]);
   
 
   // Handle page change
@@ -125,32 +130,92 @@ const AuditList: React.FC = () => {
     console.error('Error state active, rendering error message:', error);
     return <p className="text-red-600">Error: {error}</p>;
   }
+  
+  const renderPageNumbers = () => {
+    const pages = [];
+    for (let i = 1; i <= totalPages; i++) {
+      if (
+        i === 1 || // Always show the first page
+        i === totalPages || // Always show the last page
+        (i >= currentPage - 1 && i <= currentPage + 1) // Show pages around the current page
+      ) {
+        pages.push(
+          <button
+            key={i}
+            className={`${
+              i === currentPage
+                ? 'border-blue-500 bg-blue-500 text-white'
+                : 'border-gray-300 bg-gray-100 hover:bg-gray-200'
+            } inline-flex border px-4 py-2`}
+            onClick={() => handlePageChange(i)}
+          >
+            {i}
+          </button>
+        );
+      } else if (
+        (i === currentPage - 2 && currentPage > 3) || // Ellipsis before the current page
+        (i === currentPage + 2 && currentPage < totalPages - 2) // Ellipsis after the current page
+      ) {
+        pages.push(
+          <span key={i} className="px-4 py-2">
+            ...
+          </span>
+        );
+      }
+    }
+    return pages;
+  };
+
+  const startIndex = (currentPage - 1) * pageSize + 1;
+  const endIndex = Math.min(currentPage * pageSize, rows);
+
+  const searchData = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    
+    // Check if the query is empty
+    if (!query.trim()) {
+      setNotification("Search text must not be empty!");
+      return;
+    }
+  
+    setCurrentPage(1);
+    setKeyword(query);
+  };
+  
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="mb-4 text-2xl font-bold">Audit List</h1>
+      <div className="container mx-auto">
+        <h1 className="mb-4 text-2xl font-bold">Audit List</h1>               
+        <div id="searchData">        
+        <div className="flex items-center justify-end pb-2">
+          {/* <Button color="blue">
+            <FaPlus />
+            </Button> */}
+          {/* Hidden file input */}
+          <form onSubmit={searchData} className="flex items-center space-x-1">
+            <TextInput
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Find something here..."
+              className='pr-2'
+            />
 
-      {/* Page Size Selector */}
-      <div className="mb-4">
-        <label htmlFor="page-size" className="mr-2">
-          Items per page:
-        </label>
-        <select
-          id="page-size"
-          className="rounded bg-gray-200 p-2"
-          value={pageSize}
-          onChange={handlePageSizeChange}
-        >
-          <option value={10}>10</option>
-          <option value={15}>15</option>
-          <option value={20}>20</option>
-        </select>
+            {/* Custom button */}
+            <button
+              type="submit"
+              className="rounded-full bg-blue-500 p-2 text-white hover:bg-blue-600 focus:outline-none"
+              aria-label="search"
+            >
+              <FiSearch size={25} />
+            </button>
+          </form>
+        </div>
       </div>
-
       {/* Audit Table */}
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <Table striped>
-          <TableHead className='sticky bg-gray-100 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400'>
+        <Table>
+          <TableHead className='sticky border bg-gray-400 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400'>
             <TableHeadCell>User Type</TableHeadCell>
             <TableHeadCell>User ID</TableHeadCell>
             <TableHeadCell>Event</TableHeadCell>
@@ -169,9 +234,9 @@ const AuditList: React.FC = () => {
             {audits.map((audit, index) => (
               <TableRow
                 key={`${audit.user_id || index}-${audit.auditable_id || index}`}
-                className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                className="bg-white text-gray-900 hover:bg-gray-200 dark:border-gray-700 dark:bg-slate-500 dark:text-white dark:hover:bg-slate-300 dark:hover:text-gray-900"
               >
-                <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                <TableCell className="whitespace-nowrap font-medium">
                   {audit.user_type || 'N/A'}
                 </TableCell>
                 <TableCell>{audit.user_id || 'N/A'}</TableCell>
@@ -195,16 +260,48 @@ const AuditList: React.FC = () => {
           </TableBody>
         </Table>        
       </div>
-      <p>Total Rows: {rows}, Page {currentPage} of {totalPages}</p>
-      {/* Pagination Component */}
-      <div className="mt-4 flex justify-center">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-          showIcons={true}
-        />
+      
+      <div className="mt-4 flex items-center justify-center">
+        {/* Page Size Selector */}
+        <div className="pr-4">
+          <label htmlFor="page-size" className="mr-2">
+            Items per page:
+          </label>
+          <select
+            id="page-size"
+            className="rounded bg-gray-200 p-2"
+            value={pageSize}
+            onChange={handlePageSizeChange}
+          >
+            <option value={10}>10</option>
+            <option value={15}>15</option>
+            <option value={20}>20</option>
+          </select>
+        </div>
+        <p className='p-2'>
+          Showing {startIndex} to {endIndex} of {rows} Entries
+        </p>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+            className="rounded-l border border-gray-300 bg-gray-100 p-2 hover:bg-gray-200"
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+
+          <div className="mx-2 flex space-x-2">{renderPageNumbers()}</div>
+
+          <button
+            onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+            className="rounded-r border border-gray-300 bg-gray-100 p-2 hover:bg-gray-200"
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
       </div>
+
     </div>
   );
 };

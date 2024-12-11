@@ -4,12 +4,14 @@ import "./index.css";
 // import App from "./App";
 import AuditList from "./components/Audits/AuditList";
 import reportWebVitals from "./reportWebVitals";
+import { DarkThemeToggle } from "flowbite-react";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
 );
 root.render(
   <React.StrictMode>
+    <DarkThemeToggle />
     {/* <App /> */}
     <AuditList />
   </React.StrictMode>,
