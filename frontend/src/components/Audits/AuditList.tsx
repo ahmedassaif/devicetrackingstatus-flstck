@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, Button, TextInput } from 'flowbite-react'; // Flowbite Pagination component
+import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, TextInput } from 'flowbite-react'; // Flowbite Pagination component
 import { GetAuditsRequest } from '../../services/Audits/Requests/GetAuditsRequest';
 import { GetAuditsAudit } from '../../services/Audits/Requests/GetAuditsAudit';
 import { ResponseResult } from '../../services/Responses/ResponseResult';
@@ -7,11 +7,10 @@ import { PaginatedListResponse } from '../../services/Responses/PaginatedListRes
 import AuditService from '../../services/Audits/AuditService';
 import { toTableData } from '../../services/utils/PaginatedListResponseExtensions';
 import axios, { CancelTokenSource } from 'axios';
-import { FiSearch } from "react-icons/fi";
-import { FaPlus } from "react-icons/fa";
+import { FiEye, FiSearch } from "react-icons/fi";
+import { useNavigate } from 'react-router-dom';
 
 const AuditList: React.FC = () => {
-  console.log('AuditList component rendering');
 
   const [audits, setAudits] = useState<GetAuditsAudit[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -24,13 +23,13 @@ const AuditList: React.FC = () => {
   const [keyword, setKeyword] = useState("");
   const [notification, setNotification] = useState<string | null>(null);
 
+  const navigate = useNavigate();
+
   // Memoize handleAuditResponse to avoid unnecessary re-renders
   const handleAuditResponse = useCallback(
     (response: ResponseResult<PaginatedListResponse<GetAuditsAudit>>) => {
-      console.log('Handling API response:', response);
     
       if (response.error) {
-        console.error('API returned an error:', response.error);
         setError(response.error.detail || 'Failed to fetch audits.');
         setAudits([]); // Clear audits on error
         setTotalPages(1); // Reset total pages to default
@@ -41,17 +40,13 @@ const AuditList: React.FC = () => {
         const tableData = toTableData(response.result); // Convert response using toTableData
     
         if (tableData.items.length > 0) {
-          console.log('Fetched audits:', tableData.items);
           setAudits(tableData.items); // Update audits with fetched data
         } else {
-          console.warn('API returned no data:', response.result);
           setAudits([]); // Clear audits when no data is returned
         }  
         setRows(tableData.totalItems);
         setTotalPages(Math.ceil(tableData.totalItems / pageSize)); // Update total pages
       } else {
-        console.warn('API returned an unexpected response format:', response);
-        setError('Unexpected API response format.');
         setAudits([]); // Clear audits on unexpected response
         setTotalPages(1); // Reset total pages to default
       }
@@ -63,7 +58,6 @@ const AuditList: React.FC = () => {
     const source: CancelTokenSource = axios.CancelToken.source();
   
     const fetchAudits = async () => {
-      console.log('fetchAudits function started');
       setLoading(true);
       setError(null); // Reset previous errors on new fetch
             
@@ -78,22 +72,18 @@ const AuditList: React.FC = () => {
         cancelToken: source.token, // Add cancel token directly
       };
     
-      console.log('Request payload:', request);
-    
       try {
         const auditService = new AuditService();
-        console.log('Making API call');
         const response: ResponseResult<PaginatedListResponse<GetAuditsAudit>> = await auditService.getAudits({
           ...request,
           cancelToken: source.token, // Add cancel token to the request
         });
-        console.log('API call successful, response:', response);
+
         handleAuditResponse(response); // Call the improved function
+
       } catch (err: any) {
-        console.error('Error occurred during API call:', err);
         setError(err.message || 'An unexpected error occurred.');
       } finally {
-        console.log('API call complete, setting loading to false');
         setLoading(false);
       }
     };
@@ -107,7 +97,6 @@ const AuditList: React.FC = () => {
 
   // Handle page change
   const handlePageChange = (page: number) => {
-    console.log('Page change triggered: new page =', page);
     if (page !== currentPage) {
       setCurrentPage(page);
     }
@@ -116,18 +105,15 @@ const AuditList: React.FC = () => {
   // Handle page size change
   const handlePageSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newPageSize = parseInt(event.target.value, 10);
-    console.log('Page size change triggered: new pageSize =', newPageSize);
     setPageSize(newPageSize);
     setCurrentPage(1); // Reset to first page when page size changes
   };
 
   if (loading) {
-    console.log('Loading state active, rendering loading message');
     return <p>Loading audits...</p>;
   }
 
   if (error) {
-    console.error('Error state active, rendering error message:', error);
     return <p className="text-red-600">Error: {error}</p>;
   }
   
@@ -181,6 +167,10 @@ const AuditList: React.FC = () => {
     setCurrentPage(1);
     setKeyword(query);
   };
+
+  const handleDetailClick = (auditId: number) => {
+    navigate(`/Audits/Details/${auditId}`);  // Navigate to the detail page
+  };
   
 
   return (
@@ -216,6 +206,7 @@ const AuditList: React.FC = () => {
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <Table>
           <TableHead className='sticky border bg-gray-400 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400'>
+            <TableHeadCell>Action</TableHeadCell>
             <TableHeadCell>User Type</TableHeadCell>
             <TableHeadCell>User ID</TableHeadCell>
             <TableHeadCell>Event</TableHeadCell>
@@ -236,6 +227,15 @@ const AuditList: React.FC = () => {
                 key={`${audit.user_id || index}-${audit.auditable_id || index}`}
                 className="bg-white text-gray-900 hover:bg-gray-200 dark:border-gray-700 dark:bg-slate-500 dark:text-white dark:hover:bg-slate-300 dark:hover:text-gray-900"
               >
+                <TableCell>
+                  <button
+                    onClick={() => handleDetailClick(audit.id)}
+                    className="flex items-center space-x-2 rounded bg-blue-500 px-2 py-1 text-white hover:bg-blue-600"
+                  >
+                    <FiEye size={18} />
+                    <span>Detail</span>
+                  </button>
+                </TableCell>
                 <TableCell className="whitespace-nowrap font-medium">
                   {audit.user_type || 'N/A'}
                 </TableCell>

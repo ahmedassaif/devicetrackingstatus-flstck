@@ -3,6 +3,9 @@ export namespace ApiEndpoint {
       export const Audits = {
         Segment: 'v1/audits',
       };
+      export const Audit = {
+        Segment: 'v1/audit',
+      };
     }
   }
   

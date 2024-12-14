@@ -1,4 +1,5 @@
-export interface GetAuditsAudit {
+export interface GetAuditsAudit extends Response{
+    id: number;
     user_type?: string; // character varying(255)
     user_id?: number; // bigint
     event: string; // character varying(255)
@@ -13,3 +14,7 @@ export interface GetAuditsAudit {
     created_at?: Date; // timestamp without time zone (ISO string)
     updated_at?: Date; // timestamp without time zone (ISO string)
 }
+
+interface Response {
+    timestamp: Date;
+  }
