@@ -3,16 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Queries\Audits\GetAuditsQuery;
+use App\Queries\Audits\GetAuditQuery;
 use App\Http\Requests\Audits\GetAuditsRequest;
 use OpenApi\Annotations as OA;
 
 class AuditsController extends Controller
 {
     protected $getAuditsQuery;
+    protected $getAuditQuery;
 
-    public function __construct(GetAuditsQuery $getAuditsQuery)
+    public function __construct(
+        GetAuditsQuery $getAuditsQuery,
+        GetAuditQuery $getAuditQuery
+        )
     {
         $this->getAuditsQuery = $getAuditsQuery;
+        $this->getAuditQuery = $getAuditQuery;
     }
 
     /**
@@ -90,6 +96,35 @@ class AuditsController extends Controller
 
         // Ensure the response is converted to an array for JSON serialization
         return response()->json($paginatedAudits->toArray());
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/audit/{id}",
+     *     summary="Get Audit by ID",
+     *     description="Retrieve a specific audit by its unique ID",
+     *     tags={"Audits"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Audit ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Audit retrieved successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Audit")
+     *     ),
+     *     @OA\Response(response=404, description="Audit not found"),
+     *     @OA\Response(response=500, description="Internal Server Error")
+     * )
+     */
+    public function getAudit($id)
+    {
+        $getAuditId = $this->getAuditQuery->getAudit($id); 
+        
+        return response()->json($getAuditId);
     }
 
 }

@@ -103,6 +103,45 @@
                     }
                 }
             }
+        },
+        "/api/v1/audit/{id}": {
+            "get": {
+                "tags": [
+                    "Audits"
+                ],
+                "summary": "Get Audit by ID",
+                "description": "Retrieve a specific audit by its unique ID",
+                "operationId": "c1e1b3dd76f9e293016f83ad59a22bb4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Audit ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Audit retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Audit"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Audit not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
         }
     },
     "components": {

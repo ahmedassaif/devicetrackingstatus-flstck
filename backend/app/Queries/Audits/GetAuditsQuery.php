@@ -5,8 +5,6 @@ use App\Http\Requests\Audits\AuditOptions;
 use App\Http\Requests\Audits\GetAuditsRequest;
 use Illuminate\Support\Facades\DB;
 use App\Http\Responses\PaginatedListResponse;
-use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
 
 
 class GetAuditsQuery

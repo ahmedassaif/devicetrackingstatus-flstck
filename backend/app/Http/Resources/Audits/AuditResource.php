@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Audits;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -26,14 +25,15 @@ class AuditResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
+     * @param \Illuminate\Http\Request $request
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray($request): array
     {
         return [
             'id' => $this->id,
             'created_at' => $this->created_at,
-            'user_id' => $this->user_id ?? null, // Sesuaikan kolom dengan basis data Anda
+            'user_id' => $this->user_id,
             'auditable_type' => $this->auditable_type,
             'auditable_id' => $this->auditable_id,
             'event' => $this->event,
