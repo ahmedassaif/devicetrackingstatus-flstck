@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Queries\Audits\GetAuditsQuery;
 use App\Queries\Audits\GetAuditQuery;
+use App\Queries\Audits\GetAuditsToExportQuery;
 use App\Http\Requests\Audits\GetAuditsRequest;
 use OpenApi\Annotations as OA;
 
@@ -11,14 +12,17 @@ class AuditsController extends Controller
 {
     protected $getAuditsQuery;
     protected $getAuditQuery;
+    protected $getAuditsToExportQuery;
 
     public function __construct(
         GetAuditsQuery $getAuditsQuery,
-        GetAuditQuery $getAuditQuery
+        GetAuditQuery $getAuditQuery,
+        GetAuditsToExportQuery $getAuditsToExportQuery
         )
     {
         $this->getAuditsQuery = $getAuditsQuery;
         $this->getAuditQuery = $getAuditQuery;
+        $this->getAuditsToExportQuery = $getAuditsToExportQuery;
     }
 
     /**
@@ -126,5 +130,7 @@ class AuditsController extends Controller
         
         return response()->json($getAuditId);
     }
+    
+    public function exportAudits() { return $this->getAuditsToExportQuery->export(); }
 
 }

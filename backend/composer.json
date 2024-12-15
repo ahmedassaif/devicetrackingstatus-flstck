@@ -13,6 +13,7 @@
         "laravel/telescope": "*",
         "laravel/tinker": "^2.9",
         "owen-it/laravel-auditing": "^13.6",
+        "phpoffice/phpspreadsheet": "^3.6",
         "tymon/jwt-auth": "^2.1",
         "zircote/swagger-php": "^4.11"
     },

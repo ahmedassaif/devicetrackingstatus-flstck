@@ -181,15 +181,19 @@
                         "description": "Unique identifier",
                         "type": "integer"
                     },
-                    "created_at": {
-                        "description": "Creation timestamp",
+                    "user_type": {
+                        "description": "User type who performed the action",
                         "type": "string",
-                        "format": "date-time"
+                        "nullable": true
                     },
                     "user_id": {
                         "description": "User ID who performed the action",
-                        "type": "string",
+                        "type": "integer",
                         "nullable": true
+                    },
+                    "event": {
+                        "description": "Audit event type",
+                        "type": "string"
                     },
                     "auditable_type": {
                         "description": "Type of the audited entity",
@@ -197,24 +201,46 @@
                     },
                     "auditable_id": {
                         "description": "ID of the audited entity",
-                        "type": "string"
-                    },
-                    "event": {
-                        "description": "Audit event type",
-                        "type": "string"
+                        "type": "integer"
                     },
                     "old_values": {
                         "description": "Previous values",
-                        "type": "object",
+                        "type": "string",
                         "nullable": true
                     },
                     "new_values": {
                         "description": "New values",
-                        "type": "object"
+                        "type": "string"
+                    },
+                    "url": {
+                        "description": "URL where the event occurred",
+                        "type": "string",
+                        "nullable": true
                     },
                     "ip_address": {
                         "description": "IP address from where the request was made",
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "user_agent": {
+                        "description": "User agent from where the request was made",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "tags": {
+                        "description": "Tags associated with the audit event",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Update timestamp",
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"
