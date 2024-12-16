@@ -3,16 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Queries\Audits\GetAuditsQuery;
+use App\Queries\Audits\GetAuditQuery;
+use App\Queries\Audits\GetAuditsExportToExcelQuery;
 use App\Http\Requests\Audits\GetAuditsRequest;
 use OpenApi\Annotations as OA;
 
 class AuditsController extends Controller
 {
     protected $getAuditsQuery;
+    protected $getAuditQuery;
+    protected $getAuditsExportToExcelQuery;
 
-    public function __construct(GetAuditsQuery $getAuditsQuery)
+    public function __construct(
+        GetAuditsQuery $getAuditsQuery,
+        GetAuditQuery $getAuditQuery,
+        GetAuditsExportToExcelQuery $getAuditsExportToExcelQuery
+        )
     {
         $this->getAuditsQuery = $getAuditsQuery;
+        $this->getAuditQuery = $getAuditQuery;
+        $this->getAuditsExportToExcelQuery = $getAuditsExportToExcelQuery;
     }
 
     /**
@@ -35,6 +45,20 @@ class AuditsController extends Controller
      *         required=false,
      *         @OA\Schema(type="integer", default=10)
      *     ),
+     *     @OA\Parameter(
+     *         name="searchText",
+     *         in="query",
+     *         description="search data",
+     *         required=false,
+     *         @OA\Schema(type="text")
+     *     ),
+     *     @OA\Parameter(
+     *         name="sortField",
+     *         in="query",
+     *         description="sorting field",
+     *         required=false,
+     *         @OA\Schema(type="text")
+     *     ),       
      *     @OA\Parameter(
      *         name="from",
      *         in="query",
@@ -76,6 +100,63 @@ class AuditsController extends Controller
 
         // Ensure the response is converted to an array for JSON serialization
         return response()->json($paginatedAudits->toArray());
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/audit/{id}",
+     *     summary="Get Audit by ID",
+     *     description="Retrieve a specific audit by its unique ID",
+     *     tags={"Audits"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Audit ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Audit retrieved successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Audit")
+     *     ),
+     *     @OA\Response(response=404, description="Audit not found"),
+     *     @OA\Response(response=500, description="Internal Server Error")
+     * )
+     */
+    public function getAudit($id)
+    {
+        $getAuditId = $this->getAuditQuery->getAudit($id); 
+        
+        return response()->json($getAuditId);
+    }
+    
+    /**
+     * @OA\Get(
+     *     path="/api/v1/exportAuditsToExcel",
+     *     summary="Export audit data to an Excel file",
+     *     description="Exports audit data from the database to an Excel file and returns the file as a download.",
+     *     tags={"Audits"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful export",
+     *         @OA\MediaType(
+     *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function exportAuditsToExcel() { 
+        
+        $fileResponse = $this->getAuditsExportToExcelQuery->export(); 
+        
+        return response($fileResponse->content)
+                        ->header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                        ->header('Content-Disposition', 'attachment; filename="'.$fileResponse->fileName.'"'); 
     }
 
 }

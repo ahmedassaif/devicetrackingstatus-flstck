@@ -35,6 +35,24 @@
                         }
                     },
                     {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search data",
+                        "required": false,
+                        "schema": {
+                            "type": "text"
+                        }
+                    },
+                    {
+                        "name": "sortField",
+                        "in": "query",
+                        "description": "sorting field",
+                        "required": false,
+                        "schema": {
+                            "type": "text"
+                        }
+                    },
+                    {
                         "name": "from",
                         "in": "query",
                         "description": "Start date for filter",
@@ -85,6 +103,66 @@
                     }
                 }
             }
+        },
+        "/api/v1/audit/{id}": {
+            "get": {
+                "tags": [
+                    "Audits"
+                ],
+                "summary": "Get Audit by ID",
+                "description": "Retrieve a specific audit by its unique ID",
+                "operationId": "c1e1b3dd76f9e293016f83ad59a22bb4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Audit ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Audit retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Audit"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Audit not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/exportAuditsToExcel": {
+            "get": {
+                "tags": [
+                    "Audits"
+                ],
+                "summary": "Export audit data to an Excel file",
+                "description": "Exports audit data from the database to an Excel file and returns the file as a download.",
+                "operationId": "136f164f59a34becb5f28f4f19e0a89f",
+                "responses": {
+                    "200": {
+                        "description": "Successful export",
+                        "content": {
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {}
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -124,15 +202,19 @@
                         "description": "Unique identifier",
                         "type": "integer"
                     },
-                    "created_at": {
-                        "description": "Creation timestamp",
+                    "user_type": {
+                        "description": "User type who performed the action",
                         "type": "string",
-                        "format": "date-time"
+                        "nullable": true
                     },
                     "user_id": {
                         "description": "User ID who performed the action",
-                        "type": "string",
+                        "type": "integer",
                         "nullable": true
+                    },
+                    "event": {
+                        "description": "Audit event type",
+                        "type": "string"
                     },
                     "auditable_type": {
                         "description": "Type of the audited entity",
@@ -140,24 +222,46 @@
                     },
                     "auditable_id": {
                         "description": "ID of the audited entity",
-                        "type": "string"
-                    },
-                    "event": {
-                        "description": "Audit event type",
-                        "type": "string"
+                        "type": "integer"
                     },
                     "old_values": {
                         "description": "Previous values",
-                        "type": "object",
+                        "type": "string",
                         "nullable": true
                     },
                     "new_values": {
                         "description": "New values",
-                        "type": "object"
+                        "type": "string"
+                    },
+                    "url": {
+                        "description": "URL where the event occurred",
+                        "type": "string",
+                        "nullable": true
                     },
                     "ip_address": {
                         "description": "IP address from where the request was made",
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "user_agent": {
+                        "description": "User agent from where the request was made",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "tags": {
+                        "description": "Tags associated with the audit event",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Update timestamp",
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"
