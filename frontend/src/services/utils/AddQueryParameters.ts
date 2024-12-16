@@ -3,7 +3,6 @@ export function AddQueryParameters(params: Record<string, any>): string {
       .filter(([_, value]) => value !== undefined && value !== null) // Exclude undefined or null
       .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
       .join('&');
-      console.log('Query parameters generated:', filteredParams);
     return filteredParams;
   }
   

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Queries\Audits\GetAuditsQuery;
 use App\Queries\Audits\GetAuditQuery;
-use App\Queries\Audits\GetAuditsToExportQuery;
+use App\Queries\Audits\GetAuditsExportToExcelQuery;
 use App\Http\Requests\Audits\GetAuditsRequest;
 use OpenApi\Annotations as OA;
 
@@ -12,17 +12,17 @@ class AuditsController extends Controller
 {
     protected $getAuditsQuery;
     protected $getAuditQuery;
-    protected $getAuditsToExportQuery;
+    protected $getAuditsExportToExcelQuery;
 
     public function __construct(
         GetAuditsQuery $getAuditsQuery,
         GetAuditQuery $getAuditQuery,
-        GetAuditsToExportQuery $getAuditsToExportQuery
+        GetAuditsExportToExcelQuery $getAuditsExportToExcelQuery
         )
     {
         $this->getAuditsQuery = $getAuditsQuery;
         $this->getAuditQuery = $getAuditQuery;
-        $this->getAuditsToExportQuery = $getAuditsToExportQuery;
+        $this->getAuditsExportToExcelQuery = $getAuditsExportToExcelQuery;
     }
 
     /**
@@ -131,6 +131,32 @@ class AuditsController extends Controller
         return response()->json($getAuditId);
     }
     
-    public function exportAudits() { return $this->getAuditsToExportQuery->export(); }
+    /**
+     * @OA\Get(
+     *     path="/api/v1/exportAuditsToExcel",
+     *     summary="Export audit data to an Excel file",
+     *     description="Exports audit data from the database to an Excel file and returns the file as a download.",
+     *     tags={"Audits"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful export",
+     *         @OA\MediaType(
+     *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function exportAuditsToExcel() { 
+        
+        $fileResponse = $this->getAuditsExportToExcelQuery->export(); 
+        
+        return response($fileResponse->content)
+                        ->header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                        ->header('Content-Disposition', 'attachment; filename="'.$fileResponse->fileName.'"'); 
+    }
 
 }

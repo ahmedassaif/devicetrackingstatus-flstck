@@ -3,12 +3,13 @@
 namespace App\Queries\Audits;
 
 use App\Models\Audit;
+use App\Http\Responses\FileResponse;
 use Carbon\Carbon;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
-class GetAuditsToExportQuery
+class GetAuditsExportToExcelQuery
 {
     public function export()
     {
@@ -24,7 +25,7 @@ class GetAuditsToExportQuery
 
             // Set header
             $headers = [
-                "No", "Table Name", "Entity Name", "Action Type", "Action Name", "Entity ID", "Old Values", "New Values", "Client Application ID", "From IP Address"
+                "No", "User Type", "User ID", "Event", "Auditable Type", "Auditable ID", "Old Values", "New Values", "URL", "IP Address", "User Agent", "Tags", "Created At", "Updated At"
             ];
 
             $headerRow = 1;
@@ -44,18 +45,18 @@ class GetAuditsToExportQuery
                 $rowIndex = $index + 2;
                 $sheet->setCellValue("A{$rowIndex}", $index + 1);
                 $sheet->setCellValue("B{$rowIndex}", $item->user_type ?? "");
-                $sheet->setCellValue("B{$rowIndex}", $item->user_id ?? "");
-                $sheet->setCellValue("C{$rowIndex}", $item->event ?? "");
-                $sheet->setCellValue("D{$rowIndex}", $item->auditable_type ?? "");
-                $sheet->setCellValue("D{$rowIndex}", $item->auditable_id ?? "");
+                $sheet->setCellValue("C{$rowIndex}", $item->user_id ?? "");
+                $sheet->setCellValue("D{$rowIndex}", $item->event ?? "");
+                $sheet->setCellValue("E{$rowIndex}", $item->auditable_type ?? "");
+                $sheet->setCellValue("F{$rowIndex}", $item->auditable_id ?? "");
                 $sheet->setCellValue("G{$rowIndex}", $item->old_values ?? "");
                 $sheet->setCellValue("H{$rowIndex}", $item->new_values ?? "");
-                $sheet->setCellValue("D{$rowIndex}", $item->url ?? "");
-                $sheet->setCellValue("D{$rowIndex}", $item->ip_address ?? "");
-                $sheet->setCellValue("D{$rowIndex}", $item->user_agent ?? "");
-                $sheet->setCellValue("D{$rowIndex}", $item->tags ?? "");
-                $sheet->setCellValue("I{$rowIndex}", $item->created_at ?? "");
-                $sheet->setCellValue("J{$rowIndex}", $item->updated_at ?? "");
+                $sheet->setCellValue("I{$rowIndex}", $item->url ?? "");
+                $sheet->setCellValue("J{$rowIndex}", $item->ip_address ?? "");
+                $sheet->setCellValue("K{$rowIndex}", $item->user_agent ?? "");
+                $sheet->setCellValue("L{$rowIndex}", $item->tags ?? "");
+                $sheet->setCellValue("M{$rowIndex}", $item->created_at ?? "");
+                $sheet->setCellValue("N{$rowIndex}", $item->updated_at ?? "");
             }
 
             // Auto-fit columns
@@ -65,10 +66,17 @@ class GetAuditsToExportQuery
 
             $writer = new Xlsx($spreadsheet);
             $fileName = "AuditData_" . $now->format('Y-m-d_H-i-s') . ".xlsx";
-            $filePath = storage_path($fileName);
-            $writer->save($filePath);
 
-            return response()->download($filePath)->deleteFileAfterSend(true);
+            // Save to memory
+            $stream = fopen('php://memory', 'w+');
+            $writer->save($stream);
+            rewind($stream);
+
+            // Get file content
+            $fileBytes = stream_get_contents($stream);
+            fclose($stream);
+
+            return new FileResponse($fileBytes, $fileName);
         } catch (\Exception $e) {
             // Handle the exception as needed
             logger()->error('Error while exporting AuditData to Excel', ['exception' => $e]);

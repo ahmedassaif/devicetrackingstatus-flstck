@@ -12,7 +12,7 @@ Route::get('/user', function (Request $request) {
 Route::prefix('v1')->group(function () {
     Route::get('audits', [AuditsController::class, 'getAudits']);
     Route::get('audit/{id}', [AuditsController::class, 'getAudit']);
-    Route::get('/export-audits-to-excel', [AuditsController::class, 'exportAudits']);
+    Route::get('exportAuditsToExcel', [AuditsController::class, 'exportAuditsToExcel']);
 });
 
 // Route::middleware('auth:sanctum')->apiResource('/audits', AuditsController::class);

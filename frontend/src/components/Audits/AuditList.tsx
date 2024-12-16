@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, TextInput } from 'flowbite-react'; // Flowbite Pagination component
+import { Button, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, TextInput } from 'flowbite-react'; // Flowbite Pagination component
 import { GetAuditsRequest } from '../../services/Audits/Requests/GetAuditsRequest';
 import { GetAuditsAudit } from '../../services/Audits/Requests/GetAuditsAudit';
 import { ResponseResult } from '../../services/Responses/ResponseResult';
@@ -9,6 +9,7 @@ import { toTableData } from '../../services/utils/PaginatedListResponseExtension
 import axios, { CancelTokenSource } from 'axios';
 import { FiEye, FiSearch } from "react-icons/fi";
 import { useNavigate } from 'react-router-dom';
+import { FaFileExcel } from 'react-icons/fa'
 
 const AuditList: React.FC = () => {
 
@@ -172,17 +173,27 @@ const AuditList: React.FC = () => {
     navigate(`/Audits/Details/${auditId}`);  // Navigate to the detail page
   };
   
+  const handleExport = async () => { 
+    try {
+      const auditService = new AuditService(); 
+      await auditService.exportAuditsToExcel(); 
+    } 
+    catch (error) 
+    { 
+      console.error('Failed to export audits', error); 
+    } 
+  };
 
   return (
       <div className="container mx-auto">
         <h1 className="mb-4 text-2xl font-bold">Audit List</h1>               
         <div id="searchData">        
         <div className="flex items-center justify-end pb-2">
-          {/* <Button color="blue">
-            <FaPlus />
-            </Button> */}
-          {/* Hidden file input */}
-          <form onSubmit={searchData} className="flex items-center space-x-1">
+          <Button className="bg-lime-500 pr-2" onClick={handleExport}>
+            <FaFileExcel className="mr-2 size-5" />
+            Export Audits
+          </Button>
+          <form onSubmit={searchData} className="flex pl-2 items-center space-x-1">
             <TextInput
               type="text"
               value={query}

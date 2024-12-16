@@ -24,7 +24,7 @@ return [
 
     'allowed_headers' => ['Content-Type', 'Authorization', 'X-Requested-With', 'X-CSRF-TOKEN'],
 
-    'exposed_headers' => [],
+    'exposed_headers' => ['Content-Disposition'],
 
     'max_age' => 0,
 

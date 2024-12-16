@@ -142,6 +142,27 @@
                     }
                 }
             }
+        },
+        "/api/v1/exportAuditsToExcel": {
+            "get": {
+                "tags": [
+                    "Audits"
+                ],
+                "summary": "Export audit data to an Excel file",
+                "description": "Exports audit data from the database to an Excel file and returns the file as a download.",
+                "operationId": "136f164f59a34becb5f28f4f19e0a89f",
+                "responses": {
+                    "200": {
+                        "description": "Successful export",
+                        "content": {
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {}
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
         }
     },
     "components": {

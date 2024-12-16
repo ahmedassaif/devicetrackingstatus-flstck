@@ -4,11 +4,13 @@ import { PaginatedListResponse } from '../Responses/PaginatedListResponse';
 import { GetAuditsAudit } from './Requests/GetAuditsAudit';
 import { GetAuditsRequest } from './Requests/GetAuditsRequest';
 import api from '../api';  // Import the api instance from api.ts
+import { FileDownloadHelper } from  '../utils/FileDownloadHelper';
 
 // Import the utility functions
 import { AddQueryParameters } from '../utils/AddQueryParameters';
  import { toResponseResult } from '../utils/RestResponseExtensions';
 import { HandleError } from '../utils/HandleError';
+import { log } from 'console';
 
 class AuditService {
 
@@ -40,6 +42,19 @@ class AuditService {
 
     } catch (error) {
       return HandleError<GetAuditsAudit>(error);
+    }
+  }
+
+  public async exportAuditsToExcel(): Promise<void> {
+    try {
+      
+      const response = await api.get(`${ApiEndpoint.V1.ExportToExcel.Segment}`, { responseType: 'blob', });
+      
+      FileDownloadHelper.downloadExcelFile(response);
+
+    } catch (error) {
+      console.error('Error exporting audits', error); 
+      throw error;
     }
   }
 

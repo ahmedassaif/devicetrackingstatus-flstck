@@ -6,6 +6,9 @@ export namespace ApiEndpoint {
       export const Audit = {
         Segment: 'v1/audit',
       };
+      export const ExportToExcel = {
+        Segment: 'v1/exportAuditsToExcel'
+      };
     }
   }
   
