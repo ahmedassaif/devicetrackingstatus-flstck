@@ -1,5 +1,3 @@
-// src/utils/FileDownloadHelper.ts
-
 export class FileDownloadHelper {
     static downloadExcelFile(response: any) {
         // Create a blob from the response
@@ -8,10 +6,13 @@ export class FileDownloadHelper {
 
         // Extract the file name from the Content-Disposition header
         const contentDisposition = response.headers['content-disposition'] || '';
-        const fileName = contentDisposition
+        let fileName = contentDisposition
             .split(';')
             .find((n: string) => n.includes('filename='))
             ?.replace('filename=', '') || 'downloads.xlsx';
+
+        // Remove leading and trailing underscores
+        fileName = fileName.replace(/^_+|_+$/g, '');
 
         // Create a link element and trigger a download
         const link = document.createElement('a');
