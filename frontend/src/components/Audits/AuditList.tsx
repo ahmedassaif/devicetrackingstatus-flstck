@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Select, Button, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, TextInput } from 'flowbite-react'; // Flowbite Pagination component
+import { Spinner, Select, Button, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, TextInput } from 'flowbite-react'; // Flowbite Pagination component
 import { GetAuditsRequest } from '../../services/Audits/Requests/GetAuditsRequest';
 import { GetAuditsAudit } from '../../services/Audits/Requests/GetAuditsAudit';
 import { ResponseResult } from '../../services/Responses/ResponseResult';
@@ -111,7 +111,16 @@ const AuditList: React.FC = () => {
   };
 
   if (loading) {
-    return <p>Loading audits...</p>;
+    return (
+      <div className="flex flex-wrap gap-3">
+        <div className='text-center'>
+          <Button>
+            <Spinner size="sm" />
+            <span className="pl-3">Loading...</span>
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
