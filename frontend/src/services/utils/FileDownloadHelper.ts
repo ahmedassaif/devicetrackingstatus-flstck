@@ -6,10 +6,12 @@ export class FileDownloadHelper {
 
         // Extract the file name from the Content-Disposition header
         const contentDisposition = response.headers['content-disposition'] || '';
-        let fileName = contentDisposition
-            .split(';')
-            .find((n: string) => n.includes('filename='))
-            ?.replace('filename=', '') || 'downloads.xlsx';
+        let fileName = contentDisposition.split(';').find((n: string) => n.includes('filename='))?.split('filename=')[1].trim() || 'downloads.xlsx';
+
+        // Remove any leading or trailing quotes
+        if (fileName.startsWith('"') && fileName.endsWith('"')) {
+            fileName = fileName.slice(1, -1);
+        }
 
         // Remove leading and trailing underscores
         fileName = fileName.replace(/^_+|_+$/g, '');
