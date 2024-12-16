@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, TextInput } from 'flowbite-react'; // Flowbite Pagination component
+import { Select, Button, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, TextInput } from 'flowbite-react'; // Flowbite Pagination component
 import { GetAuditsRequest } from '../../services/Audits/Requests/GetAuditsRequest';
 import { GetAuditsAudit } from '../../services/Audits/Requests/GetAuditsAudit';
 import { ResponseResult } from '../../services/Responses/ResponseResult';
@@ -278,7 +278,7 @@ const AuditList: React.FC = () => {
           <label htmlFor="page-size" className="mr-2">
             Items per page:
           </label>
-          <select
+          <Select
             id="page-size"
             className="rounded bg-gray-200 p-2"
             value={pageSize}
@@ -287,7 +287,7 @@ const AuditList: React.FC = () => {
             <option value={10}>10</option>
             <option value={15}>15</option>
             <option value={20}>20</option>
-          </select>
+          </Select>
         </div>
         <p className='p-2'>
           Showing {startIndex} to {endIndex} of {rows} Entries
