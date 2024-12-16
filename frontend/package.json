@@ -2,6 +2,7 @@
   "name": "flowbite-react-template-cra",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost/api",
   "scripts": {
     "start": "BROWSER=none react-scripts start",
     "start:windows": "set BROWSER=none && react-scripts start",
