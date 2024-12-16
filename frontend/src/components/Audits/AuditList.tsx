@@ -193,7 +193,7 @@ const AuditList: React.FC = () => {
             <FaFileExcel className="mr-2 size-5" />
             Export Audits
           </Button>
-          <form onSubmit={searchData} className="flex pl-2 items-center space-x-1">
+          <form onSubmit={searchData} className="flex items-center space-x-1 pl-2">
             <TextInput
               type="text"
               value={query}
@@ -274,13 +274,13 @@ const AuditList: React.FC = () => {
       
       <div className="mt-4 flex items-center justify-center">
         {/* Page Size Selector */}
-        <div className="pr-4">
+        <div className="contents pr-4">
           <label htmlFor="page-size" className="mr-2">
             Items per page:
           </label>
           <Select
             id="page-size"
-            className="rounded bg-gray-200 p-2"
+            className="p-2"
             value={pageSize}
             onChange={handlePageSizeChange}
           >
