@@ -9,8 +9,9 @@ import { toTableData } from '../../services/utils/PaginatedListResponseExtension
 import axios, { CancelTokenSource } from 'axios';
 import { FiEye, FiSearch } from "react-icons/fi";
 import { useNavigate } from 'react-router-dom';
-import { FaFileExcel, FaSort, FaSortAlphaUp } from 'react-icons/fa'
+import { FaFileExcel, FaSort, FaSortAlphaDown, FaSortAlphaUp } from 'react-icons/fa'
 import { IoMdCloseCircle } from "react-icons/io";
+import { Console } from 'console';
 
 const AuditList: React.FC = () => {
 
@@ -28,46 +29,62 @@ const AuditList: React.FC = () => {
   const [hasSearched, setHasSearched] = useState<boolean>(false);
   const [sortField, setSortField] = useState<string>("");
   const [sortDirection, setSortDirection] = useState<string>("");
-  const [isSortingField, setIsSortingField] = useState<boolean>(false);
-  
-  const sortingButtonInitialForUserType = (
-    <FaSort className='cursor-pointer' onClick={(e) => getSortFromField("user_type", "asc", e)} />
-  );
-  const sortingButtonAscForUserType = (
-    <FaSortAlphaUp className='cursor-pointer' onClick={(e) => getSortFromField("user_type", "desc", e)} />
-  );
-  const sortingButtonDescForUserType = (
-    <FaSortAlphaUp className='cursor-pointer' onClick={(e) => getSortFromField("", "", e)} />
-  );
-  const [sortingButtonForUserType, setSortingButtonForUserType] = useState<JSX.Element>(sortingButtonInitialForUserType);
-
-
-  const sortingButtonInitialForEvent = (
-    <FaSort className='cursor-pointer' onClick={(e) => getSortFromField("event", "asc", e)} />
-  );
-  const sortingButtonAscForEvent = (
-    <FaSortAlphaUp className='cursor-pointer' onClick={(e) => getSortFromField("event", "desc", e)} />
-  );
-  const sortingButtonDescForEvent = (
-    <FaSortAlphaUp className='cursor-pointer' onClick={(e) => getSortFromField("", "", e)} />
-  );
-  const [sortingButtonForEvent, setSortingButtonForEvent] = useState<JSX.Element>(sortingButtonInitialForEvent);
-
-  const sortingButtonInitialForAuditableType = (
-    <FaSort className='cursor-pointer' onClick={(e) => getSortFromField("auditable_type", "asc", e)} />
-  );
-  const sortingButtonAscForAuditableType = (
-    <FaSortAlphaUp className='cursor-pointer' onClick={(e) => getSortFromField("auditable_type", "desc", e)} />
-  );
-  const sortingButtonDescForAuditableType = (
-    <FaSortAlphaUp className='cursor-pointer' onClick={(e) => getSortFromField("", "", e)} />
-  );
-  const [sortingButtonForAuditableType, setSortingButtonForAuditableType] = useState<JSX.Element>(sortingButtonInitialForAuditableType);
-
   const navigate = useNavigate();
+  const [sortingButtonForEvent, setSortingButtonForEvent] = useState<JSX.Element>(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("event", "asc", e)} />);
+  const [sortingButtonForUserType, setSortingButtonForUserType] = useState<JSX.Element>(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("user_type", "asc", e)} />);
+  const [sortingButtonForAuditableType, setSortingButtonForAuditableType] = useState<JSX.Element>(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("auditable_type", "asc", e)} />);
 
-  
+  function getSortFromField(nameField: string, sortOrderBy: string, e: { preventDefault: () => void }){
+    
+    e.preventDefault();
 
+    if (nameField && sortOrderBy) {
+      if (nameField === 'user_type') {
+        if (sortOrderBy === 'asc') {
+          setSortingButtonForUserType(<FaSortAlphaUp className='cursor-pointer' onClick={(e) => getSortFromField("user_type", "desc", e)} />);      
+        }
+        else if (sortOrderBy === 'desc') {
+          setSortingButtonForUserType(<FaSortAlphaDown className='cursor-pointer' onClick={(e) => getSortFromField("", "", e)} />);
+        }
+        setSortingButtonForAuditableType(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("auditable_type", "asc", e)} />);
+        setSortingButtonForEvent(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("event", "asc", e)} />);
+      }
+      else if (nameField === 'auditable_type') {
+        if (sortOrderBy === 'asc') {
+          setSortingButtonForAuditableType(<FaSortAlphaUp className='cursor-pointer' onClick={(e) => getSortFromField("auditable_type", "desc", e)} />);
+        }
+        else if (sortOrderBy === 'desc') {
+          setSortingButtonForAuditableType(<FaSortAlphaDown className='cursor-pointer' onClick={(e) => getSortFromField("", "", e)} />);
+        }
+        setSortingButtonForUserType(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("user_type", "asc", e)} />);
+        setSortingButtonForEvent(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("event", "asc", e)} />);
+      } 
+      else if (nameField === 'event') {
+        if (sortOrderBy === 'asc') {
+          setSortingButtonForEvent(<FaSortAlphaUp className='cursor-pointer' onClick={(e) => getSortFromField("event", "desc", e)} />);
+        }
+        else if (sortOrderBy === 'desc') {
+          setSortingButtonForEvent(<FaSortAlphaDown className='cursor-pointer' onClick={(e) => getSortFromField("", "", e)} />);
+        }
+
+        setSortingButtonForUserType(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("user_type", "asc", e)} />);
+        setSortingButtonForAuditableType(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("auditable_type", "asc", e)} />);
+      }
+
+      setSortDirection(sortOrderBy);
+      setSortField(nameField);
+      
+    }
+    else{
+      setSortingButtonForUserType(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("user_type", "asc", e)} />);
+      setSortingButtonForAuditableType(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("auditable_type", "asc", e)} />);
+      setSortingButtonForEvent(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("event", "asc", e)} />);
+      setSortDirection("");
+      setSortField("");
+    }
+
+    setCurrentPage(1);
+  }
 
   // Memoize handleAuditResponse to avoid unnecessary re-renders
   const handleAuditResponse = useCallback(
@@ -152,9 +169,9 @@ const AuditList: React.FC = () => {
     setPageSize(newPageSize);
     setCurrentPage(1); // Reset to first page when page size changes
 
-    setSortingButtonForUserType(sortingButtonInitialForUserType);
-    setSortingButtonForAuditableType(sortingButtonInitialForAuditableType);
-    setSortingButtonForEvent(sortingButtonInitialForEvent);
+    setSortingButtonForUserType(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("user_type", "asc", e)} />);
+    setSortingButtonForAuditableType(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("auditable_type", "asc", e)} />);
+    setSortingButtonForEvent(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("event", "asc", e)} />);
   };
 
   if (loading) {
@@ -223,9 +240,9 @@ const AuditList: React.FC = () => {
     setKeyword(query);
     setHasSearched(true); 
 
-    setSortingButtonForUserType(sortingButtonInitialForUserType);
-    setSortingButtonForAuditableType(sortingButtonInitialForAuditableType);
-    setSortingButtonForEvent(sortingButtonInitialForEvent);
+    setSortingButtonForUserType(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("user_type", "asc", e)} />);
+    setSortingButtonForAuditableType(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("auditable_type", "asc", e)} />);
+    setSortingButtonForEvent(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("event", "asc", e)} />);
   };
 
   const handleDetailClick = (auditId: number) => {
@@ -270,68 +287,20 @@ const AuditList: React.FC = () => {
       setHasSearched(false); // Reset the search flag
       setQuery('');
 
-      setSortingButtonForUserType(sortingButtonInitialForUserType);
-      setSortingButtonForAuditableType(sortingButtonInitialForAuditableType);
-      setSortingButtonForEvent(sortingButtonInitialForEvent);
+      setSortingButtonForUserType(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("user_type", "asc", e)} />);
+      setSortingButtonForAuditableType(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("auditable_type", "asc", e)} />);
+      setSortingButtonForEvent(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("event", "asc", e)} />);
     } else {
       // If no search has been performed, just clear the input
       setQuery('');
     }
   };
 
-
-  const getSortFromField = (nameField: string, sortOrderBy: string, e: { preventDefault: () => void }) => {
-    
-    e.preventDefault();
-
-    if (sortField && sortDirection) {
-      if (nameField === 'user_type') {
-        if (sortOrderBy === 'asc') {
-          setSortingButtonForUserType(sortingButtonAscForUserType);      
-        }
-        else if (sortOrderBy === 'desc') {
-          setSortingButtonForUserType(sortingButtonDescForUserType);
-        }
-        setSortingButtonForAuditableType(sortingButtonInitialForAuditableType);
-        setSortingButtonForEvent(sortingButtonInitialForEvent);
-      }
-      else if (nameField === 'auditable_type') {
-        if (sortOrderBy === 'asc') {
-          setSortingButtonForAuditableType(sortingButtonAscForAuditableType);
-        }
-        else if (sortOrderBy === 'desc') {
-          setSortingButtonForAuditableType(sortingButtonDescForAuditableType);
-        }
-        setSortingButtonForUserType(sortingButtonInitialForUserType);
-        setSortingButtonForEvent(sortingButtonInitialForEvent);
-      } 
-      else if (nameField === 'event') {
-        if (sortOrderBy === 'asc') {
-          setSortingButtonForEvent(sortingButtonAscForEvent);
-        }
-        else if (sortOrderBy === 'desc') {
-          setSortingButtonForEvent(sortingButtonDescForEvent);
-        }
-      }
-
-      setSortDirection(sortOrderBy);
-      setSortField(nameField);
-      
-    }
-    else{
-      setSortingButtonForUserType(sortingButtonInitialForUserType);
-      setSortingButtonForAuditableType(sortingButtonInitialForAuditableType);
-      setSortingButtonForEvent(sortingButtonInitialForEvent);
-    }
-
-    setCurrentPage(1);
-  }
-  
   return (
       <div className="container mx-auto h-svh">
         <h1 className="mb-4 text-2xl font-bold">Audit List</h1>
-        <section className="flex items-center bg-gray-50 pb-2 dark:bg-gray-900">
-          <div className="mx-auto w-full max-w-screen-xl">
+        <section className="flex items-center pb-2 dark:bg-gray-900">
+          <div className="mx-auto w-full">
             <div className="relative bg-white shadow-md sm:rounded-lg dark:bg-gray-800">
               <div className="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
                 <div className="w-full md:w-1/2">
@@ -381,10 +350,10 @@ const AuditList: React.FC = () => {
         <Table>
           <TableHead className='sticky border bg-gray-400 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400'>
             <TableHeadCell>Action</TableHeadCell>
-            <TableHeadCell className='px-6 py-3'><div className='flex items-center'> User Type {sortingButtonForUserType} </div></TableHeadCell>
+            <TableHeadCell className='px-6 py-3'><div className='flex items-center'> User Type <div className='pl-2'>{sortingButtonForUserType}</div> </div></TableHeadCell>
             <TableHeadCell>User ID</TableHeadCell>
-            <TableHeadCell className='px-6 py-3'><div className='flex items-center'> Event {sortingButtonForEvent} </div></TableHeadCell>
-            <TableHeadCell className='px-6 py-3'><div className='flex items-center'> Auditable Type {sortingButtonForAuditableType} </div></TableHeadCell>
+            <TableHeadCell className='px-6 py-3'><div className='flex items-center'> Event <div className='pl-2'>{sortingButtonForEvent}</div> </div></TableHeadCell>
+            <TableHeadCell className='px-6 py-3'><div className='flex items-center'> Auditable Type <div className='pl-2'>{sortingButtonForAuditableType}</div> </div></TableHeadCell>
             <TableHeadCell>Auditable ID</TableHeadCell>
             <TableHeadCell>Old Values</TableHeadCell>
             <TableHeadCell>New Values</TableHeadCell>

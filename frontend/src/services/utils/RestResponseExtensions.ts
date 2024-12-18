@@ -44,27 +44,20 @@ export async function toResponseResult<T extends Response>(
     axiosResponse: AxiosResponse
   ): Promise<ResponseResult<T>> {
     const responseResult: ResponseResult<T> = {};
-  
-    console.log('Starting to process the response...');
     
     try {
-      console.log(`Response status: ${axiosResponse.status}`);
       
       if (axiosResponse.status >= 200 && axiosResponse.status < 300) {
-        console.log('Response status is successful (2xx)');
   
         if (axiosResponse.headers['content-disposition']) {
-          console.log('Content-Disposition header found:', axiosResponse.headers['content-disposition']);
           
           const contentDisposition = axiosResponse.headers['content-disposition'];
           const { fileName } = parseContentDisposition(contentDisposition);
   
           if (!axiosResponse.data) {
-            console.error('Error: Response content is null');
             throw new Error('Response content is null');
           }
   
-          console.log('Setting file response...');
           responseResult.result = {
             fileName,
             content: axiosResponse.data,
@@ -72,12 +65,10 @@ export async function toResponseResult<T extends Response>(
           } as unknown as T;
   
         } else {
-          console.log('No Content-Disposition header, processing as regular response...');
           responseResult.result = axiosResponse.data as T;
         }
   
       } else {
-        console.log(`Error: Response status is not successful, status code: ${axiosResponse.status}`);
         responseResult.error = createErrorResponse(axiosResponse);
       }
   
@@ -91,7 +82,6 @@ export async function toResponseResult<T extends Response>(
       };
     }
   
-    console.log('Returning responseResult:', responseResult);
     return responseResult;
   }
   
