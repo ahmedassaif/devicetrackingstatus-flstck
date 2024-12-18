@@ -53,6 +53,15 @@
                         }
                     },
                     {
+                        "name": "sortOrder",
+                        "in": "query",
+                        "description": "sorting field (asc or desc)",
+                        "required": false,
+                        "schema": {
+                            "type": "text"
+                        }
+                    },
+                    {
                         "name": "from",
                         "in": "query",
                         "description": "Start date for filter",

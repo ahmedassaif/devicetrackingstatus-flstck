@@ -5,6 +5,8 @@ use App\Http\Requests\Audits\AuditOptions;
 use App\Http\Requests\Audits\GetAuditsRequest;
 use Illuminate\Support\Facades\DB;
 use App\Http\Responses\PaginatedListResponse;
+use Illuminate\Support\Facades\Log;
+
 
 
 class GetAuditsQuery
@@ -20,6 +22,7 @@ class GetAuditsQuery
     {
         $from = optional($request)->from ?? $this->auditOptions->getFilterMinimumCreated();
         $to = optional($request)->to ?? $this->auditOptions->getFilterMaximumCreated();
+        Log::info('Request data:', $request->all());
 
         $page = (int) $request->query('page', 1);
         $pageSize = (int) $request->query('pageSize', 10);
@@ -51,9 +54,13 @@ class GetAuditsQuery
         }
 
         $sortField = $request->input('sortField');
+        $sortDirection = $request->input('sortOrder');
         if ($sortField) {
-            $query->orderBy($request->sortField, $request->sortOrder );
+            $query->orderBy($sortField, $sortDirection ?? 'asc');
         }
+
+        // Log the SQL query 
+        Log::info('SQL Query:', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
 
         // Count total rows after applying filters and sorting
         $totalRows = $query->count();
