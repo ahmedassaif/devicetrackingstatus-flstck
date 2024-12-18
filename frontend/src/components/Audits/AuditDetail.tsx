@@ -5,6 +5,7 @@ import { GetAuditsAudit } from '../../services/Audits/Requests/GetAuditsAudit';
 import AuditService from '../../services/Audits/AuditService';
 import { prettifyJson } from '../../Extensions/StringExtensions';
 import { useNavigate } from 'react-router-dom';
+import { Button, Spinner } from 'flowbite-react';
 
 const AuditDetail: React.FC = () => {
   const { auditId } = useParams();
@@ -43,7 +44,16 @@ const AuditDetail: React.FC = () => {
     fetchAuditDetail();
   }, [auditId]);
 
-  if (loading) return <p>Loading audit details...</p>;
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+          <Button>
+            <Spinner size="sm" />
+            <span className="pl-3">Loading...</span>
+          </Button>
+      </div>
+    );
+  }
   if (error) return <p className="text-red-600">Error: {error}</p>;
   if (!audit) return <p>No audit details available.</p>;
 
@@ -73,41 +83,49 @@ const AuditDetail: React.FC = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="rounded bg-gray-100 p-4 shadow">
-          <h2 className="font-bold">Table Name</h2>
-          <p>{audit.auditable_type || 'N/A'}</p>
+      <section className="flex items-center bg-gray-50 dark:bg-gray-900">
+        <div className="mx-auto w-full max-w-screen-xl">
+          <div className="relative bg-white shadow-md sm:rounded-lg dark:bg-gray-800">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="rounded bg-gray-100 p-4 shadow">
+                <h2 className="font-bold">Table Name</h2>
+                <p>{audit.auditable_type || 'N/A'}</p>
+              </div>
+              <div className="rounded bg-gray-100 p-4 shadow">
+                <h2 className="font-bold">Entity ID</h2>
+                <p>{audit.auditable_id || 'N/A'}</p>
+              </div>
+              <div className="rounded bg-gray-100 p-4 shadow">
+                <h2 className="font-bold">Action Name</h2>
+                <p>{audit.event || 'N/A'}</p>
+              </div>
+              <div className="rounded bg-gray-100 p-4 shadow">
+                <h2 className="font-bold">Client Application ID</h2>
+                <p>{audit.user_id || 'N/A'}</p>
+              </div>
+              <div className="rounded bg-gray-100 p-4 shadow">
+                <h2 className="font-bold">From IP Address</h2>
+                <p>{audit.ip_address || 'N/A'}</p>
+              </div>
+              <div className="rounded bg-gray-100 p-4 shadow">
+                <h2 className="font-bold">Old Values</h2>
+                <pre className="whitespace-pre-wrap font-mono">
+                {audit.old_values ? prettifyJson(JSON.stringify(audit.old_values)) : 'N/A'}
+                </pre>
+              </div>
+              <div className="rounded bg-gray-100 p-4 shadow">
+                <h2 className="font-bold">New Values</h2>
+                <pre className="whitespace-pre-wrap font-mono">
+                {audit.new_values ? prettifyJson(JSON.stringify(audit.new_values)) : 'N/A'}
+                </pre>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="rounded bg-gray-100 p-4 shadow">
-          <h2 className="font-bold">Entity ID</h2>
-          <p>{audit.auditable_id || 'N/A'}</p>
-        </div>
-        <div className="rounded bg-gray-100 p-4 shadow">
-          <h2 className="font-bold">Action Name</h2>
-          <p>{audit.event || 'N/A'}</p>
-        </div>
-        <div className="rounded bg-gray-100 p-4 shadow">
-          <h2 className="font-bold">Client Application ID</h2>
-          <p>{audit.user_id || 'N/A'}</p>
-        </div>
-        <div className="rounded bg-gray-100 p-4 shadow">
-          <h2 className="font-bold">From IP Address</h2>
-          <p>{audit.ip_address || 'N/A'}</p>
-        </div>
-        <div className="rounded bg-gray-100 p-4 shadow">
-          <h2 className="font-bold">Old Values</h2>
-          <pre className="whitespace-pre-wrap font-mono">
-          {audit.old_values ? prettifyJson(JSON.stringify(audit.old_values)) : 'N/A'}
-          </pre>
-        </div>
-        <div className="rounded bg-gray-100 p-4 shadow">
-          <h2 className="font-bold">New Values</h2>
-          <pre className="whitespace-pre-wrap font-mono">
-          {audit.new_values ? prettifyJson(JSON.stringify(audit.new_values)) : 'N/A'}
-          </pre>
-        </div>
-      </div>
-      <div>
+      </section>
+
+      
+      <div className='pt-2'>
       <button
         type="button" 
         onClick={() => handleBackClick()}

@@ -3,7 +3,7 @@ export class GetAuditsRequest {
     pageSize: number | undefined;
     searchText: string | undefined;
     sortField: string | undefined;
-    sortOrder: 'asc' | 'desc' | undefined;
+    sortOrder: string | undefined;
     from: Date | undefined;
     to: Date | undefined;
     // Allow additional properties (e.g., cancelToken)

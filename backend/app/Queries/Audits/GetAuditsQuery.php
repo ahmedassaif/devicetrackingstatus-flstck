@@ -52,7 +52,7 @@ class GetAuditsQuery
 
         $sortField = $request->input('sortField');
         if ($sortField) {
-            $query->orderBy($request->sortField, $request->sortOrder ?? 'asc');
+            $query->orderBy($request->sortField, $request->sortOrder );
         }
 
         // Count total rows after applying filters and sorting

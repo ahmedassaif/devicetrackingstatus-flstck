@@ -58,6 +58,13 @@ class AuditsController extends Controller
      *         description="sorting field",
      *         required=false,
      *         @OA\Schema(type="text")
+     *     ),
+     *     @OA\Parameter(
+     *         name="sortOrder",
+     *         in="query",
+     *         description="sorting field (asc or desc)",
+     *         required=false,
+     *         @OA\Schema(type="text")
      *     ),       
      *     @OA\Parameter(
      *         name="from",

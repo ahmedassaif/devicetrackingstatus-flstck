@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Spinner, Select, Button, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, TextInput } from 'flowbite-react'; // Flowbite Pagination component
+import { Spinner, Select, Button, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, TextInput } from 'flowbite-react'; // Flowbite component
 import { GetAuditsRequest } from '../../services/Audits/Requests/GetAuditsRequest';
 import { GetAuditsAudit } from '../../services/Audits/Requests/GetAuditsAudit';
 import { ResponseResult } from '../../services/Responses/ResponseResult';
@@ -9,7 +9,8 @@ import { toTableData } from '../../services/utils/PaginatedListResponseExtension
 import axios, { CancelTokenSource } from 'axios';
 import { FiEye, FiSearch } from "react-icons/fi";
 import { useNavigate } from 'react-router-dom';
-import { FaFileExcel } from 'react-icons/fa'
+import { FaFileExcel, FaSort, FaSortAlphaUp } from 'react-icons/fa'
+import { IoMdCloseCircle } from "react-icons/io";
 
 const AuditList: React.FC = () => {
 
@@ -22,9 +23,51 @@ const AuditList: React.FC = () => {
   const [rows, setRows] = useState<number>(10);
   const [query, setQuery] = useState("");
   const [keyword, setKeyword] = useState("");
+  const [loadingDownloadFile, setLoadingDownloadFile] = useState<boolean>(false);
   const [notification, setNotification] = useState<string | null>(null);
+  const [hasSearched, setHasSearched] = useState<boolean>(false);
+  const [sortField, setSortField] = useState<string>("");
+  const [sortDirection, setSortDirection] = useState<string>("");
+  const [isSortingField, setIsSortingField] = useState<boolean>(false);
+  
+  const sortingButtonInitialForUserType = (
+    <FaSort className='cursor-pointer' onClick={(e) => getSortFromField("user_type", "asc", e)} />
+  );
+  const sortingButtonAscForUserType = (
+    <FaSortAlphaUp className='cursor-pointer' onClick={(e) => getSortFromField("user_type", "desc", e)} />
+  );
+  const sortingButtonDescForUserType = (
+    <FaSortAlphaUp className='cursor-pointer' onClick={(e) => getSortFromField("", "", e)} />
+  );
+  const [sortingButtonForUserType, setSortingButtonForUserType] = useState<JSX.Element>(sortingButtonInitialForUserType);
+
+
+  const sortingButtonInitialForEvent = (
+    <FaSort className='cursor-pointer' onClick={(e) => getSortFromField("event", "asc", e)} />
+  );
+  const sortingButtonAscForEvent = (
+    <FaSortAlphaUp className='cursor-pointer' onClick={(e) => getSortFromField("event", "desc", e)} />
+  );
+  const sortingButtonDescForEvent = (
+    <FaSortAlphaUp className='cursor-pointer' onClick={(e) => getSortFromField("", "", e)} />
+  );
+  const [sortingButtonForEvent, setSortingButtonForEvent] = useState<JSX.Element>(sortingButtonInitialForEvent);
+
+  const sortingButtonInitialForAuditableType = (
+    <FaSort className='cursor-pointer' onClick={(e) => getSortFromField("auditable_type", "asc", e)} />
+  );
+  const sortingButtonAscForAuditableType = (
+    <FaSortAlphaUp className='cursor-pointer' onClick={(e) => getSortFromField("auditable_type", "desc", e)} />
+  );
+  const sortingButtonDescForAuditableType = (
+    <FaSortAlphaUp className='cursor-pointer' onClick={(e) => getSortFromField("", "", e)} />
+  );
+  const [sortingButtonForAuditableType, setSortingButtonForAuditableType] = useState<JSX.Element>(sortingButtonInitialForAuditableType);
 
   const navigate = useNavigate();
+
+  
+
 
   // Memoize handleAuditResponse to avoid unnecessary re-renders
   const handleAuditResponse = useCallback(
@@ -66,8 +109,8 @@ const AuditList: React.FC = () => {
         page: currentPage,
         pageSize: pageSize,
         searchText: keyword?.trim() ? keyword : undefined,
-        sortField: undefined,
-        sortOrder: undefined,
+        sortField: sortField,
+        sortOrder: sortDirection,
         from: undefined,
         to: undefined,
         cancelToken: source.token, // Add cancel token directly
@@ -93,7 +136,7 @@ const AuditList: React.FC = () => {
     fetchAudits();
   
     return () => source.cancel('Request canceled by the user.');
-  }, [currentPage, handleAuditResponse, pageSize, keyword]);
+  }, [currentPage, handleAuditResponse, pageSize, keyword, sortField, sortDirection]);
   
 
   // Handle page change
@@ -108,17 +151,19 @@ const AuditList: React.FC = () => {
     const newPageSize = parseInt(event.target.value, 10);
     setPageSize(newPageSize);
     setCurrentPage(1); // Reset to first page when page size changes
+
+    setSortingButtonForUserType(sortingButtonInitialForUserType);
+    setSortingButtonForAuditableType(sortingButtonInitialForAuditableType);
+    setSortingButtonForEvent(sortingButtonInitialForEvent);
   };
 
   if (loading) {
     return (
-      <div className="flex flex-wrap gap-3">
-        <div className='text-center'>
+      <div className="flex h-screen items-center justify-center">
           <Button>
             <Spinner size="sm" />
             <span className="pl-3">Loading...</span>
           </Button>
-        </div>
       </div>
     );
   }
@@ -176,13 +221,21 @@ const AuditList: React.FC = () => {
   
     setCurrentPage(1);
     setKeyword(query);
+    setHasSearched(true); 
+
+    setSortingButtonForUserType(sortingButtonInitialForUserType);
+    setSortingButtonForAuditableType(sortingButtonInitialForAuditableType);
+    setSortingButtonForEvent(sortingButtonInitialForEvent);
   };
 
   const handleDetailClick = (auditId: number) => {
-    navigate(`/Audits/Details/${auditId}`);  // Navigate to the detail page
+    navigate(`/Audit/Details/${auditId}`);  // Navigate to the detail page
   };
   
-  const handleExport = async () => { 
+  const handleExport = async () => {
+    
+    setLoadingDownloadFile(true);
+    
     try {
       const auditService = new AuditService(); 
       await auditService.exportAuditsToExcel(); 
@@ -190,47 +243,148 @@ const AuditList: React.FC = () => {
     catch (error) 
     { 
       console.error('Failed to export audits', error); 
+    }
+    finally{
+      setLoadingDownloadFile(false);
     } 
   };
 
-  return (
-      <div className="container mx-auto">
-        <h1 className="mb-4 text-2xl font-bold">Audit List</h1>               
-        <div id="searchData">        
-        <div className="flex items-center justify-end pb-2">
-          <Button className="bg-lime-500 pr-2" onClick={handleExport}>
-            <FaFileExcel className="mr-2 size-5" />
-            Export Audits
-          </Button>
-          <form onSubmit={searchData} className="flex items-center space-x-1 pl-2">
-            <TextInput
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Find something here..."
-              className='pr-2'
-            />
+  let showLoadingForDownloadExcel;
+  if (loadingDownloadFile) {
+    showLoadingForDownloadExcel = (
+      <Spinner className="mr-2 size-5" />
+    ); 
+  }
+  else
+  {
+    showLoadingForDownloadExcel = (
+      <FaFileExcel className="mr-2 size-5" />
+    ); 
+  }
 
-            {/* Custom button */}
-            <button
-              type="submit"
-              className="rounded-full bg-blue-500 p-2 text-white hover:bg-blue-600 focus:outline-none"
-              aria-label="search"
-            >
-              <FiSearch size={25} />
-            </button>
-          </form>
-        </div>
+  const handleClearInput = () => {
+    if (hasSearched) {
+      // If a search has been performed, reset the state to show default data
+      setKeyword(""); // Clear the keyword
+      setCurrentPage(1); // Reset to the first page
+      setHasSearched(false); // Reset the search flag
+      setQuery('');
+
+      setSortingButtonForUserType(sortingButtonInitialForUserType);
+      setSortingButtonForAuditableType(sortingButtonInitialForAuditableType);
+      setSortingButtonForEvent(sortingButtonInitialForEvent);
+    } else {
+      // If no search has been performed, just clear the input
+      setQuery('');
+    }
+  };
+
+
+  const getSortFromField = (nameField: string, sortOrderBy: string, e: { preventDefault: () => void }) => {
+    
+    e.preventDefault();
+
+    if (sortField && sortDirection) {
+      if (nameField === 'user_type') {
+        if (sortOrderBy === 'asc') {
+          setSortingButtonForUserType(sortingButtonAscForUserType);      
+        }
+        else if (sortOrderBy === 'desc') {
+          setSortingButtonForUserType(sortingButtonDescForUserType);
+        }
+        setSortingButtonForAuditableType(sortingButtonInitialForAuditableType);
+        setSortingButtonForEvent(sortingButtonInitialForEvent);
+      }
+      else if (nameField === 'auditable_type') {
+        if (sortOrderBy === 'asc') {
+          setSortingButtonForAuditableType(sortingButtonAscForAuditableType);
+        }
+        else if (sortOrderBy === 'desc') {
+          setSortingButtonForAuditableType(sortingButtonDescForAuditableType);
+        }
+        setSortingButtonForUserType(sortingButtonInitialForUserType);
+        setSortingButtonForEvent(sortingButtonInitialForEvent);
+      } 
+      else if (nameField === 'event') {
+        if (sortOrderBy === 'asc') {
+          setSortingButtonForEvent(sortingButtonAscForEvent);
+        }
+        else if (sortOrderBy === 'desc') {
+          setSortingButtonForEvent(sortingButtonDescForEvent);
+        }
+      }
+
+      setSortDirection(sortOrderBy);
+      setSortField(nameField);
+      
+    }
+    else{
+      setSortingButtonForUserType(sortingButtonInitialForUserType);
+      setSortingButtonForAuditableType(sortingButtonInitialForAuditableType);
+      setSortingButtonForEvent(sortingButtonInitialForEvent);
+    }
+
+    setCurrentPage(1);
+  }
+  
+  return (
+      <div className="container mx-auto h-svh">
+        <h1 className="mb-4 text-2xl font-bold">Audit List</h1>
+        <section className="flex items-center bg-gray-50 pb-2 dark:bg-gray-900">
+          <div className="mx-auto w-full max-w-screen-xl">
+            <div className="relative bg-white shadow-md sm:rounded-lg dark:bg-gray-800">
+              <div className="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
+                <div className="w-full md:w-1/2">
+                  <form onSubmit={searchData} className="flex items-center space-x-1 pl-2">
+                    <div className="relative">
+                      <input 
+                        type="text"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pe-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500  dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" 
+                        placeholder="Ketik pencarian disini..." />
+                      {query && (
+                        <div className="absolute inset-y-0 end-0 flex items-center pe-3.5">
+                        <IoMdCloseCircle
+                          className="cursor-pointer" 
+                          onClick={handleClearInput} 
+                          size={20} 
+                        />
+                      </div>
+                      )}  
+                    </div>
+
+                    {/* Custom button */}
+                    <button
+                      type="submit"
+                      className="rounded-full bg-blue-500 p-2 text-white hover:bg-blue-600 focus:outline-none"
+                      aria-label="search"
+                    >
+                      <FiSearch size={25} />
+                    </button>
+                  </form>
+                </div>
+                <div className="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
+                <Button className="bg-lime-500 pr-2" onClick={handleExport}>
+                  {showLoadingForDownloadExcel}
+                  Export Audits
+                </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>               
+        <div id="searchData">        
       </div>
       {/* Audit Table */}
-      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <div className="relative overflow-auto shadow-md sm:rounded-lg">
         <Table>
           <TableHead className='sticky border bg-gray-400 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400'>
             <TableHeadCell>Action</TableHeadCell>
-            <TableHeadCell>User Type</TableHeadCell>
+            <TableHeadCell className='px-6 py-3'><div className='flex items-center'> User Type {sortingButtonForUserType} </div></TableHeadCell>
             <TableHeadCell>User ID</TableHeadCell>
-            <TableHeadCell>Event</TableHeadCell>
-            <TableHeadCell>Auditable Type</TableHeadCell>
+            <TableHeadCell className='px-6 py-3'><div className='flex items-center'> Event {sortingButtonForEvent} </div></TableHeadCell>
+            <TableHeadCell className='px-6 py-3'><div className='flex items-center'> Auditable Type {sortingButtonForAuditableType} </div></TableHeadCell>
             <TableHeadCell>Auditable ID</TableHeadCell>
             <TableHeadCell>Old Values</TableHeadCell>
             <TableHeadCell>New Values</TableHeadCell>
@@ -241,42 +395,50 @@ const AuditList: React.FC = () => {
             <TableHeadCell>Created At</TableHeadCell>
             <TableHeadCell>Modified At</TableHeadCell>
           </TableHead>
-          <TableBody className="h-80 divide-y overflow-y-auto">
-            {audits.map((audit, index) => (
-              <TableRow
-                key={`${audit.user_id || index}-${audit.auditable_id || index}`}
-                className="bg-white text-gray-900 hover:bg-gray-200 dark:border-gray-700 dark:bg-slate-500 dark:text-white dark:hover:bg-slate-300 dark:hover:text-gray-900"
-              >
-                <TableCell>
-                  <button
-                    onClick={() => handleDetailClick(audit.id)}
-                    className="flex items-center space-x-2 rounded bg-blue-500 px-2 py-1 text-white hover:bg-blue-600"
-                  >
-                    <FiEye size={18} />
-                    <span>Detail</span>
-                  </button>
-                </TableCell>
-                <TableCell className="whitespace-nowrap font-medium">
-                  {audit.user_type || 'N/A'}
-                </TableCell>
-                <TableCell>{audit.user_id || 'N/A'}</TableCell>
-                <TableCell>{audit.event || 'N/A'}</TableCell>
-                <TableCell>{audit.auditable_type || 'N/A'}</TableCell>
-                <TableCell>{audit.auditable_id}</TableCell>
-                <TableCell>{audit.old_values ? JSON.stringify(audit.old_values) : 'N/A'}</TableCell>
-                <TableCell>{audit.new_values ? JSON.stringify(audit.new_values) : 'N/A'}</TableCell>
-                <TableCell>{audit.url || 'N/A'}</TableCell>
-                <TableCell>{audit.ip_address || 'N/A'}</TableCell>
-                <TableCell>{audit.user_agent || 'N/A'}</TableCell>
-                <TableCell>{audit.tags || 'N/A'}</TableCell>
-                <TableCell>
-                  {audit.created_at ? new Date(audit.created_at).toLocaleString() : 'N/A'}
-                </TableCell>
-                <TableCell>
-                  {audit.updated_at ? new Date(audit.updated_at).toLocaleString() : 'N/A'}
+          <TableBody className="divide-y overflow-auto">
+            {audits.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={14} className="py-4 text-center text-gray-500">
+                  Data Not Found
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              audits.map((audit, index) => (
+                <TableRow
+                  key={`${audit.user_id || index}-${audit.auditable_id || index}`}
+                  className="bg-white text-gray-900 hover:bg-gray-200 dark:border-gray-700 dark:bg-slate-500 dark:text-white dark:hover:bg-slate-300 dark:hover:text-gray-900"
+                >
+                  <TableCell>
+                    <button
+                      onClick={() => handleDetailClick(audit.id)}
+                      className="flex items-center space-x-2 rounded bg-blue-500 px-2 py-1 text-white hover:bg-blue-600"
+                    >
+                      <FiEye size={18} />
+                      <span>Detail</span>
+                    </button>
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap font-medium">
+                    {audit.user_type || 'N/A'}
+                  </TableCell>
+                  <TableCell>{audit.user_id || 'N/A'}</TableCell>
+                  <TableCell>{audit.event || 'N/A'}</TableCell>
+                  <TableCell>{audit.auditable_type || 'N/A'}</TableCell>
+                  <TableCell>{audit.auditable_id}</TableCell>
+                  <TableCell>{audit.old_values ? JSON.stringify(audit.old_values) : 'N/A'}</TableCell>
+                  <TableCell>{audit.new_values ? JSON.stringify(audit.new_values) : 'N/A'}</TableCell>
+                  <TableCell>{audit.url || 'N/A'}</TableCell>
+                  <TableCell>{audit.ip_address || 'N/A'}</TableCell>
+                  <TableCell>{audit.user_agent || 'N/A'}</TableCell>
+                  <TableCell>{audit.tags || 'N/A'}</TableCell>
+                  <TableCell>
+                    {audit.created_at ? new Date(audit.created_at).toLocaleString() : 'N/A'}
+                  </TableCell>
+                  <TableCell>
+                    {audit.updated_at ? new Date(audit.updated_at).toLocaleString() : 'N/A'}
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>        
       </div>
