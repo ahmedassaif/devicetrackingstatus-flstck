@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
-import AuditList from "./components/Audits/AuditList";
+import AuditList from "./features/Audits/components/AuditList";
 import reportWebVitals from "./reportWebVitals";
 import { DarkThemeToggle } from "flowbite-react";
 

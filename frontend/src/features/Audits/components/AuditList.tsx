@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Spinner, Select, Button, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, TextInput } from 'flowbite-react'; // Flowbite component
-import { GetAuditsRequest } from '../../services/Audits/Requests/GetAuditsRequest';
-import { GetAuditsAudit } from '../../services/Audits/Requests/GetAuditsAudit';
-import { ResponseResult } from '../../services/Responses/ResponseResult';
-import { PaginatedListResponse } from '../../services/Responses/PaginatedListResponse';
-import AuditService from '../../services/Audits/AuditService';
-import { toTableData } from '../../services/utils/PaginatedListResponseExtensions';
+import { GetAuditsRequest } from '../../../services/Audits/Requests/GetAuditsRequest';
+import { GetAuditsAudit } from '../../../services/Audits/Requests/GetAuditsAudit';
+import { ResponseResult } from '../../../services/Responses/ResponseResult';
+import { PaginatedListResponse } from '../../../services/Responses/PaginatedListResponse';
+import AuditService from '../../../services/Audits/AuditService';
+import { toTableData } from '../../../services/utils/PaginatedListResponseExtensions';
 import axios, { CancelTokenSource } from 'axios';
 import { FiEye, FiSearch } from "react-icons/fi";
 import { useNavigate } from 'react-router-dom';
@@ -342,12 +342,10 @@ const AuditList: React.FC = () => {
               </div>
             </div>
           </div>
-        </section>               
-        <div id="searchData">        
-      </div>
+        </section>
       {/* Audit Table */}
-      <div className="relative overflow-auto shadow-md sm:rounded-lg">
-        <Table>
+      <div className="container mx-auto">
+        <Table className="shadow-md sm:rounded-lg">
           <TableHead className='sticky border bg-gray-400 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400'>
             <TableHeadCell>Action</TableHeadCell>
             <TableHeadCell className='px-6 py-3'><div className='flex items-center'> User Type <div className='pl-2'>{sortingButtonForUserType}</div> </div></TableHeadCell>

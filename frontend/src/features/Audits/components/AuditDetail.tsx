@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { ResponseResult } from '../../services/Responses/ResponseResult';
-import { GetAuditsAudit } from '../../services/Audits/Requests/GetAuditsAudit';
-import AuditService from '../../services/Audits/AuditService';
-import { prettifyJson } from '../../Extensions/StringExtensions';
+import { ResponseResult } from '../../../services/Responses/ResponseResult';
+import { GetAuditsAudit } from '../../../services/Audits/Requests/GetAuditsAudit';
+import AuditService from '../../../services/Audits/AuditService';
+import { prettifyJson } from '../../../Extensions/StringExtensions';
 import { useNavigate } from 'react-router-dom';
 import { Button, Spinner } from 'flowbite-react';
 
