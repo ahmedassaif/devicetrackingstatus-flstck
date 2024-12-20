@@ -1,23 +1,21 @@
+import { Button, Spinner } from "flowbite-react";
 
 
 const TestPage: React.FC = () => {
 
     return(
 
-<section className="flex h-screen items-center bg-gray-50 dark:bg-gray-900">
-  <div className="mx-auto w-full max-w-screen-xl px-4 lg:px-12">
-    <div className="relative bg-white shadow-md sm:rounded-lg dark:bg-gray-800">
-      <div className="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
-        <div className="w-full md:w-1/2">
-          
-        </div>
-        <div className="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
-          
+      <div className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12">
+        <img src="/images/beams.jpg" alt="" className="absolute left-1/2 top-1/2 max-w-none -translate-x-1/2 -translate-y-1/2" width="1308" />
+        <div className="relative px-6 pb-8 pt-10 shadow-xl sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
+          <div className="mx-auto max-w-md">
+            <Button>
+              <Spinner size="sm" />
+              <span className="pl-3">Loading...</span>
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
 
     );
 };

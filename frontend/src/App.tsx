@@ -9,14 +9,24 @@ import WelcomePage from "./WelcomePage"; // Adjust the path as needed
 const App: React.FC = () => {
   return (
     <Router>
-      <MainLayout>
-        <Routes>
-          <Route path="/" element={<WelcomePage />} />
-          <Route path="/Audits" element={<Audits />} />
-          <Route path="/Audit/Details/:auditId" element={<AuditDetail />} />
-          <Route path="/testpage" element={<TestPage />} />
-        </Routes>
-      </MainLayout>
+      <Routes>
+        <Route
+          path="/testpage"
+          element={<TestPage />}
+        />
+        <Route
+          path="/*"
+          element={
+            <MainLayout>
+              <Routes>
+                <Route path="/" element={<WelcomePage />} />
+                <Route path="/Audits" element={<Audits />} />
+                <Route path="/Audit/Details/:auditId" element={<AuditDetail />} />
+              </Routes>
+            </MainLayout>
+          }
+        />
+      </Routes>
     </Router>
   );
 };

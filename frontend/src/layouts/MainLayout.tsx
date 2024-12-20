@@ -12,16 +12,16 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex min-h-screen overflow-hidden">
       {/* Side Navigation */}
       <NavMenu isOpen={isOpen} isShrunk={isShrunk} />
 
-      <div className={`flex flex-col transition-all duration-300 ${isOpen ? 'ml-64' : 'ml-16'}`}>
+      <div className={`flex flex-col w-full transition-all duration-300 ${isOpen ? 'ml-64' : 'ml-16'}`}>
         {/* Top Navigation Bar */}
         <TopNavbar onMenuClick={toggleSidebar} />
 
         {/* Main Content */}
-        <main className="p-4 flex-grow overflow-auto">
+        <main className="flex-grow w-full overflow-auto p-4">
           {children}
         </main>
       </div>
