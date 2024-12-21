@@ -457,10 +457,9 @@ const AuditList: React.FC = () => {
     //   </div>
 
     // </div>
-
-    <div className="container mx-auto h-screen">
+<div className="container mx-auto h-full">
   <h1 className="mb-4 text-2xl font-bold">Audit List</h1>
-  <section className="flex items-center pb-2 dark:bg-gray-900 w-full">
+  <section className="flex w-full items-center pb-2 dark:bg-gray-900">
     <div className="w-full">
       <div className="relative bg-white shadow-md sm:rounded-lg dark:bg-gray-800">
         <div className="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
@@ -475,12 +474,12 @@ const AuditList: React.FC = () => {
                   placeholder="Ketik pencarian disini..." />
                 {query && (
                   <div className="absolute inset-y-0 end-0 flex items-center pe-3.5">
-                  <IoMdCloseCircle
-                    className="cursor-pointer" 
-                    onClick={handleClearInput} 
-                    size={20} 
-                  />
-                </div>
+                    <IoMdCloseCircle
+                      className="cursor-pointer" 
+                      onClick={handleClearInput} 
+                      size={20} 
+                    />
+                  </div>
                 )}
               </div>
 
@@ -504,75 +503,92 @@ const AuditList: React.FC = () => {
       </div>
     </div>
   </section>
+
   {/* Audit Table */}
-  <div className="container mx-auto">
-    <Table className="shadow-md sm:rounded-lg w-full">
-      <TableHead className='sticky border bg-gray-400 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400'>
-        <TableHeadCell>Action</TableHeadCell>
-        <TableHeadCell className='px-6 py-3'><div className='flex items-center'> User Type <div className='pl-2'>{sortingButtonForUserType}</div> </div></TableHeadCell>
-        <TableHeadCell>User ID</TableHeadCell>
-        <TableHeadCell className='px-6 py-3'><div className='flex items-center'> Event <div className='pl-2'>{sortingButtonForEvent}</div> </div></TableHeadCell>
-        <TableHeadCell className='px-6 py-3'><div className='flex items-center'> Auditable Type <div className='pl-2'>{sortingButtonForAuditableType}</div> </div></TableHeadCell>
-        <TableHeadCell>Auditable ID</TableHeadCell>
-        <TableHeadCell>Old Values</TableHeadCell>
-        <TableHeadCell>New Values</TableHeadCell>
-        <TableHeadCell>URL</TableHeadCell>
-        <TableHeadCell>IP Address</TableHeadCell>
-        <TableHeadCell>User Agent</TableHeadCell>
-        <TableHeadCell>Tags</TableHeadCell>
-        <TableHeadCell>Created At</TableHeadCell>
-        <TableHeadCell>Modified At</TableHeadCell>
-      </TableHead>
-      <TableBody className="divide-y overflow-auto">
-        {audits.length === 0 ? (
-          <TableRow>
-            <TableCell colSpan={14} className="py-4 text-center text-gray-500">
-              Data Not Found
-            </TableCell>
-          </TableRow>
-        ) : (
-          audits.map((audit, index) => (
-            <TableRow
-              key={`${audit.user_id || index}-${audit.auditable_id || index}`}
-              className="bg-white text-gray-900 hover:bg-gray-200 dark:border-gray-700 dark:bg-slate-500 dark:text-white dark:hover:bg-slate-300 dark:hover:text-gray-900"
-            >
-              <TableCell>
-                <button
-                  onClick={() => handleDetailClick(audit.id)}
-                  className="flex items-center space-x-2 rounded bg-blue-500 px-2 py-1 text-white hover:bg-blue-600"
-                >
-                  <FiEye size={18} />
-                  <span>Detail</span>
-                </button>
-              </TableCell>
-              <TableCell className="whitespace-nowrap font-medium">
-                {audit.user_type || 'N/A'}
-              </TableCell>
-              <TableCell>{audit.user_id || 'N/A'}</TableCell>
-              <TableCell>{audit.event || 'N/A'}</TableCell>
-              <TableCell>{audit.auditable_type || 'N/A'}</TableCell>
-              <TableCell>{audit.auditable_id}</TableCell>
-              <TableCell>{audit.old_values ? JSON.stringify(audit.old_values) : 'N/A'}</TableCell>
-              <TableCell>{audit.new_values ? JSON.stringify(audit.new_values) : 'N/A'}</TableCell>
-              <TableCell>{audit.url || 'N/A'}</TableCell>
-              <TableCell>{audit.ip_address || 'N/A'}</TableCell>
-              <TableCell>{audit.user_agent || 'N/A'}</TableCell>
-              <TableCell>{audit.tags || 'N/A'}</TableCell>
-              <TableCell>
-                {audit.created_at ? new Date(audit.created_at).toLocaleString() : 'N/A'}
-              </TableCell>
-              <TableCell>
-                {audit.updated_at ? new Date(audit.updated_at).toLocaleString() : 'N/A'}
+  <div className="container mx-auto overflow-x-auto">
+    <div className="w-full max-w-full">
+      <Table className="min-w-full w-full max-w-full shadow-md sm:rounded-lg">
+        <TableHead className="sticky border bg-gray-400 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+          <TableHeadCell>Action</TableHeadCell>
+          <TableHeadCell className="px-6 py-3">
+            <div className="flex items-center">
+              User Type
+              <div className="pl-2">{sortingButtonForUserType}</div>
+            </div>
+          </TableHeadCell>
+          <TableHeadCell>User ID</TableHeadCell>
+          <TableHeadCell className="px-6 py-3">
+            <div className="flex items-center">
+              Event
+              <div className="pl-2">{sortingButtonForEvent}</div>
+            </div>
+          </TableHeadCell>
+          <TableHeadCell className="px-6 py-3">
+            <div className="flex items-center">
+              Auditable Type
+              <div className="pl-2">{sortingButtonForAuditableType}</div>
+            </div>
+          </TableHeadCell>
+          <TableHeadCell>Auditable ID</TableHeadCell>
+          <TableHeadCell>Old Values</TableHeadCell>
+          <TableHeadCell>New Values</TableHeadCell>
+          <TableHeadCell>URL</TableHeadCell>
+          <TableHeadCell>IP Address</TableHeadCell>
+          <TableHeadCell>User Agent</TableHeadCell>
+          <TableHeadCell>Tags</TableHeadCell>
+          <TableHeadCell>Created At</TableHeadCell>
+          <TableHeadCell>Modified At</TableHeadCell>
+        </TableHead>
+        <TableBody className="divide-y overflow-auto">
+          {audits.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={14} className="py-4 text-center text-gray-500">
+                Data Not Found
               </TableCell>
             </TableRow>
-          ))
-        )}
-      </TableBody>
-    </Table>        
+          ) : (
+            audits.map((audit, index) => (
+              <TableRow
+                key={`${audit.user_id || index}-${audit.auditable_id || index}`}
+                className="bg-white text-gray-900 hover:bg-gray-200 dark:border-gray-700 dark:bg-slate-500 dark:text-white dark:hover:bg-slate-300 dark:hover:text-gray-900"
+              >
+                <TableCell>
+                  <button
+                    onClick={() => handleDetailClick(audit.id)}
+                    className="flex items-center space-x-2 rounded bg-blue-500 px-2 py-1 text-white hover:bg-blue-600"
+                  >
+                    <FiEye size={18} />
+                    <span>Detail</span>
+                  </button>
+                </TableCell>
+                <TableCell className="whitespace-nowrap font-medium">
+                  {audit.user_type || 'N/A'}
+                </TableCell>
+                <TableCell>{audit.user_id || 'N/A'}</TableCell>
+                <TableCell>{audit.event || 'N/A'}</TableCell>
+                <TableCell>{audit.auditable_type || 'N/A'}</TableCell>
+                <TableCell>{audit.auditable_id}</TableCell>
+                <TableCell>{audit.old_values ? JSON.stringify(audit.old_values) : 'N/A'}</TableCell>
+                <TableCell>{audit.new_values ? JSON.stringify(audit.new_values) : 'N/A'}</TableCell>
+                <TableCell>{audit.url || 'N/A'}</TableCell>
+                <TableCell>{audit.ip_address || 'N/A'}</TableCell>
+                <TableCell>{audit.user_agent || 'N/A'}</TableCell>
+                <TableCell>{audit.tags || 'N/A'}</TableCell>
+                <TableCell>
+                  {audit.created_at ? new Date(audit.created_at).toLocaleString() : 'N/A'}
+                </TableCell>
+                <TableCell>
+                  {audit.updated_at ? new Date(audit.updated_at).toLocaleString() : 'N/A'}
+                </TableCell>
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
+    </div>
   </div>
-  
+
   <div className="mt-4 flex items-center justify-center">
-    {/* Page Size Selector */}
     <div className="contents pr-4">
       <label htmlFor="page-size" className="mr-2">
         Items per page:
@@ -588,7 +604,7 @@ const AuditList: React.FC = () => {
         <option value={20}>20</option>
       </Select>
     </div>
-    <p className='p-2'>
+    <p className="p-2">
       Showing {startIndex} to {endIndex} of {rows} Entries
     </p>
     <div className="flex items-center space-x-2">
@@ -609,10 +625,11 @@ const AuditList: React.FC = () => {
       >
         Next
       </button>
-        </div>
-      </div>
-
     </div>
+  </div>
+</div>
+
+
   );
 };
 

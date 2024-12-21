@@ -8,15 +8,10 @@ interface TopNavbarProps {
 
 const TopNavbar: React.FC<TopNavbarProps> = ({ onMenuClick }) => {
   return (
-    <Navbar>
+    <Navbar className="flex h-16 items-center overflow-hidden border-b bg-white">
       <Navbar.Brand href="/">
-        <span className="self-center whitespace-nowrap text-xl font-semibold">App Name</span>
+        <span className="whitespace-nowrap text-xl font-semibold">Device Tracking Status</span>
       </Navbar.Brand>
-      <div className="flex md:order-2">
-        <Button onClick={onMenuClick}>
-          <HiMenu className="text-xl" />
-        </Button>
-      </div>
     </Navbar>
   );
 };
