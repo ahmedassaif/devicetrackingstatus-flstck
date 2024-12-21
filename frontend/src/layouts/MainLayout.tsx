@@ -47,7 +47,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </div>
 
           {/* Main Content */}
-          <main className="h-full flex-grow overflow-y-auto p-4">
+          <main className="h-full grow overflow-y-auto p-4">
             {children}
           </main>
         </div>
