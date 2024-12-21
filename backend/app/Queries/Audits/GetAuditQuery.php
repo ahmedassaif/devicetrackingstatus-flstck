@@ -2,7 +2,7 @@
 
 namespace App\Queries\Audits;
 
-use App\Http\Resources\Audits\AuditResource;
+use App\Http\Resources\AuditResource;
 use App\Models\Audit;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
