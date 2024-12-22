@@ -26,7 +26,7 @@ class GetDataUnitsExportToExcelQuery
 
             // Set header
             $headers = [
-                "No", "Name Unit", "Plan", "Created At", "Updated At"
+                "No", "ID", "Nama Unit", "Plan", "Created At", "Updated At"
             ];
 
             $headerRow = 1;
@@ -45,6 +45,7 @@ class GetDataUnitsExportToExcelQuery
             foreach ($data as $index => $item) {
                 $rowIndex = $index + 2;
                 $sheet->setCellValue("A{$rowIndex}", $index + 1);
+                $sheet->setCellValue("B{$rowIndex}", $item->id ?? "");
                 $sheet->setCellValue("B{$rowIndex}", $item->NameUnit ?? "");
                 $sheet->setCellValue("C{$rowIndex}", $item->Plan ?? "");
                 $sheet->setCellValue("D{$rowIndex}", $item->created_at ?? "");
