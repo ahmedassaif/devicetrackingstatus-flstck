@@ -21,6 +21,8 @@ class DataUnit extends Model implements AuditableContract
      */
     protected $dates = ['deleted_at'];
 
+    protected $table = 'DataUnit';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -29,5 +31,7 @@ class DataUnit extends Model implements AuditableContract
     protected $fillable = [
         'NameUnit',
         'Plan',
+        'created_at',
+        'updated_at'
     ];
 }

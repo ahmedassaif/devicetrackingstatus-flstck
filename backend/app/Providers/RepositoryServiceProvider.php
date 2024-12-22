@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\Interfaces\AuditRepositoryInterface;
-use App\Repositories\AuditRepository;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -13,7 +11,7 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(AuditRepositoryInterface::class,AuditRepository::class);
+        
     }
 
     /**

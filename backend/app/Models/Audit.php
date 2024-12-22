@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
+use Carbon\Carbon;
 
 class Audit extends Model implements Auditable
 {
@@ -21,5 +22,17 @@ class Audit extends Model implements Auditable
         'from_ip_address',
     ];
 
-    protected $dates = ['created_at'];
+    protected $dates = ['created_at', 'updated_at'];
+
+    // Accessor for created_at
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->setTimezone(config('app.timezone'));
+    }
+
+    // Accessor for updated_at
+    public function getUpdatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->setTimezone(config('app.timezone'));
+    }
 }

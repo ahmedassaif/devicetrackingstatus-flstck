@@ -19,7 +19,7 @@ return new class extends Migration
             $table->softDeletes(); // Add soft deletes column
         });
     }
-
+    
     /**
      * Reverse the migrations.
      */

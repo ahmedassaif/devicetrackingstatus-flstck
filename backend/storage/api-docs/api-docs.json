@@ -172,6 +172,292 @@
                     }
                 }
             }
+        },
+        "/api/v1/dataUnits": {
+            "get": {
+                "tags": [
+                    "DataUnits"
+                ],
+                "summary": "Get DataUnits",
+                "description": "Returns a paginated list of DataUnits with filters",
+                "operationId": "bb7ba70e0754330a08e9bf54539a4b1c",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search data",
+                        "required": false,
+                        "schema": {
+                            "type": "text"
+                        }
+                    },
+                    {
+                        "name": "sortField",
+                        "in": "query",
+                        "description": "sorting field",
+                        "required": false,
+                        "schema": {
+                            "type": "text"
+                        }
+                    },
+                    {
+                        "name": "sortOrder",
+                        "in": "query",
+                        "description": "sorting field (asc or desc)",
+                        "required": false,
+                        "schema": {
+                            "type": "text"
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Start date for filter",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "description": "End date for filter",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns a paginated list of DataUnits",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DataUnit"
+                                            }
+                                        },
+                                        "totalCount": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/dataUnit/{id}": {
+            "get": {
+                "tags": [
+                    "DataUnits"
+                ],
+                "summary": "Get DataUnit by ID",
+                "description": "Retrieve a specific DataUnit by its unique ID",
+                "operationId": "f46cf4a9991b6ba7da984aa989b19ae2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "DataUnit ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "DataUnit retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DataUnit"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "DataUnit not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "DataUnits"
+                ],
+                "summary": "Update a DataUnit",
+                "description": "Updates an existing DataUnit and returns the updated entity",
+                "operationId": "90fca5602881c9e4bd8bb2618f0678ba",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "DataUnit ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DataUnitDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "DataUnit updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DataUnit"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "DataUnit not found"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "DataUnits"
+                ],
+                "summary": "Delete a DataUnit",
+                "description": "Soft deletes a DataUnit by its unique ID",
+                "operationId": "b7e3407cb9cc7012480b4296e9e06d89",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "DataUnit ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "DataUnit deleted successfully"
+                    },
+                    "404": {
+                        "description": "DataUnit not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/exportDataUnitsToExcel": {
+            "get": {
+                "tags": [
+                    "DataUnits"
+                ],
+                "summary": "Export DataUnit data to an Excel file",
+                "description": "Exports DataUnit data from the database to an Excel file and returns the file as a download.",
+                "operationId": "929e8d39c62248490f4d41c846a13af8",
+                "responses": {
+                    "200": {
+                        "description": "Successful export",
+                        "content": {
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {}
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/api/v1/dataUnit": {
+            "post": {
+                "tags": [
+                    "DataUnits"
+                ],
+                "summary": "Create a new DataUnit",
+                "description": "Creates a new DataUnit and returns the created entity",
+                "operationId": "4f47c142ab7aa4ce8ceb9582f3fd995f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DataUnitDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "DataUnit created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DataUnit"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -200,6 +486,21 @@
                     "message": {
                         "description": "Response message",
                         "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "DataUnitDto": {
+                "description": "DataUnitDto schema",
+                "properties": {
+                    "NameUnit": {
+                        "description": "Lokasi Kerja",
+                        "type": "string"
+                    },
+                    "Plan": {
+                        "description": "Kode Plan untuk Lokasi Kerja",
+                        "type": "string",
+                        "nullable": true
                     }
                 },
                 "type": "object"
@@ -274,6 +575,42 @@
                     }
                 },
                 "type": "object"
+            },
+            "DataUnit": {
+                "description": "DataUnit schema",
+                "properties": {
+                    "id": {
+                        "description": "Unique identifier",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "NameUnit": {
+                        "description": "Lokasi Kerja",
+                        "type": "string"
+                    },
+                    "Plan": {
+                        "description": "Kode Plan untuk Lokasi Kerja",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Update timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "deleted_at": {
+                        "description": "Deletion timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
             }
         }
     },
@@ -281,6 +618,10 @@
         {
             "name": "Audits",
             "description": "Audits"
+        },
+        {
+            "name": "DataUnits",
+            "description": "DataUnits"
         }
     ]
 }

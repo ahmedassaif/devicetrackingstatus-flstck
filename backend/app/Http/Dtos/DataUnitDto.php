@@ -2,30 +2,29 @@
 
 namespace App\Http\Dtos;
 
-use Illuminate\Http\Resources\Json\JsonResource;
-
 /**
  * @OA\Schema(
  *     schema="DataUnitDto",
  *     type="object",
  *     description="DataUnitDto schema",
  *     @OA\Property(property="NameUnit", type="string", description="Lokasi Kerja"),
- *     @OA\Property(property="Plan", type="string", description="Kode Plan untuk Lokasi Kerja")
+ *     @OA\Property(property="Plan", type="string", nullable=true, description="Kode Plan untuk Lokasi Kerja")
  * )
  */
-class DataUnitDto extends JsonResource
+class DataUnitDto
 {
+    public $NameUnit;
+    public $Plan;
+
     /**
-     * Transform the resource into an array.
+     * DataUnitDto constructor.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return array<string, mixed>
+     * @param string $NameUnit
+     * @param string|null $Plan
      */
-    public function toArray($request): array
+    public function __construct(string $NameUnit, ?string $Plan)
     {
-        return [
-            'NameUnit' => $this->NameUnit,
-            'Plan' => $this->Plan
-        ];
+        $this->NameUnit = $NameUnit;
+        $this->Plan = $Plan;
     }
 }

@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Dtos\DataUnitDto;
 use App\Queries\DataUnits\GetDataUnitsQuery;
 use App\Queries\DataUnits\GetDataUnitQuery;
 use App\Queries\DataUnits\GetDataUnitsExportToExcelQuery;
 use App\Http\Requests\DataUnits\GetDataUnitsRequest;
 use App\Queries\DataUnits\CreateDataUnitCommand;
+use App\Queries\DataUnits\UpdateDataUnitCommand;
+use App\Queries\DataUnits\DeleteDataUnitCommand;
 use OpenApi\Annotations as OA;
+use Illuminate\Http\Request;
 
 class DataUnitsController extends Controller
 {
@@ -15,22 +19,28 @@ class DataUnitsController extends Controller
     protected $getDataUnitQuery;
     protected $getDataUnitsExportToExcelQuery;
     protected $createDataUnitCommand;
+    protected $updateDataUnitCommand;
+    protected $deleteDataUnitCommand;
 
     public function __construct(
         GetDataUnitsQuery $getDataUnitsQuery,
         GetDataUnitQuery $getDataUnitQuery,
         GetDataUnitsExportToExcelQuery $getDataUnitsExportToExcelQuery,
-        CreateDataUnitCommand $createDataUnitCommand
+        CreateDataUnitCommand $createDataUnitCommand,
+        UpdateDataUnitCommand $updateDataUnitCommand,
+        DeleteDataUnitCommand $deleteDataUnitCommand
     ) {
         $this->getDataUnitsQuery = $getDataUnitsQuery;
         $this->getDataUnitQuery = $getDataUnitQuery;
         $this->getDataUnitsExportToExcelQuery = $getDataUnitsExportToExcelQuery;
         $this->createDataUnitCommand = $createDataUnitCommand;
+        $this->updateDataUnitCommand = $updateDataUnitCommand;
+        $this->deleteDataUnitCommand = $deleteDataUnitCommand;
     }
 
     /**
      * @OA\Get(
-     *     path="/api/v1/DataUnits",
+     *     path="/api/v1/dataUnits",
      *     summary="Get DataUnits",
      *     description="Returns a paginated list of DataUnits with filters",
      *     tags={"DataUnits"},
@@ -114,7 +124,7 @@ class DataUnitsController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/DataUnit/{id}",
+     *     path="/api/v1/dataUnit/{id}",
      *     summary="Get DataUnit by ID",
      *     description="Retrieve a specific DataUnit by its unique ID",
      *     tags={"DataUnits"},
@@ -167,6 +177,105 @@ class DataUnitsController extends Controller
         return response($fileResponse->content)
                         ->header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
                         ->header('Content-Disposition', 'attachment; filename="'.$fileResponse->fileName.'"'); 
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/dataUnit",
+     *     summary="Create a new DataUnit",
+     *     description="Creates a new DataUnit and returns the created entity",
+     *     tags={"DataUnits"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/DataUnitDto")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="DataUnit created successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/DataUnit")
+     *     ),
+     *     @OA\Response(response=400, description="Bad Request"),
+     *     @OA\Response(response=500, description="Internal Server Error")
+     * )
+     */
+    public function insertDataUnit(Request $request) 
+    { 
+        
+        $dataUnitDto = new DataUnitDto(
+            $request->input('NameUnit'), 
+            $request->input('Plan') 
+        );
+
+        $dataUnitResource = $this->createDataUnitCommand->handle($dataUnitDto);
+
+        return response()->json($dataUnitResource, 201);
+    }
+
+    /**
+     * @OA\Put(
+     *     path="/api/v1/dataUnit/{id}",
+     *     summary="Update a DataUnit",
+     *     description="Updates an existing DataUnit and returns the updated entity",
+     *     tags={"DataUnits"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="DataUnit ID",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/DataUnitDto")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="DataUnit updated successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/DataUnit")
+     *     ),
+     *     @OA\Response(response=404, description="DataUnit not found"),
+     *     @OA\Response(response=400, description="Bad Request"),
+     *     @OA\Response(response=500, description="Internal Server Error")
+     * )
+     */
+    public function updateDataUnit(Request $request, string $id)
+    {
+        $dataUnitDto = new DataUnitDto(
+            $request->input('NameUnit'), 
+            $request->input('Plan') 
+        );
+
+        $dataUnitResource = $this->updateDataUnitCommand->handle($dataUnitDto, $id);
+
+        return response()->json($dataUnitResource);
+    }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/v1/dataUnit/{id}",
+     *     summary="Delete a DataUnit",
+     *     description="Soft deletes a DataUnit by its unique ID",
+     *     tags={"DataUnits"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="DataUnit ID",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="DataUnit deleted successfully"
+     *     ),
+     *     @OA\Response(response=404, description="DataUnit not found"),
+     *     @OA\Response(response=500, description="Internal Server Error")
+     * )
+     */
+    public function deleteDataUnit(string $id)
+    {
+        $response = $this->deleteDataUnitCommand->handle($id);
+
+        return $response;
     }
 
 }
