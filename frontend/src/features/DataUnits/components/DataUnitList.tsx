@@ -248,7 +248,7 @@ const DataUnitList: React.FC = () => {
 
         if (response.result) {
           setNotification("Delete DataUnit successfully!");
-          navigate('/DataUnit');
+          navigate('/DataUnits');
         }
       } catch (error) {
         console.error('Failed to delete DataUnit', error);
