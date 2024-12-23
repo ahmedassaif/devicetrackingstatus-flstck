@@ -80,7 +80,9 @@ class DataUnitService {
   ): Promise<ResponseResult<GetDataUnitsDataUnit>> {
     
     try {
-      const response = await api.put(`${ApiEndpoint.V1.DataUnit.Segment}`, request);
+      const response = await api.put(`${ApiEndpoint.V1.DataUnit.Segment}/${request.id}`, request);
+
+      console.log('response: ', response);
 
       return toResponseResult<GetDataUnitsDataUnit>(response);
 

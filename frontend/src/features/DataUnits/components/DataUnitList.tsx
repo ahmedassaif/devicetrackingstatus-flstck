@@ -247,7 +247,8 @@ const DataUnitList: React.FC = () => {
         const response:ResponseResult<SuccessResponse> = await dataUnitService.deleteDataUnit(DataUnitId);
 
         if (response.result) {
-          setCurrentPage(1); // Reset to the first page
+          setNotification("Delete DataUnit successfully!");
+          navigate('/DataUnit');
         }
       } catch (error) {
         console.error('Failed to delete DataUnit', error);
@@ -381,20 +382,22 @@ const DataUnitList: React.FC = () => {
                     className="bg-white text-gray-900 hover:bg-gray-200 dark:border-gray-700 dark:bg-slate-500 dark:text-white dark:hover:bg-slate-300 dark:hover:text-gray-900"
                   >
                     <TableCell>
-                      <Button
-                        onClick={() => handleClickToEdit(DataUnit.id)}
-                        className="flex items-center space-x-2 rounded bg-blue-500 px-2 py-1 text-white hover:bg-blue-600"
-                        aria-label="Edit"
-                      >
-                        <FaPencilAlt size={18} />
-                      </Button>
-                      <Button
-                        onClick={() => handleClickToDelete(DataUnit.id)}
-                        className="flex items-center space-x-2 rounded bg-red-500 px-2 py-1 text-white hover:bg-blue-600"
-                        aria-label="Delete"
-                      >
-                        <FaTrash size={18} />
-                      </Button>
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          onClick={() => handleClickToEdit(DataUnit.id)}
+                          className="flex items-center rounded bg-blue-500 px-2 py-1 text-white hover:bg-blue-600"
+                          aria-label="Edit"
+                        >
+                          <FaPencilAlt size={18} />
+                        </Button>
+                        <Button
+                          onClick={() => handleClickToDelete(DataUnit.id)}
+                          className="flex items-center rounded bg-red-500 px-2 py-1 text-white hover:bg-blue-600"
+                          aria-label="Delete"
+                        >
+                          <FaTrash size={18} />
+                        </Button>
+                      </div>
                     </TableCell>
                     <TableCell className="whitespace-nowrap font-medium">
                       {DataUnit.NameUnit}
