@@ -2,7 +2,7 @@
 
 namespace App\Queries\DataUnits;
 
-use App\Http\Dtos\DataUnitDto;
+use App\Http\Requests\DataUnits\CreateDataUnitRequest;
 use App\Models\DataUnit;
 use App\Http\Resources\DataUnitResource;
 use Illuminate\Validation\ValidationException;
@@ -16,19 +16,19 @@ class CreateDataUnitCommand
     /**
      * Handle the creation of a DataUnit.
      *
-     * @param DataUnitDto $dataUnitDto
+     * @param CreateDataUnitRequest $createDataUnitRequest
      * @return DataUnitResource
      * @throws ValidationException
      */
-    public function handle(DataUnitDto $dataUnitDto): DataUnitResource
+    public function handle(CreateDataUnitRequest $createDataUnitRequest): DataUnitResource
     {
-        $validator = Validator::make((array) $dataUnitDto, [
+        $validator = Validator::make((array) $createDataUnitRequest, [
             'NameUnit' => 'required|string|max:255',
             'Plan' => 'nullable|string|max:255',
         ]);
 
         // Log the data for debugging purposes 
-        Log::info('Request data:', (array) $dataUnitDto);
+        Log::info('Request data:', (array) $createDataUnitRequest);
 
         if ($validator->fails()) {
             throw new ValidationException($validator);
@@ -42,8 +42,8 @@ class CreateDataUnitCommand
 
         // Create and save DataUnit with manual timestamps 
         $dataUnit = DataUnit::create([ 
-            'NameUnit' => $dataUnitDto->NameUnit, 
-            'Plan' => $dataUnitDto->Plan, 
+            'NameUnit' => $createDataUnitRequest->NameUnit, 
+            'Plan' => $createDataUnitRequest->Plan, 
             'created_at' => $jakartaNow->format('Y-m-d H:i:s'), 
             'updated_at' => $jakartaNow->format('Y-m-d H:i:s'),
         ]);

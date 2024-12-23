@@ -326,23 +326,12 @@
                 "summary": "Update a DataUnit",
                 "description": "Updates an existing DataUnit and returns the updated entity",
                 "operationId": "90fca5602881c9e4bd8bb2618f0678ba",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "DataUnit ID",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/DataUnitDto"
+                                "$ref": "#/components/schemas/UpdateDataUnitRequest"
                             }
                         }
                     }
@@ -434,7 +423,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/DataUnitDto"
+                                "$ref": "#/components/schemas/CreateDataUnitRequest"
                             }
                         }
                     }
@@ -490,9 +479,29 @@
                 },
                 "type": "object"
             },
-            "DataUnitDto": {
-                "description": "DataUnitDto schema",
+            "CreateDataUnitRequest": {
+                "description": "Create DataUnit Request schema",
                 "properties": {
+                    "NameUnit": {
+                        "description": "Lokasi Kerja",
+                        "type": "string"
+                    },
+                    "Plan": {
+                        "description": "Kode Plan untuk Lokasi Kerja",
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateDataUnitRequest": {
+                "description": "Update DataUnit Request schema",
+                "properties": {
+                    "id": {
+                        "description": "Unique identifier",
+                        "type": "string",
+                        "format": "uuid"
+                    },
                     "NameUnit": {
                         "description": "Lokasi Kerja",
                         "type": "string"

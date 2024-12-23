@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { AiOutlineHome, AiOutlineAudit } from 'react-icons/ai';
 import { HiChartPie, HiInformationCircle } from 'react-icons/hi';
 import SidebarItem from './components/SidebarItem';
+import { MdOutlineFactory } from "react-icons/md";
 
 
 interface NavMenuProps {
@@ -26,6 +27,9 @@ const NavMenu: React.FC<NavMenuProps> = ({ isOpen, isShrunk }) => {
                 throw new Error('Function not implemented.');
               } } />
               <SidebarItem href="/Audits" barName="Audits" sideBarIcon={<AiOutlineAudit />} drawerOpen={!isShrunk} isPointer={true} onClick={function (e: React.MouseEvent<HTMLAnchorElement>): void {
+                throw new Error('Function not implemented.');
+              } } /> 
+              <SidebarItem href="/DataUnits" barName="Lokasi Kerja" sideBarIcon={<MdOutlineFactory />} drawerOpen={!isShrunk} isPointer={true} onClick={function (e: React.MouseEvent<HTMLAnchorElement>): void {
                 throw new Error('Function not implemented.');
               } } /> 
             </Sidebar.ItemGroup>

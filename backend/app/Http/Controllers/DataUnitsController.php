@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Dtos\DataUnitDto;
+use App\Http\Requests\DataUnits\CreateDataUnitRequest;
+use App\Http\Requests\DataUnits\UpdateDataUnitRequest;
 use App\Queries\DataUnits\GetDataUnitsQuery;
 use App\Queries\DataUnits\GetDataUnitQuery;
 use App\Queries\DataUnits\GetDataUnitsExportToExcelQuery;
@@ -187,7 +188,7 @@ class DataUnitsController extends Controller
      *     tags={"DataUnits"},
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/DataUnitDto")
+     *         @OA\JsonContent(ref="#/components/schemas/CreateDataUnitRequest")
      *     ),
      *     @OA\Response(
      *         response=201,
@@ -201,12 +202,12 @@ class DataUnitsController extends Controller
     public function insertDataUnit(Request $request) 
     { 
         
-        $dataUnitDto = new DataUnitDto(
+        $createDataUnitRequest = new CreateDataUnitRequest(
             $request->input('NameUnit'), 
             $request->input('Plan') 
         );
 
-        $dataUnitResource = $this->createDataUnitCommand->handle($dataUnitDto);
+        $dataUnitResource = $this->createDataUnitCommand->handle($createDataUnitRequest);
 
         return response()->json($dataUnitResource, 201);
     }
@@ -217,16 +218,9 @@ class DataUnitsController extends Controller
      *     summary="Update a DataUnit",
      *     description="Updates an existing DataUnit and returns the updated entity",
      *     tags={"DataUnits"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         description="DataUnit ID",
-     *         @OA\Schema(type="string")
-     *     ),
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/DataUnitDto")
+     *         @OA\JsonContent(ref="#/components/schemas/UpdateDataUnitRequest")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -240,12 +234,13 @@ class DataUnitsController extends Controller
      */
     public function updateDataUnit(Request $request, string $id)
     {
-        $dataUnitDto = new DataUnitDto(
-            $request->input('NameUnit'), 
-            $request->input('Plan') 
+        $updateDataUnitRequest = new UpdateDataUnitRequest(
+            id: $request->input('id'),
+            NameUnit: $request->input('NameUnit'), 
+            Plan: $request->input('Plan') 
         );
 
-        $dataUnitResource = $this->updateDataUnitCommand->handle($dataUnitDto, $id);
+        $dataUnitResource = $this->updateDataUnitCommand->handle($updateDataUnitRequest);
 
         return response()->json($dataUnitResource);
     }

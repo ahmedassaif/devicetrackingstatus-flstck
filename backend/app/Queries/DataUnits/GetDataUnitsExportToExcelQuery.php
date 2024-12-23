@@ -58,7 +58,7 @@ class GetDataUnitsExportToExcelQuery
             }
 
             $writer = new Xlsx($spreadsheet);
-            $fileName = "DataUnitData_" . $now->format('Y-m-d_H-i-s') . ".xlsx";
+            $fileName = "Data Lokasi Kerja " . $now->format('Y-m-d_H-i-s') . ".xlsx";
 
             // Save to memory
             $stream = fopen('php://memory', 'w+');

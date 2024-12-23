@@ -11,6 +11,9 @@ import { AddQueryParameters } from '../utils/AddQueryParameters';
 import { toResponseResult } from '../utils/RestResponseExtensions';
 import { HandleError } from '../utils/HandleError';
 import { log } from 'console';
+import { CreateDataUnitRequest } from './Requests/CreateDataUnitRequest';
+import { UpdateDataUnitRequest } from './Requests/UpdateDataUnitRequest';
+import { SuccessResponse } from '../Responses/SuccessResponse';
 
 class DataUnitService {
 
@@ -55,6 +58,45 @@ class DataUnitService {
     } catch (error) {
       console.error('Error exporting DataUnits', error); 
       throw error;
+    }
+  }
+
+  public async createDataUnit(
+    request: CreateDataUnitRequest
+  ): Promise<ResponseResult<GetDataUnitsDataUnit>> {
+    
+    try {
+      const response = await api.post(`${ApiEndpoint.V1.DataUnit.Segment}`, request);
+
+      return toResponseResult<GetDataUnitsDataUnit>(response);
+
+    } catch (error) {
+      return HandleError<GetDataUnitsDataUnit>(error);
+    }
+  }
+
+  public async updateDataUnit(
+    request: UpdateDataUnitRequest
+  ): Promise<ResponseResult<GetDataUnitsDataUnit>> {
+    
+    try {
+      const response = await api.put(`${ApiEndpoint.V1.DataUnit.Segment}`, request);
+
+      return toResponseResult<GetDataUnitsDataUnit>(response);
+
+    } catch (error) {
+      return HandleError<GetDataUnitsDataUnit>(error);
+    }
+  }
+
+  public async deleteDataUnit(id: string): Promise<ResponseResult<SuccessResponse>> {
+    try {
+      const response = await api.delete(`${ApiEndpoint.V1.DataUnit.Segment}/${id}`);
+
+      return toResponseResult<SuccessResponse>(response);
+
+    } catch (error) {
+      return HandleError<SuccessResponse>(error);
     }
   }
 
