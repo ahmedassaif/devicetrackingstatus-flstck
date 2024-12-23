@@ -9,6 +9,7 @@ import { DataUnitDto } from '../../../services/DataUnits/Requests/DataUnitDto';
 import { UpdateDataUnitRequest } from '../../../services/DataUnits/Requests/UpdateDataUnitRequest';
 import { CreateDataUnitRequest } from '../../../services/DataUnits/Requests/CreateDataUnitRequest';
 import axios, { CancelTokenSource } from 'axios';
+import { useSnackbar } from 'notistack';
 
 const DataUnitForm: React.FC = () => {  
   const { DataUnitId } = useParams();
@@ -20,6 +21,7 @@ const DataUnitForm: React.FC = () => {
     Plan: ''});
     
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     const fetchDataUnitDetail = async () => {
@@ -109,9 +111,11 @@ const DataUnitForm: React.FC = () => {
 
           if (response.result) {
             setModel(response.result);
+            enqueueSnackbar("Update Data successfully!", { variant: "success" });
             navigate(`/DataUnit/Form/${response.result.id}`); 
           } else {
             setError(response.error?.detail || 'Failed to Update Data.');
+            enqueueSnackbar("Failed to Update Data!", { variant: "error" });
           }
 
         } catch (err: any) {
@@ -134,6 +138,7 @@ const DataUnitForm: React.FC = () => {
 
           if (response.result) {
             setModel(response.result);
+            enqueueSnackbar("Create Data successfully!", { variant: "success" });
             navigate(`/DataUnit/Form/${response.result.id}`);  
           } else {
             setError(response.error?.detail || 'Failed to Create Data.');
@@ -185,7 +190,7 @@ const DataUnitForm: React.FC = () => {
                   <Button type='button' onClick={saveData} className="inline-flex items-center rounded-lg bg-green-700 px-4 py-2 text-center text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
                         Save
                   </Button>
-                  <Button onClick={backToIndex} className="inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-center text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
+                  <Button onClick={backToIndex} className="inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-center text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600  dark:bg-gray-800 dark:text-white dark:hover:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
                         Back
                   </Button>
                 </div>

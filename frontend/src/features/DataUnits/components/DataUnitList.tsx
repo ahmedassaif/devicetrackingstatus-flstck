@@ -13,6 +13,9 @@ import { FaFileExcel, FaPencilAlt, FaSort, FaSortAlphaDown, FaSortAlphaUp, FaTra
 import { IoMdCloseCircle } from "react-icons/io";
 import { Console } from 'console';
 import { SuccessResponse } from '../../../services/Responses/SuccessResponse';
+import { DialogDelete } from "../../../components/DialogDelete";
+import { SnackbarProvider, useSnackbar } from 'notistack';
+import NotificationExtension from "../../../Extensions/NotificationExtension";
 
 const DataUnitList: React.FC = () => {
 
@@ -33,6 +36,10 @@ const DataUnitList: React.FC = () => {
   const navigate = useNavigate();
   const [sortingButtonForNameUnit, setSortingButtonForNameUnit] = useState<JSX.Element>(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("NameUnit", "asc", e)} />);
   const [sortingButtonForPlan, setSortingButtonForPlan] = useState<JSX.Element>(<FaSort className='cursor-pointer' onClick={(e) => getSortFromField("Plan", "asc", e)} />);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [currentId, setCurrentId] = useState<string | null>(null);
 
 
   function getSortFromField(nameField: string, sortOrderBy: string, e: { preventDefault: () => void }){
@@ -240,21 +247,43 @@ const DataUnitList: React.FC = () => {
     navigate(`/DataUnit/Form/${DataUnitId}`);  // Navigate to the detail page
   };
 
-  const handleClickToDelete = async (DataUnitId: string) => {
-    if (window.confirm('Are you sure you want to delete this item?')) {
-      try {
-        const dataUnitService = new DataUnitService();
-        const response:ResponseResult<SuccessResponse> = await dataUnitService.deleteDataUnit(DataUnitId);
+  // const handleClickToDelete = async (DataUnitId: string) => {
+  //   if (window.confirm('Are you sure you want to delete this item?')) {
+  //     try {
+  //       const dataUnitService = new DataUnitService();
+  //       const response:ResponseResult<SuccessResponse> = await dataUnitService.deleteDataUnit(DataUnitId);
 
-        if (response.result) {
-          setNotification("Delete DataUnit successfully!");
-          window.location.reload();
-        }
-      } catch (error) {
-        console.error('Failed to delete DataUnit', error);
+  //       if (response.result) {
+  //         setNotification("Delete DataUnit successfully!");
+  //         window.location.reload();
+  //       }
+  //     } catch (error) {
+  //       console.error('Failed to delete DataUnit', error);
+  //     }
+  //   }
+  // }
+
+  const handleClickToDelete = (DataUnitId: string) => {
+    setCurrentId(DataUnitId);
+    setDialogOpen(true);
+  };
+
+  const cancelDelete = () => { setDialogOpen(false); };
+
+  const deleteItem = async (id: string) => {
+    try {
+      const dataUnitService = new DataUnitService();
+      const response: ResponseResult<SuccessResponse> = await dataUnitService.deleteDataUnit(id);
+
+      if (response.result) {
+        enqueueSnackbar("Delete DataUnit successfully!", { variant: "success" });
+        window.location.reload();
       }
+    } catch (error) {
+      console.error('Failed to delete DataUnit', error);
     }
-  }
+    setDialogOpen(false);
+  };
   
   const handleExport = async () => {
     
@@ -383,20 +412,23 @@ const DataUnitList: React.FC = () => {
                   >
                     <TableCell>
                       <div className="flex items-center space-x-2">
-                        <Button
+                        <button
                           onClick={() => handleClickToEdit(DataUnit.id)}
                           className="flex items-center rounded bg-blue-500 px-2 py-1 text-white hover:bg-blue-600"
                           aria-label="Edit"
                         >
                           <FaPencilAlt size={18} />
-                        </Button>
-                        <Button
-                          onClick={() => handleClickToDelete(DataUnit.id)}
-                          className="flex items-center rounded bg-red-500 px-2 py-1 text-white hover:bg-blue-600"
-                          aria-label="Delete"
-                        >
-                          <FaTrash size={18} />
-                        </Button>
+                        </button>
+                        <button
+                            onClick={() => handleClickToDelete(DataUnit.id)}
+                            className="flex items-center rounded bg-red-500 px-2 py-1 text-white hover:bg-red-600"
+                            aria-label="Delete"
+                          >
+                            <FaTrash size={18} />
+                          </button>
+                          {dialogOpen && currentId && (
+                            <DialogDelete id={currentId} onDelete={deleteItem} onCancel={cancelDelete} />
+                          )}
                       </div>
                     </TableCell>
                     <TableCell className="whitespace-nowrap font-medium">
