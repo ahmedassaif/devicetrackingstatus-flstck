@@ -83,10 +83,12 @@ const AuditDetail: React.FC = () => {
         </p>
       </div>
 
-      <section className="flex items-center bg-gray-50 dark:bg-gray-900">
-        <div className="mx-auto w-full max-w-screen-xl">
-          <div className="relative bg-white shadow-md sm:rounded-lg dark:bg-gray-800">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <section className="flex items-center justify-center py-4">
+        <div className="mx-auto w-full">
+          {/* <div className="relative bg-white shadow-md sm:rounded-lg dark:bg-gray-800">
+            
+          </div> */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="rounded bg-gray-100 p-4 shadow">
                 <h2 className="font-bold">Table Name</h2>
                 <p>{audit.auditable_type || 'N/A'}</p>
@@ -120,7 +122,6 @@ const AuditDetail: React.FC = () => {
                 </pre>
               </div>
             </div>
-          </div>
         </div>
       </section>
 
