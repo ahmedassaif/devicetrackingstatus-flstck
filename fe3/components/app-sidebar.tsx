@@ -10,6 +10,7 @@ import {
   GalleryVerticalEnd,
   Map,
   MonitorCheck,
+  PackageCheck,
   PieChart,
   Settings2,
   SquareTerminal,
@@ -143,9 +144,9 @@ const data = {
   ],
   projects: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
+      name: "Audit",
+      url: "audits",
+      icon: PackageCheck,
     },
     {
       name: "Sales & Marketing",

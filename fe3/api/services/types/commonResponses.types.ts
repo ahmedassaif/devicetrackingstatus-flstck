@@ -19,6 +19,7 @@ export interface ResponseResult<T> {
 }
 
 export interface PaginatedListResponse<T> extends Response {
+    totalItems: number;
     items: T[];
     pageIndex: number;
     totalPages: number;
@@ -80,3 +81,15 @@ export async function toResponseResult<T>(
 
   return responseResult;
 }
+
+export function toTableData<T>(result: PaginatedListResponse<T>): TableData<T> {
+  return {
+    totalItems: result.totalCount,
+    items: result.items,
+  };
+}
+
+interface TableData<T> {
+    totalItems: number;
+    items: T[];
+  }
