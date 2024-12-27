@@ -9,8 +9,9 @@ import { PaginatedListResponse, ResponseResult, toTableData } from "@/api/servic
 import { columns } from "./columns";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { CircleX, RotateCw, SearchIcon, SheetIcon } from "lucide-react";
+import { CircleX, Eye, RotateCw, SearchIcon, SheetIcon } from "lucide-react";
 import loadingBackground from "@/public/images/beams.jpg";
+import { useRouter } from "next/navigation";
 
 const MainTable: React.FC = () => {
     const [audits, setAudits] = useState<GetAuditsAudit[]>([]);
@@ -26,6 +27,13 @@ const MainTable: React.FC = () => {
     const [hasSearched, setHasSearched] = useState<boolean>(false);
     const [rows, setRows] = useState<number>(10);
     const [loadingDownloadFile, setLoadingDownloadFile] = useState<boolean>(false);
+
+    const router = useRouter(); // Move useRouter here
+
+    // Define handleDetail inside the component
+    const handleDetail = (id: number): void => {
+        router.push(`/audits/detail/${id}`);
+    };
 
      // Memoize handleAuditResponse to avoid unnecessary re-renders
     const handleAuditResponse = useCallback(
@@ -235,7 +243,29 @@ const MainTable: React.FC = () => {
                     </section>
                     <div className="container mx-auto overflow-x-auto">
                         <DataTable
-                            columns={columns}
+                            columns={columns.map(column => {
+                                if (column.header === "Action") {
+                                    return {
+                                        ...column,
+                                        cell: ({ row }: { row: { original: GetAuditsAudit } }) => {
+                                            const audit = row.original;
+                                            return (
+                                                <div className="flex space-x-2">
+                                                    <Button
+                                                        onClick={() => handleDetail(audit.id)} // Use handleDetail here
+                                                        variant="outline" 
+                                                        size="icon"
+                                                        title="View details"
+                                                    >
+                                                         <Eye />
+                                                    </Button>
+                                                </div>
+                                            );
+                                        },
+                                    };
+                                }
+                                return column;
+                            })}
                             data={audits}
                             onSort={handleSort}
                             currentPage={currentPage}
