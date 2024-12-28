@@ -1,7 +1,7 @@
 "use client"
 import React, { useCallback, useEffect, useState } from "react";
 import { GetAuditsAudit } from "@/api/services/types/audit.types";
-import { DataTable } from "./data-table"; // Import your DataTable component
+import { DataTable } from "@/components/data-table"; // Import your DataTable component
 import { AuditService } from "@/api/services/spesific-services/audit.service"; // Import the AuditService
 import { PaginatedListRequest } from "@/api/services/types/commonRequest.types";
 import axios, { CancelTokenSource } from "axios";

@@ -1,11 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
     ColumnDef,
     flexRender,
     getCoreRowModel,
+    getSortedRowModel,
     useReactTable,
+    SortingState,
 } from "@tanstack/react-table";
 
 import {
@@ -25,13 +27,12 @@ import {
     PaginationLink,
     PaginationNext,
     PaginationPrevious,
-  } from "@/components/ui/pagination"
-  
+} from "@/components/ui/pagination";
+import { ChevronDown, ChevronUp, ChevronsUpDown } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
-    onSort: (field: string) => void;
     currentPage: number;
     totalPages: number;
     onPageChange: (page: number) => void;
@@ -43,7 +44,6 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
     columns,
     data,
-    onSort,
     currentPage,
     totalPages,
     onPageChange,
@@ -51,10 +51,17 @@ export function DataTable<TData, TValue>({
     rows,
     onPageSizeChange,
 }: DataTableProps<TData, TValue>) {
+    const [sorting, setSorting] = useState<SortingState>([]);
+
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        onSortingChange: setSorting,
+        state: {
+            sorting,
+        },
     });
 
     const startIndex = (currentPage - 1) * pageSize + 1;
@@ -69,18 +76,28 @@ export function DataTable<TData, TValue>({
                             {headerGroup.headers.map((header) => (
                                 <TableHead key={header.id}>
                                     <div
-                                        onClick={() => onSort(header.column.id)}
-                                        className="cursor-pointer"
+                                        onClick={() => {
+                                            if (header.column.columnDef.header !== "Actions") {
+                                                header.column.toggleSorting();
+                                            }
+                                        }}
+                                        className="cursor-pointer flex items-center"
                                     >
                                         {flexRender(
                                             header.column.columnDef.header,
                                             header.getContext()
                                         )}
-                                        {header.column.getIsSorted() === "asc"
-                                            ? " 🔼"
-                                            : header.column.getIsSorted() === "desc"
-                                            ? " 🔽"
-                                            : null}
+                                        {header.column.columnDef.header !== "Actions" && (
+                                            <>
+                                                {header.column.getIsSorted() === "asc" ? (
+                                                    <ChevronUp />
+                                                ) : header.column.getIsSorted() === "desc" ? (
+                                                    <ChevronDown />
+                                                ) : (
+                                                    <ChevronsUpDown />
+                                                )}
+                                            </>
+                                        )}
                                     </div>
                                 </TableHead>
                             ))}
@@ -118,39 +135,24 @@ export function DataTable<TData, TValue>({
                 >
                     <option value={10}>10</option>
                     <option value={20}>20</option>
-                    <option value={50}>50</option>
+                    <option value={30}>30</option>
                 </select>
                 <p className="p-2">
                     Showing {startIndex} to {endIndex} of {rows} Entries
                 </p>
                 <div>
-                    {/* <button
-                        onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-                        disabled={currentPage === 1}
-                    >
-                        Previous
-                    </button>
-                    <span className="mx-2">
-                        Page {currentPage} of {totalPages}
-                    </span>
-                    <button
-                        onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
-                        disabled={currentPage === totalPages}
-                    >
-                        Next
-                    </button> */}
                     <Pagination>
                         <PaginationContent>
                             <PaginationItem>
                                 <PaginationPrevious
                                     onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-                                    className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                                    className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
                                 />
                             </PaginationItem>
                             {/* Render page numbers dynamically */}
                             {Array.from({ length: totalPages }, (_, index) => (
                                 <PaginationItem key={index + 1}>
-                                    <PaginationLink 
+                                    <PaginationLink
                                         onClick={() => onPageChange(index + 1)}
                                         isActive={currentPage === index + 1}
                                     >
@@ -166,12 +168,11 @@ export function DataTable<TData, TValue>({
                             <PaginationItem>
                                 <PaginationNext
                                     onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
-                                    className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
                                 />
                             </PaginationItem>
                         </PaginationContent>
                     </Pagination>
-
                 </div>
             </div>
         </div>
