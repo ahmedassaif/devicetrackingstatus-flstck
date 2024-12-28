@@ -43,6 +43,10 @@ class GetDataUnitsQuery
         if ($sortField) {
             $query->orderBy($sortField, $sortDirection ?? 'asc');
         }
+        else
+        {
+            $query->orderBy('updated_at', 'desc');
+        }
 
         // Log the SQL query 
         // Log::info('SQL Query:', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);

@@ -17,7 +17,7 @@ class GetDataUnitsExportToExcelQuery
             $now = Carbon::now();
 
             // Fetch all DataUnit records where deleted_at is null
-            $data = DataUnit::whereNull('deleted_at')->orderBy('created_at', 'desc')->get();
+            $data = DataUnit::whereNull('deleted_at')->orderBy('updated_at', 'desc')->get();
 
             // Create new Spreadsheet object
             $spreadsheet = new Spreadsheet();

@@ -1,14 +1,3 @@
 {
-  "extends": [
-    "react-app",
-    "react-app/jest",
-    "plugin:tailwindcss/recommended",
-    "prettier"
-  ],
-  "settings": {
-    "tailwindcss": {
-      "callees": ["twMerge", "createTheme"],
-      "classRegex": "^(class(Name)|theme)?$"
-    }
-  }
+  "extends": ["next/core-web-vitals", "next/typescript"]
 }

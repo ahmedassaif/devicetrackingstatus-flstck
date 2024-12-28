@@ -16,7 +16,7 @@ class GetAuditsExportToExcelQuery
         try {
             $now = Carbon::now();
 
-            $data = Audit::orderBy('created_at', 'desc')->get();
+            $data = Audit::orderBy('updated_at', 'desc')->get();
 
             // Create new Spreadsheet object
             $spreadsheet = new Spreadsheet();
