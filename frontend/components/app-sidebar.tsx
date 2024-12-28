@@ -146,12 +146,12 @@ const data = {
   projects: [
     {
       name: "Audit",
-      url: "audits",
+      url: "/audits",
       icon: PackageCheck,
     },
     {
       name: "Data Unit",
-      url: "dataunits",
+      url: "/dataunits",
       icon: Factory,
     },
   ],

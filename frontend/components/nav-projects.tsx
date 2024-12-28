@@ -1,5 +1,5 @@
-"use client"
-
+"use client" 
+import { useRouter } from 'next/navigation';
 import {
   Folder,
   Forward,
@@ -34,7 +34,12 @@ export function NavProjects({
     icon: LucideIcon
   }[]
 }) {
-  const { isMobile } = useSidebar()
+  const { isMobile } = useSidebar();
+  const router = useRouter();
+
+  const handleNavigation = (url: string) => { 
+    router.push(url); 
+  }
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -43,10 +48,14 @@ export function NavProjects({
         {projects.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
-              <a href={item.url}>
+              {/* <a href={item.url}>
                 <item.icon />
                 <span>{item.name}</span>
-              </a>
+              </a> */}
+              <button onClick={() => handleNavigation(item.url)}> 
+                <item.icon /> 
+                <span>{item.name}</span> 
+              </button>
             </SidebarMenuButton>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
