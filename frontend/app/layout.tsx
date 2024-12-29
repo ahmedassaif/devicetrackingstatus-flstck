@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -7,6 +8,7 @@ import { Separator } from "@radix-ui/react-separator";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "@/components/ui/breadcrumb";
 import { Toaster } from "@/components/ui/sonner";
 import { CircleAlert, CircleCheck, CircleX, Info, RotateCw } from "lucide-react";
+import NextBreadcrumb from '@/components/NextBreadcrumb'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -46,7 +48,7 @@ export default function RootLayout({
               <div className="flex items-center gap-2 px-4">
                 <SidebarTrigger className="-ml-1" />
                 <Separator orientation="vertical" className="mr-2 h-4" color="gray-400" />
-                <Breadcrumb>
+                {/* <Breadcrumb>
                   <BreadcrumbList>
                     <BreadcrumbItem className="hidden md:block">
                       <BreadcrumbLink href="#">
@@ -58,7 +60,15 @@ export default function RootLayout({
                       <BreadcrumbPage>Data Fetching</BreadcrumbPage>
                     </BreadcrumbItem>
                   </BreadcrumbList>
-                </Breadcrumb>
+                </Breadcrumb> */}
+                <NextBreadcrumb
+                  homeElement={'Home'}
+                  separator={<span> {'>'} </span>}
+                  activeClasses='text-amber-500'
+                  containerClasses='flex py-5' 
+                  listClasses='hover:underline mx-2 font-bold'
+                  capitalizeLinks
+                />
               </div>
             </header>
             <div className="flex flex-1 flex-col mt-16 overflow-y-auto gap-4 p-4 pt-0">
