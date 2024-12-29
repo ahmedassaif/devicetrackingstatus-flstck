@@ -208,9 +208,9 @@ const MainTable: React.FC = () => {
                     icon: <CircleX color="red" />,
                     duration: 5000
                 });
-        }
-        finally{
-        setLoadingDownloadFile(false);
+                
+        } finally {
+            setLoadingDownloadFile(false);
         } 
     };
 

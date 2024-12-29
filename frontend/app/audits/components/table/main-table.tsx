@@ -10,7 +10,7 @@ import { PaginatedListResponse, ResponseResult, toTableData } from "@/api/servic
 import { columns } from "./columns";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { CircleX, Eye, RotateCw, SearchIcon, SheetIcon } from "lucide-react";
+import { CircleCheck, CircleX, Eye, RotateCw, SearchIcon, SheetIcon } from "lucide-react";
 import loadingBackground from "@/public/images/beams.jpg";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -169,14 +169,40 @@ const MainTable: React.FC = () => {
             setLoadingDownloadFile(true);
             
             try {
-            const auditService = new AuditService(); 
-            await auditService.exportAuditsToExcel(); 
+                const auditService = new AuditService(); 
+                const response = await auditService.exportAuditsToExcel(); 
+
+                if (response?.status === 200) {
+                    toast.success("Success", {
+                        description: "Data Audit berhasil diexport!",
+                        position: "top-right",
+                        icon: <CircleCheck color="green" />,
+                        duration: 3000
+                    });
+                    
+                }
+                else
+                {
+                    const errorText = response?.data?.error || "Failed to Export Audits";
+                    toast.error("Failed", {
+                        description: errorText,
+                        position: "top-right",
+                        icon: <CircleX color="red" />,
+                        duration: 5000
+                    });
+                    return;
+                }
             } 
             catch (error) 
-            { 
-            console.error('Failed to export audits', error); 
-            }
-            finally{
+            {
+                const errorMessage = error instanceof Error ? error.message : "Failed to handle Export Audits";
+                            toast.error("Failed", {
+                                description: errorMessage,
+                                position: "top-right",
+                                icon: <CircleX color="red" />,
+                                duration: 5000
+                            });
+            } finally {
             setLoadingDownloadFile(false);
             } 
         };

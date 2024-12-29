@@ -9,6 +9,7 @@ import {
 
 import { FileDownloadHelper } from "@/api/utils/FileDownloadHelper";
 import { AddQueryParameters } from "@/api/utils/AddQueryParameters";
+import { AxiosResponse } from "axios";
 
 export class AuditService extends BaseApiService {
   public async getAudits(
@@ -28,11 +29,17 @@ export class AuditService extends BaseApiService {
     return toResponseResult<GetAuditsAudit>(response);
   }
 
-  public async exportAuditsToExcel(): Promise<void> {
+  public async exportAuditsToExcel(): Promise<AxiosResponse | undefined> {
     const response = await this.api.get(`${ApiEndpoint.V1.ExportToExcel.Segment}`, {
       responseType: "blob",
     });
 
+    if (response.status !== 200) {
+      return undefined;
+    }
+
     FileDownloadHelper.downloadExcelFile(response);
+
+    return response;
   }
 }
