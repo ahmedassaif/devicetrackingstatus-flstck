@@ -106,8 +106,6 @@ const MainTable: React.FC = () => {
                 const errorMessage = error instanceof Error ? error.message : "Failed to handle Get DataUnits";
                 toast.error("Failed", {
                     description: errorMessage,
-                    position: "top-right",
-                    icon: <CircleX color="red" />,
                 });
             } finally {
                 setLoading(false);
@@ -181,9 +179,6 @@ const MainTable: React.FC = () => {
             if (response?.status === 200) {
                 toast.success("Success", {
                     description: "Data Lokasi Kerja berhasil diexport!",
-                    position: "top-right",
-                    icon: <CircleCheck color="green" />,
-                    duration: 3000
                 });
                 
             }
@@ -192,9 +187,6 @@ const MainTable: React.FC = () => {
                 const errorText = response?.data?.error || "Failed to Export DataUnits";
                 toast.error("Failed", {
                     description: errorText,
-                    position: "top-right",
-                    icon: <CircleX color="red" />,
-                    duration: 5000
                 });
                 return;
             }
@@ -204,9 +196,6 @@ const MainTable: React.FC = () => {
             const errorMessage = error instanceof Error ? error.message : "Failed to handle Export DataUnits";
                 toast.error("Failed", {
                     description: errorMessage,
-                    position: "top-right",
-                    icon: <CircleX color="red" />,
-                    duration: 5000
                 });
                 
         } finally {
@@ -223,25 +212,20 @@ const MainTable: React.FC = () => {
                 setDialogOpen(false); // Close the dialog
                 toast.success("Success", {
                     description: "Data Lokasi Kerja berhasil dihapus!",
-                    position: "top-right",
-                    icon: <CircleCheck color="green" />,
                 });
-
-                router.push('/dataunits');   
+                window.location.reload();
+                router.push('/dataunits');
+                setTotalPages(1);   
             }
             else{
                 toast.error("Failed", {
                     description: response.error?.detail || "Failed to delete DataUnit",
-                    position: "top-right",
-                    icon: <CircleX color="red" />,
                 });
             }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "Failed to handle delete DataUnit";
             toast.error("Failed", {
                 description: errorMessage,
-                position: "top-right",
-                icon: <CircleX color="red" />,
             });
         }
     };

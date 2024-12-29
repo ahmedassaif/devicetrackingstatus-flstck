@@ -5,7 +5,7 @@ import { AuditService } from "@/api/services/spesific-services/audit.service";
 import { GetAuditsAudit } from "@/api/services/types/audit.types";
 import { ResponseResult } from "@/api/services/types/commonResponses.types";
 import { Button } from "@/components/ui/button";
-import { CircleX, RotateCw } from "lucide-react";
+import { RotateCw } from "lucide-react";
 import Image from "next/image";
 import loadingBackground from "@/public/images/beams.jpg";
 import { useRouter } from "next/navigation";
@@ -36,9 +36,6 @@ const AuditDetail: React.FC<AuditDetailProps> = ({ auditId }) => {
         if (!auditId) {
           toast.error("Failed", {
             description: "Audit ID is missing",
-            position: "top-right",  
-            icon: <CircleX color="red" />,
-            duration: 5000
             });
           
           return;
@@ -53,16 +50,12 @@ const AuditDetail: React.FC<AuditDetailProps> = ({ auditId }) => {
           } else {
             toast.error("Failed", {
               description: response.error?.detail || "Failed to fetch Audit detail",
-              position: "top-right",
-              icon: <CircleX color="red" />,
           });
           }
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : "Failed to handle delete DataUnit";
           toast.error("Failed", {
               description: errorMessage,
-              position: "top-right",
-              icon: <CircleX color="red" />,
           });
       } finally {
           setLoading(false);

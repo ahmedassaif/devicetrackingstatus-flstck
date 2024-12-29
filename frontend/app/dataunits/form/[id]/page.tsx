@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import { useEffect, useState } from 'react';
@@ -50,17 +51,12 @@ export default function DataUnitEditPage({ params }: Props) {
                 } else {
                     toast.error("Failed", {
                                         description: response.error?.detail || "Failed to fetch DataUnit detail",
-                                        position: "top-right",
-                                        icon: <CircleX color="red" />,
                                     });
                 }
             } catch (error: unknown) { 
                 const errorMessage = error instanceof Error ? error.message : "Failed to handle Create DataUnits";
                                 toast.error("Failed", {
                                     description: errorMessage,
-                                    position: "top-right",
-                                    icon: <CircleX color="red" />,
-                                    duration: 5000
                                 });
             } finally {
                 setLoading(false);
@@ -102,17 +98,11 @@ export default function DataUnitEditPage({ params }: Props) {
         if (response.result) {
             toast.success("Success", {
                 description: "Data Lokasi Kerja berhasil diubah!",
-                position: "top-right",
-                icon: <CircleCheck color="green" />,
-                duration: 3000
             });
         } else {
             const errorText = response?.error?.detail || "Failed to Update DataUnits";
                     toast.error("Failed", {
                         description: errorText,
-                        position: "top-right",
-                        icon: <CircleX color="red" />,
-                        duration: 5000
                     });
                     return;
         }
@@ -120,9 +110,6 @@ export default function DataUnitEditPage({ params }: Props) {
             const errorMessage = error instanceof Error ? error.message : "Failed to handle Create DataUnits";
                             toast.error("Failed", {
                                 description: errorMessage,
-                                position: "top-right",
-                                icon: <CircleX color="red" />,
-                                duration: 5000
                             });
         } finally {
             setLoading(false);

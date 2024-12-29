@@ -6,6 +6,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { Separator } from "@radix-ui/react-separator";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "@/components/ui/breadcrumb";
 import { Toaster } from "@/components/ui/sonner";
+import { CircleAlert, CircleCheck, CircleX, Info, RotateCw } from "lucide-react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -76,9 +77,17 @@ export default function RootLayout({
                     warning: 'bg-yellow-400',
                     info: 'bg-blue-400',
                   },
-                  duration: 3000,
                   closeButton: true,
                 }}
+                icons={{
+                  success: <CircleCheck color="green" />,
+                  info: <Info color="blue" />,
+                  warning: <CircleAlert />,
+                  error: <CircleX />,
+                  loading: <RotateCw className="animate-spin" />,
+                }}
+                duration={3000}
+                position="top-right"
               />
             </div>
           </SidebarInset>

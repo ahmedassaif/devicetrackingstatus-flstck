@@ -98,8 +98,6 @@ const MainTable: React.FC = () => {
             const errorMessage = error instanceof Error ? error.message : "Failed to handle load Audits";
             toast.error("Failed", {
                 description: errorMessage,
-                position: "top-right",
-                icon: <CircleX color="red" />,
             });
         } finally {
             setLoading(false);
@@ -175,9 +173,6 @@ const MainTable: React.FC = () => {
                 if (response?.status === 200) {
                     toast.success("Success", {
                         description: "Data Audit berhasil diexport!",
-                        position: "top-right",
-                        icon: <CircleCheck color="green" />,
-                        duration: 3000
                     });
                     
                 }
@@ -186,9 +181,6 @@ const MainTable: React.FC = () => {
                     const errorText = response?.data?.error || "Failed to Export Audits";
                     toast.error("Failed", {
                         description: errorText,
-                        position: "top-right",
-                        icon: <CircleX color="red" />,
-                        duration: 5000
                     });
                     return;
                 }
@@ -198,9 +190,6 @@ const MainTable: React.FC = () => {
                 const errorMessage = error instanceof Error ? error.message : "Failed to handle Export Audits";
                             toast.error("Failed", {
                                 description: errorMessage,
-                                position: "top-right",
-                                icon: <CircleX color="red" />,
-                                duration: 5000
                             });
             } finally {
             setLoadingDownloadFile(false);
