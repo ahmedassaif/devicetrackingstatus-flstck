@@ -1,10 +1,9 @@
 <?php
-namespace App\Queries\DataUnits;
+namespace App\Http\Queries\DataUnits;
 
 use App\Http\Requests\DataUnits\GetDataUnitsRequest;
 use Illuminate\Support\Facades\DB;
 use App\Http\Responses\PaginatedListResponse;
-use Illuminate\Support\Facades\Log;
 use App\Http\Requests\DataUnits\DataUnitOptions;
 
 class GetDataUnitsQuery

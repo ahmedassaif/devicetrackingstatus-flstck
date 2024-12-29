@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Queries\Audits;
+namespace App\Http\Queries\Audits;
 
 use App\Models\Audit;
 use App\Http\Responses\FileResponse;

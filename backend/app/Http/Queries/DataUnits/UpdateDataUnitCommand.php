@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Queries\DataUnits;
+namespace App\Http\Queries\DataUnits;
 
 use App\Http\Requests\DataUnits\UpdateDataUnitRequest;
 use App\Http\Resources\DataUnitResource;

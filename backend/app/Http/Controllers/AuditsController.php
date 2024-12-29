@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Queries\Audits\GetAuditsQuery;
-use App\Queries\Audits\GetAuditQuery;
-use App\Queries\Audits\GetAuditsExportToExcelQuery;
+use App\Http\Queries\Audits\GetAuditsQuery;
+use App\Http\Queries\Audits\GetAuditQuery;
+use App\Http\Queries\Audits\GetAuditsExportToExcelQuery;
 use App\Http\Requests\Audits\GetAuditsRequest;
 use OpenApi\Annotations as OA;
 

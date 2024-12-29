@@ -447,6 +447,31 @@
                     }
                 }
             }
+        },
+        "/api/v1/getLookupAllDataUnits": {
+            "get": {
+                "tags": [
+                    "DataUnits"
+                ],
+                "summary": "Get all DataUnits",
+                "description": "Returns a list of all DataUnits",
+                "operationId": "fbaaae0f6fafbdc10dc908e4652364a9",
+                "responses": {
+                    "200": {
+                        "description": "DataUnits retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DataUnitDto"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -475,6 +500,26 @@
                     "message": {
                         "description": "Response message",
                         "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "DataUnitDto": {
+                "description": "DataUnitDto schema",
+                "properties": {
+                    "id": {
+                        "description": "Unique identifier",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "NameUnit": {
+                        "description": "Lokasi Kerja",
+                        "type": "string"
+                    },
+                    "Plan": {
+                        "description": "Kode Plan untuk Lokasi Kerja",
+                        "type": "string",
+                        "nullable": true
                     }
                 },
                 "type": "object"

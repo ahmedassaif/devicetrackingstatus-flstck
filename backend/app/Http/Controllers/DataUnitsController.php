@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\DataUnits\CreateDataUnitRequest;
 use App\Http\Requests\DataUnits\UpdateDataUnitRequest;
-use App\Queries\DataUnits\GetDataUnitsQuery;
-use App\Queries\DataUnits\GetDataUnitQuery;
-use App\Queries\DataUnits\GetDataUnitsExportToExcelQuery;
+use App\Http\Queries\DataUnits\GetDataUnitsQuery;
+use App\Http\Queries\DataUnits\GetDataUnitQuery;
+use App\Http\Queries\DataUnits\GetDataUnitsExportToExcelQuery;
 use App\Http\Requests\DataUnits\GetDataUnitsRequest;
-use App\Queries\DataUnits\CreateDataUnitCommand;
-use App\Queries\DataUnits\UpdateDataUnitCommand;
-use App\Queries\DataUnits\DeleteDataUnitCommand;
+use App\Http\Queries\DataUnits\CreateDataUnitCommand;
+use App\Http\Queries\DataUnits\UpdateDataUnitCommand;
+use App\Http\Queries\DataUnits\DeleteDataUnitCommand;
+use App\Http\Queries\DataUnits\GetLookupAllDataUnitsQuery;
 use OpenApi\Annotations as OA;
 use Illuminate\Http\Request;
 
@@ -22,6 +23,7 @@ class DataUnitsController extends Controller
     protected $createDataUnitCommand;
     protected $updateDataUnitCommand;
     protected $deleteDataUnitCommand;
+    protected $getLookupAllDataUnitsQuery;
 
     public function __construct(
         GetDataUnitsQuery $getDataUnitsQuery,
@@ -29,7 +31,8 @@ class DataUnitsController extends Controller
         GetDataUnitsExportToExcelQuery $getDataUnitsExportToExcelQuery,
         CreateDataUnitCommand $createDataUnitCommand,
         UpdateDataUnitCommand $updateDataUnitCommand,
-        DeleteDataUnitCommand $deleteDataUnitCommand
+        DeleteDataUnitCommand $deleteDataUnitCommand,
+        GetLookupAllDataUnitsQuery $getLookupAllDataUnitsQuery
     ) {
         $this->getDataUnitsQuery = $getDataUnitsQuery;
         $this->getDataUnitQuery = $getDataUnitQuery;
@@ -37,6 +40,7 @@ class DataUnitsController extends Controller
         $this->createDataUnitCommand = $createDataUnitCommand;
         $this->updateDataUnitCommand = $updateDataUnitCommand;
         $this->deleteDataUnitCommand = $deleteDataUnitCommand;
+        $this->getLookupAllDataUnitsQuery = $getLookupAllDataUnitsQuery;
     }
 
     /**
@@ -271,6 +275,27 @@ class DataUnitsController extends Controller
         $response = $this->deleteDataUnitCommand->handle($id);
 
         return $response;
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/getLookupAllDataUnits",
+     *     summary="Get all DataUnits",
+     *     description="Returns a list of all DataUnits",
+     *     tags={"DataUnits"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="DataUnits retrieved successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/DataUnitDto")
+     *     ),
+     *     @OA\Response(response=500, description="Internal Server Error")
+     * )
+     */
+    public function getLookupAllDataUnits() { 
+        
+        $dataUnits = $this->getLookupAllDataUnitsQuery->getLookup(); 
+        
+        return response()->json($dataUnits); 
     }
 
 }

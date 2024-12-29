@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Queries\Audits;
+namespace App\Http\Queries\Audits;
 
 use App\Http\Resources\AuditResource;
 use App\Models\Audit;

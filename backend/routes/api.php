@@ -24,6 +24,7 @@ Route::prefix('v1')->group(function () {
     Route::post('dataUnit', [DataUnitsController::class, 'insertDataUnit']);
     Route::put('dataUnit/{id}', [DataUnitsController::class, 'updateDataUnit']);
     Route::delete('dataUnit/{id}', [DataUnitsController::class, 'deleteDataUnit']);
+    Route::get('getLookupAllDataUnits', [DataUnitsController::class, 'getLookupAllDataUnits']);
 });
 
 // Route::middleware('auth:sanctum')->apiResource('/audits', AuditsController::class);
