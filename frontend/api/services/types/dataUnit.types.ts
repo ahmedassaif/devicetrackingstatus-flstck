@@ -2,15 +2,18 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 export namespace ApiEndpoint {
     export namespace V1 {
-        export const DataUnits = {
-            Segment: 'v1/dataUnits'
-        };
-        export const DataUnit = {
-            Segment: 'v1/dataUnit'
-        };
-        export const ExportToExcel = {
-            Segment: 'v1/exportDataUnitsToExcel'
-        };
+            export const DataUnits = {
+                Segment: 'v1/dataUnits'
+            };
+            export const DataUnit = {
+                Segment: 'v1/dataUnit'
+            };
+            export const ExportToExcel = {
+                Segment: 'v1/exportDataUnitsToExcel'
+            };
+            export const LookupAll = {
+                Segment: 'v1/getLookupAllDataUnits'
+            }
         }
     }
 
@@ -18,7 +21,7 @@ export interface DataUnitBase {
     NameUnit: string;
     Plan?: string;
 }
-export interface DataUnitDto extends DataUnitBase {
+export interface DataUnitDto extends Response, DataUnitBase {
     id: string;
 } 
 

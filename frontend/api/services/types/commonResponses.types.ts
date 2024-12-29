@@ -43,6 +43,11 @@ export interface PaginatedListResponse<T> extends Response {
     hasNextPage: boolean;
 }
 
+export interface ListResponse<T> extends Response 
+{
+  items: T[];
+}
+
 export async function toResponseResult<T>(
   axiosResponse: AxiosResponse<T>,
 ): Promise<ResponseResult<T>> {

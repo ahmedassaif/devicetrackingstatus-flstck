@@ -1,11 +1,12 @@
 import { BaseApiService } from "../base-api";
-import { ApiEndpoint, GetDataUnitsDataUnit, CreateDataUnitRequest, UpdateDataUnitRequest } from "../types/dataUnit.types";
+import { ApiEndpoint, GetDataUnitsDataUnit, CreateDataUnitRequest, UpdateDataUnitRequest, DataUnitDto } from "../types/dataUnit.types";
 import { PaginatedListRequest } from "../types/commonRequest.types";
 import { 
     PaginatedListResponse,
     ResponseResult,
     toResponseResult,
-    SuccessResponse
+    SuccessResponse,
+    ListResponse
 } from "../types/commonResponses.types";
 
 import { FileDownloadHelper } from "@/api/utils/FileDownloadHelper";
@@ -34,6 +35,14 @@ export class DataUnitService extends BaseApiService {
         
         FileDownloadHelper.downloadExcelFile(response);
         return response;
+    }
+
+    public async getLookupAllDataUnits(): Promise<ResponseResult<ListResponse<DataUnitDto>>> {
+        
+        const response = await this.api.get(`${ApiEndpoint.V1.LookupAll.Segment}`);
+
+        return toResponseResult<ListResponse<DataUnitDto>>(response);
+        
     }
 
     public async createDataUnit(request: CreateDataUnitRequest): Promise<ResponseResult<GetDataUnitsDataUnit>> {
