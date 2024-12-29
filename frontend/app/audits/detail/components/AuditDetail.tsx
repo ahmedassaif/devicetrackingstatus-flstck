@@ -5,10 +5,11 @@ import { AuditService } from "@/api/services/spesific-services/audit.service";
 import { GetAuditsAudit } from "@/api/services/types/audit.types";
 import { ResponseResult } from "@/api/services/types/commonResponses.types";
 import { Button } from "@/components/ui/button";
-import { RotateCw } from "lucide-react";
+import { CircleX, RotateCw } from "lucide-react";
 import Image from "next/image";
 import loadingBackground from "@/public/images/beams.jpg";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const prettifyJson = (json: string): string => {
   try {
@@ -25,17 +26,21 @@ interface AuditDetailProps {
 const AuditDetail: React.FC<AuditDetailProps> = ({ auditId }) => {
     const [audit, setAudit] = useState<GetAuditsAudit | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
   
-    const navigate = useRouter();
+    const router = useRouter();
   
     useEffect(() => {
       const fetchAuditDetail = async () => {
         setLoading(true);
-        setError(null);
   
         if (!auditId) {
-          setError('Audit ID is missing!');
+          toast.error("Failed", {
+            description: "Audit ID is missing",
+            position: "top-right",  
+            icon: <CircleX color="red" />,
+            duration: 5000
+            });
+          
           return;
         }
         
@@ -46,11 +51,20 @@ const AuditDetail: React.FC<AuditDetailProps> = ({ auditId }) => {
           if (response.result) {
             setAudit(response.result);
           } else {
-            setError(response.error?.detail || 'Failed to fetch audit details.');
+            toast.error("Failed", {
+              description: response.error?.detail || "Failed to fetch Audit detail",
+              position: "top-right",
+              icon: <CircleX color="red" />,
+          });
           }
-        } catch (err: any) {
-          setError(err.message || 'An unexpected error occurred.');
-        } finally {
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : "Failed to handle delete DataUnit";
+          toast.error("Failed", {
+              description: errorMessage,
+              position: "top-right",
+              icon: <CircleX color="red" />,
+          });
+      } finally {
           setLoading(false);
         }
       };
@@ -79,15 +93,13 @@ const AuditDetail: React.FC<AuditDetailProps> = ({ auditId }) => {
                 </div>
       );
     }
-    if (error) return <p className="text-red-600">Error: {error}</p>;
-    if (!audit) return <p>No audit details available.</p>;
   
     const getDateLabel = () => {
-      if (audit.event.trim().toLowerCase().includes('create')) {
+      if (audit?.event.trim().toLowerCase().includes('create')) {
         return audit.created_at
           ? new Date(audit.created_at).toLocaleString()
           : 'N/A';
-      } else if (audit.event.trim().toLowerCase().includes('update')) {
+      } else if (audit?.event.trim().toLowerCase().includes('update')) {
         return audit.updated_at
           ? new Date(audit.updated_at).toLocaleString()
           : 'N/A';
@@ -96,13 +108,13 @@ const AuditDetail: React.FC<AuditDetailProps> = ({ auditId }) => {
     };
   
       function handleBackClick(): void {
-        navigate.push(`/audits`); 
+        router.push(`/audits`); 
       }
   
     return (
       <div className="container mx-auto p-4">
         <div className="mb-4">
-          <h1 className="text-2xl font-bold">{`${audit.event} ${audit.auditable_type}`}</h1>
+          <h1 className="text-2xl font-bold">{`${audit?.event} ${audit?.auditable_type}`}</h1>
           <p className="text-gray-600">
             On {getDateLabel()}
           </p>
@@ -116,34 +128,34 @@ const AuditDetail: React.FC<AuditDetailProps> = ({ auditId }) => {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="rounded bg-gray-100 p-4 shadow">
                   <h2 className="font-bold">Table Name</h2>
-                  <p>{audit.auditable_type || 'N/A'}</p>
+                  <p>{audit?.auditable_type || 'N/A'}</p>
                 </div>
                 <div className="rounded bg-gray-100 p-4 shadow">
                   <h2 className="font-bold">Entity ID</h2>
-                  <p>{audit.auditable_id || 'N/A'}</p>
+                  <p>{audit?.auditable_id || 'N/A'}</p>
                 </div>
                 <div className="rounded bg-gray-100 p-4 shadow">
                   <h2 className="font-bold">Action Name</h2>
-                  <p>{audit.event || 'N/A'}</p>
+                  <p>{audit?.event || 'N/A'}</p>
                 </div>
                 <div className="rounded bg-gray-100 p-4 shadow">
                   <h2 className="font-bold">Client Application ID</h2>
-                  <p>{audit.user_id || 'N/A'}</p>
+                  <p>{audit?.user_id || 'N/A'}</p>
                 </div>
                 <div className="rounded bg-gray-100 p-4 shadow">
                   <h2 className="font-bold">From IP Address</h2>
-                  <p>{audit.ip_address || 'N/A'}</p>
+                  <p>{audit?.ip_address || 'N/A'}</p>
                 </div>
                 <div className="rounded bg-gray-100 p-4 shadow">
                   <h2 className="font-bold">Old Values</h2>
                   <pre className="whitespace-pre-wrap font-mono">
-                  {audit.old_values ? prettifyJson(JSON.stringify(audit.old_values)) : 'N/A'}
+                  {audit?.old_values ? prettifyJson(JSON.stringify(audit?.old_values)) : 'N/A'}
                   </pre>
                 </div>
                 <div className="rounded bg-gray-100 p-4 shadow">
                   <h2 className="font-bold">New Values</h2>
                   <pre className="whitespace-pre-wrap font-mono">
-                  {audit.new_values ? prettifyJson(JSON.stringify(audit.new_values)) : 'N/A'}
+                  {audit?.new_values ? prettifyJson(JSON.stringify(audit?.new_values)) : 'N/A'}
                   </pre>
                 </div>
               </div>

@@ -9,8 +9,8 @@ import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
-import { useToast } from "@/hooks/use-toast";
-import { RotateCw } from 'lucide-react';
+import { toast } from "sonner";
+import { CircleCheck, CircleX, RotateCw } from 'lucide-react';
 import loadingBackground from "@/public/images/beams.jpg";
 import Image from "next/image";
 
@@ -22,9 +22,7 @@ interface Props {
 }
 
 export default function DataUnitEditPage({ params }: Props) {
-    const { toast } = useToast();
     const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
     const [model, setModel] = useState<DataUnitDto>({ 
         id: '',
         NameUnit: '',
@@ -44,24 +42,26 @@ export default function DataUnitEditPage({ params }: Props) {
                 await dataUnitService.getDataUnit(params.id);
         
                 if (response.result) {
-                setModel({
-                    id: response.result.id,
-                    NameUnit: response.result.NameUnit,
-                    Plan: response.result.Plan || ''
-                });
+                    setModel({
+                        id: response.result.id,
+                        NameUnit: response.result.NameUnit,
+                        Plan: response.result.Plan || ''
+                    });
                 } else {
-                setError(response.error?.detail || 'Failed to fetch DataUnit details.');
+                    toast.error("Failed", {
+                                        description: response.error?.detail || "Failed to fetch DataUnit detail",
+                                        position: "top-right",
+                                        icon: <CircleX color="red" />,
+                                    });
                 }
-            } catch (err: unknown) {
-                const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred.";
-                
-                toast({
-                    variant: "destructive",
-                    title: "Error",
-                    description: errorMessage, // passing the error detail as the description
-                });
-                
-                setError(errorMessage);
+            } catch (error: unknown) { 
+                const errorMessage = error instanceof Error ? error.message : "Failed to handle Create DataUnits";
+                                toast.error("Failed", {
+                                    description: errorMessage,
+                                    position: "top-right",
+                                    icon: <CircleX color="red" />,
+                                    duration: 5000
+                                });
             } finally {
                 setLoading(false);
             }
@@ -69,7 +69,7 @@ export default function DataUnitEditPage({ params }: Props) {
     
         fetchDataUnitDetail();
 
-    }, [params.id, toast]); 
+    }, [params.id]); 
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
         const { name, value } = e.target; 
@@ -100,28 +100,32 @@ export default function DataUnitEditPage({ params }: Props) {
             await dataUnitService.updateDataUnit(updateDataUnitRequest);
 
         if (response.result) {
-            toast({
-            title: "Success",
-            description: "Data Unit updated successfully!",
+            toast.success("Success", {
+                description: "Data Lokasi Kerja berhasil diubah!",
+                position: "top-right",
+                icon: <CircleCheck color="green" />,
+                duration: 3000
             });
         } else {
-            setError(response.error?.detail || 'Failed to Update Data.');
-            toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Failed to update Data Unit",
-            });
+            const errorText = response?.error?.detail || "Failed to Update DataUnits";
+                    toast.error("Failed", {
+                        description: errorText,
+                        position: "top-right",
+                        icon: <CircleX color="red" />,
+                        duration: 5000
+                    });
+                    return;
         }
-        } catch (err: unknown) { 
-            const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred."; 
-            toast({ variant: "destructive", 
-                    title: "Error", 
-                    description: errorMessage, // passing the error detail as the description 
-                }); 
-            
-                setError(errorMessage);
+        } catch (error: unknown) { 
+            const errorMessage = error instanceof Error ? error.message : "Failed to handle Create DataUnits";
+                            toast.error("Failed", {
+                                description: errorMessage,
+                                position: "top-right",
+                                icon: <CircleX color="red" />,
+                                duration: 5000
+                            });
         } finally {
-        setLoading(false);
+            setLoading(false);
         }
     };
 
@@ -153,49 +157,45 @@ export default function DataUnitEditPage({ params }: Props) {
                 <div className="w-full">
                 <Card className="p-6">
                     <form className="flex flex-col gap-4" onSubmit={saveData}>
-                    <div className="space-y-2">
-                        <Label htmlFor="NameUnit">Lokasi Kerja</Label>
-                        <Input
-                        id="NameUnit"
-                        name="NameUnit"
-                        value={model.NameUnit}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="Nama Unit"
-                        />
-                    </div>
-        
-                    <div className="space-y-2">
-                        <Label htmlFor="Plan">Kode Plan</Label>
-                        <Input
-                        id="Plan"
-                        name="Plan"
-                        value={model.Plan}
-                        onChange={handleInputChange}
-                        placeholder="Kode Plan"
-                        />
-                    </div>
-        
-                    <div className="flex space-x-3">
-                        <Button 
-                        type="submit" 
-                        className="bg-green-700 hover:bg-green-800"
-                        disabled={loading}
-                        >
-                        {loading ? 'Saving...' : 'Save'}
-                        </Button>
-                        <Button 
-                        type="button"
-                        variant="outline"
-                        onClick={backToIndex}
-                        >
-                        Back
-                        </Button>
-                    </div>
-        
-                    {error && (
-                        <p className="text-red-600">Error: {error}</p>
-                    )}
+                        <div className="space-y-2">
+                            <Label htmlFor="NameUnit">Lokasi Kerja</Label>
+                            <Input
+                            id="NameUnit"
+                            name="NameUnit"
+                            value={model.NameUnit}
+                            onChange={handleInputChange}
+                            required
+                            placeholder="Nama Unit"
+                            />
+                        </div>
+            
+                        <div className="space-y-2">
+                            <Label htmlFor="Plan">Kode Plan</Label>
+                            <Input
+                            id="Plan"
+                            name="Plan"
+                            value={model.Plan}
+                            onChange={handleInputChange}
+                            placeholder="Kode Plan"
+                            />
+                        </div>
+            
+                        <div className="flex space-x-3">
+                            <Button 
+                            type="submit" 
+                            className="bg-green-700 hover:bg-green-800"
+                            disabled={loading}
+                            >
+                            {loading ? 'Saving...' : 'Save'}
+                            </Button>
+                            <Button 
+                            type="button"
+                            variant="outline"
+                            onClick={backToIndex}
+                            >
+                            Back
+                            </Button>
+                        </div>
                     </form>
                 </Card>
                 </div>

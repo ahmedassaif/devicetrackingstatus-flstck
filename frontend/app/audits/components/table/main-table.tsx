@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 import React, { useCallback, useEffect, useState } from "react";
 import { GetAuditsAudit } from "@/api/services/types/audit.types";
@@ -12,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { CircleX, Eye, RotateCw, SearchIcon, SheetIcon } from "lucide-react";
 import loadingBackground from "@/public/images/beams.jpg";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const MainTable: React.FC = () => {
     const [audits, setAudits] = useState<GetAuditsAudit[]>([]);
@@ -92,8 +94,13 @@ const MainTable: React.FC = () => {
     
             handleAuditResponse(response); // Call the improved function
     
-        } catch (err: unknown) {
-            setError(err instanceof Error ? err.message : "An unexpected error occurred.");
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : "Failed to handle load Audits";
+            toast.error("Failed", {
+                description: errorMessage,
+                position: "top-right",
+                icon: <CircleX color="red" />,
+            });
         } finally {
             setLoading(false);
           }
@@ -268,7 +275,7 @@ const MainTable: React.FC = () => {
                                 return column;
                             })}
                             data={audits}
-                            onSort={handleSort}
+                            // onSort={handleSort}
                             currentPage={currentPage}
                             totalPages={totalPages}
                             onPageChange={setCurrentPage}

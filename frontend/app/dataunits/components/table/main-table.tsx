@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 import React, { useCallback, useEffect, useState } from "react";
 import { GetDataUnitsDataUnit } from "@/api/services/types/dataUnit.types";
@@ -9,7 +10,7 @@ import { PaginatedListResponse, ResponseResult, SuccessResponse, toTableData } f
 import { columns } from "./columns";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { CircleX, Eye, RotateCw, SearchIcon, SheetIcon, Trash2 } from "lucide-react";
+import { CircleX, Eye, RotateCw, SearchIcon, SheetIcon, Trash2,CircleCheck, LucidePencil } from "lucide-react";
 import loadingBackground from "@/public/images/beams.jpg";
 import { useRouter } from "next/navigation";
 import {
@@ -19,7 +20,7 @@ import {
   DialogHeader,
   DialogTitle
 } from "@/components/ui/dialog";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 const MainTable: React.FC = () => {
 
@@ -101,8 +102,13 @@ const MainTable: React.FC = () => {
 
                 handleDataUnitResponse(response); // Call the improved function
 
-            } catch (err: unknown) {
-                setError(err instanceof Error ? err.message : "An unexpected error occurred.");
+            } catch (error) {
+                const errorMessage = error instanceof Error ? error.message : "Failed to handle Get DataUnits";
+                toast.error("Failed", {
+                    description: errorMessage,
+                    position: "top-right",
+                    icon: <CircleX color="red" />,
+                });
             } finally {
                 setLoading(false);
             }
@@ -169,12 +175,39 @@ const MainTable: React.FC = () => {
         setLoadingDownloadFile(true);
         
         try {
-        const dataUnitService = new DataUnitService(); 
-        await dataUnitService.exportDataUnitsToExcel(); 
+            const dataUnitService = new DataUnitService(); 
+            const response = await dataUnitService.exportDataUnitsToExcel();
+            
+            if (response?.status === 200) {
+                toast.success("Success", {
+                    description: "Data Lokasi Kerja berhasil diexport!",
+                    position: "top-right",
+                    icon: <CircleCheck color="green" />,
+                    duration: 3000
+                });
+                
+            }
+            else
+            {
+                const errorText = response?.data?.error || "Failed to Export DataUnits";
+                toast.error("Failed", {
+                    description: errorText,
+                    position: "top-right",
+                    icon: <CircleX color="red" />,
+                    duration: 5000
+                });
+                return;
+            }
         } 
         catch (error) 
         { 
-        console.error('Failed to export DataUnits', error); 
+            const errorMessage = error instanceof Error ? error.message : "Failed to handle Export DataUnits";
+                toast.error("Failed", {
+                    description: errorMessage,
+                    position: "top-right",
+                    icon: <CircleX color="red" />,
+                    duration: 5000
+                });
         }
         finally{
         setLoadingDownloadFile(false);
@@ -188,14 +221,28 @@ const MainTable: React.FC = () => {
             if (response.result) {
                 setDataUnits(dataUnits.filter(unit => unit.id !== id)); // Update state to remove deleted item
                 setDialogOpen(false); // Close the dialog
-                toast({
-                    title: "Success",
-                    description: "Data Unit deleted successfully!",
+                toast.success("Success", {
+                    description: "Data Lokasi Kerja berhasil dihapus!",
+                    position: "top-right",
+                    icon: <CircleCheck color="green" />,
                 });
-                window.location.reload();   
+
+                router.push('/dataunits');   
+            }
+            else{
+                toast.error("Failed", {
+                    description: response.error?.detail || "Failed to delete DataUnit",
+                    position: "top-right",
+                    icon: <CircleX color="red" />,
+                });
             }
         } catch (error) {
-            console.error('Failed to delete DataUnit', error);
+            const errorMessage = error instanceof Error ? error.message : "Failed to handle delete DataUnit";
+            toast.error("Failed", {
+                description: errorMessage,
+                position: "top-right",
+                icon: <CircleX color="red" />,
+            });
         }
     };
 
@@ -288,7 +335,7 @@ const MainTable: React.FC = () => {
                                                         size="icon"
                                                         title="View details"
                                                     >
-                                                        <Eye />
+                                                        <LucidePencil />
                                                     </Button>
                                                     <Button
                                                         onClick={() => handleClickToDelete(dataUnit.id)}
@@ -306,7 +353,7 @@ const MainTable: React.FC = () => {
                                 return column;
                             })}
                             data={dataUnits}
-                            onSort={handleSort}
+                            // onSort={handleSort}
                             currentPage={currentPage}
                             totalPages={totalPages}
                             onPageChange={setCurrentPage}

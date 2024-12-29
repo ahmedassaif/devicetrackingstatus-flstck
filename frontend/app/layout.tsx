@@ -5,6 +5,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { AppSidebar } from "@/components/app-sidebar";
 import { Separator } from "@radix-ui/react-separator";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "@/components/ui/breadcrumb";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -66,9 +67,19 @@ export default function RootLayout({
                 <div className="aspect-video rounded-xl bg-muted/50" />
               </div>
               <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" /> */}
-              <main>
-                {children}
-              </main>
+              <main>{children}</main>
+              <Toaster
+                toastOptions={{
+                  classNames: {
+                    error: 'bg-red-400',
+                    success: 'bg-green-200',
+                    warning: 'bg-yellow-400',
+                    info: 'bg-blue-400',
+                  },
+                  duration: 3000,
+                  closeButton: true,
+                }}
+              />
             </div>
           </SidebarInset>
         </SidebarProvider>
