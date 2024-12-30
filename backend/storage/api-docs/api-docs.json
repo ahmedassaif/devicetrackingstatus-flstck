@@ -472,6 +472,306 @@
                     }
                 }
             }
+        },
+        "/api/v1/deviceLocations": {
+            "get": {
+                "tags": [
+                    "DeviceLocations"
+                ],
+                "summary": "Get DeviceLocations",
+                "description": "Returns a paginated list of DeviceLocations with filters",
+                "operationId": "293496b5921c10d84944590ead50eba7",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search data",
+                        "required": false,
+                        "schema": {
+                            "type": "text"
+                        }
+                    },
+                    {
+                        "name": "sortField",
+                        "in": "query",
+                        "description": "sorting field",
+                        "required": false,
+                        "schema": {
+                            "type": "text"
+                        }
+                    },
+                    {
+                        "name": "sortOrder",
+                        "in": "query",
+                        "description": "sorting field (asc or desc)",
+                        "required": false,
+                        "schema": {
+                            "type": "text"
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Start date for filter",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "description": "End date for filter",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns a paginated list of DeviceLocations",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DeviceLocation"
+                                            }
+                                        },
+                                        "totalCount": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/deviceLocation/{id}": {
+            "get": {
+                "tags": [
+                    "DeviceLocations"
+                ],
+                "summary": "Get DeviceLocation by ID",
+                "description": "Retrieve a specific DeviceLocation by its unique ID",
+                "operationId": "9b9b97e5a8721744de7064f3f614b6b5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "DeviceLocation ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "DeviceLocation retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeviceLocation"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "DeviceLocation not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "DeviceLocations"
+                ],
+                "summary": "Update a DeviceLocation",
+                "description": "Updates an existing DeviceLocation and returns the updated entity",
+                "operationId": "0b8ad6ea94830683bc6c32d0b2361c67",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateDeviceLocationRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "DeviceLocation updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeviceLocation"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "DeviceLocation not found"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "DeviceLocations"
+                ],
+                "summary": "Delete a DeviceLocation",
+                "description": "Soft deletes a DeviceLocation by its unique ID",
+                "operationId": "698966743e2fe5a07aa1eb13a3a61f07",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "DeviceLocation ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "DeviceLocation deleted successfully"
+                    },
+                    "404": {
+                        "description": "DeviceLocation not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/exportDeviceLocationsToExcel": {
+            "get": {
+                "tags": [
+                    "DeviceLocations"
+                ],
+                "summary": "Export DeviceLocation data to an Excel file",
+                "description": "Exports DeviceLocation data from the database to an Excel file and returns the file as a download.",
+                "operationId": "31329791eca53edc697b72375fc24ff2",
+                "responses": {
+                    "200": {
+                        "description": "Successful export",
+                        "content": {
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {}
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/api/v1/deviceLocation": {
+            "post": {
+                "tags": [
+                    "DeviceLocations"
+                ],
+                "summary": "Create a new DeviceLocation",
+                "description": "Creates a new DeviceLocation and returns the created entity",
+                "operationId": "12f6afcef0a7875323ce3a211ae1154f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateDeviceLocationRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "DeviceLocation created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeviceLocation"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/getLookupAllDeviceLocations": {
+            "get": {
+                "tags": [
+                    "DeviceLocations"
+                ],
+                "summary": "Get all DeviceLocations",
+                "description": "Returns a list of all DeviceLocations",
+                "operationId": "2527a7cb08b5c1b70cdc3eca175b270d",
+                "responses": {
+                    "200": {
+                        "description": "DeviceLocations retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeviceLocationDto"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -524,6 +824,30 @@
                 },
                 "type": "object"
             },
+            "DeviceLocationDto": {
+                "description": "DeviceLocationDto schema",
+                "properties": {
+                    "id": {
+                        "description": "Unique identifier",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "NameDeviceLocation": {
+                        "description": "Lokasi Kerja",
+                        "type": "string"
+                    },
+                    "NameUnit": {
+                        "description": "Lokasi Kerja",
+                        "type": "string"
+                    },
+                    "Plan": {
+                        "description": "Kode Plan untuk Lokasi Kerja",
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
             "CreateDataUnitRequest": {
                 "description": "Create DataUnit Request schema",
                 "properties": {
@@ -555,6 +879,41 @@
                         "description": "Kode Plan untuk Lokasi Kerja",
                         "type": "string",
                         "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "CreateDeviceLocationRequest": {
+                "description": "Create DeviceLocation Request schema",
+                "properties": {
+                    "NameDeviceLocation": {
+                        "description": "Nama Lokasi Perangkat",
+                        "type": "string"
+                    },
+                    "DataUnitId": {
+                        "description": "Id DataUnit",
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateDeviceLocationRequest": {
+                "description": "Update DeviceLocation Request schema",
+                "properties": {
+                    "id": {
+                        "description": "Unique identifier",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "NameDeviceLocation": {
+                        "description": "Nama Lokasi Perangkat",
+                        "type": "string"
+                    },
+                    "DataUnitId": {
+                        "description": "Id DataUnit",
+                        "type": "string",
+                        "format": "uuid"
                     }
                 },
                 "type": "object"
@@ -665,6 +1024,50 @@
                     }
                 },
                 "type": "object"
+            },
+            "DeviceLocation": {
+                "description": "DeviceLocation schema",
+                "properties": {
+                    "id": {
+                        "description": "Unique identifier",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "NameDeviceLocation": {
+                        "description": "Nama Lokasi Perangkat",
+                        "type": "string"
+                    },
+                    "DataUnitId": {
+                        "description": "Id DataUnit",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "NameUnit": {
+                        "description": "Lokasi Kerja",
+                        "type": "string"
+                    },
+                    "Plan": {
+                        "description": "Kode Plan untuk Lokasi Kerja",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Update timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "deleted_at": {
+                        "description": "Deletion timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
             }
         }
     },
@@ -676,6 +1079,10 @@
         {
             "name": "DataUnits",
             "description": "DataUnits"
+        },
+        {
+            "name": "DeviceLocations",
+            "description": "DeviceLocations"
         }
     ]
 }

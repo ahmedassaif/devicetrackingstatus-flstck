@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuditsController;
 use App\Http\Controllers\DataUnitsController;
+use App\Http\Controllers\DeviceLocationsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,17 @@ Route::prefix('v1')->group(function () {
     Route::put('dataUnit/{id}', [DataUnitsController::class, 'updateDataUnit']);
     Route::delete('dataUnit/{id}', [DataUnitsController::class, 'deleteDataUnit']);
     Route::get('getLookupAllDataUnits', [DataUnitsController::class, 'getLookupAllDataUnits']);
+});
+
+// Define the routes for the DeviceLocations API
+Route::prefix('v1')->group(function () {
+    Route::get('deviceLocations', [DeviceLocationsController::class, 'getDeviceLocations']);
+    Route::get('deviceLocation/{id}', [DeviceLocationsController::class, 'getDeviceLocation']);
+    Route::get('exportDeviceLocationsToExcel', [DeviceLocationsController::class, 'exportDeviceLocationsToExcel']);
+    Route::post('deviceLocation', [DeviceLocationsController::class, 'insertDeviceLocation']);
+    Route::put('deviceLocation/{id}', [DeviceLocationsController::class, 'updateDeviceLocation']);
+    Route::delete('deviceLocation/{id}', [DeviceLocationsController::class, 'deleteDeviceLocation']);
+    Route::get('getLookupAllDeviceLocations', [DeviceLocationsController::class, 'getLookupAllDeviceLocations']);
 });
 
 // Route::middleware('auth:sanctum')->apiResource('/audits', AuditsController::class);

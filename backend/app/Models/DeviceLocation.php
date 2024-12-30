@@ -8,20 +8,15 @@ use OwenIt\Auditing\Auditable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
-class DataUnit extends Model implements AuditableContract
+class DeviceLocation extends Model implements AuditableContract
 {
     use Auditable;
     use SoftDeletes;
     use HasUuids;
 
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
     protected $dates = ['deleted_at'];
 
-    protected $table = 'DataUnit';
+    protected $table = 'DeviceLocation';
 
     /**
      * The attributes that are mass assignable.
@@ -29,14 +24,14 @@ class DataUnit extends Model implements AuditableContract
      * @var array
      */
     protected $fillable = [
-        'NameUnit',
-        'Plan',
+        'NameDeviceLocation',
+        'DataUnitId',
         'created_at',
         'updated_at'
     ];
 
-    public function deviceLocations()
+    public function DataUnit()
     {
-        return $this->hasMany(DeviceLocation::class);
+        return $this->belongsTo(DataUnit::class, 'DataUnitId');
     }
 }
