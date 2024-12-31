@@ -15,6 +15,7 @@ import {
   Factory,
   Settings2,
   SquareTerminal,
+  MapPinHouse,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -153,6 +154,11 @@ const data = {
       name: "Data Unit",
       url: "/dataunits",
       icon: Factory,
+    },
+    {
+      name: "Manage Main Location",
+      url: "/devicelocations",
+      icon: MapPinHouse,
     },
   ],
 }

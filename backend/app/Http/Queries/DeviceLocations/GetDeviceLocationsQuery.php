@@ -33,12 +33,23 @@ class GetDeviceLocationsQuery
         Log::info('SQL Query:', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
         
         $searchText = (string) $request->query('searchText', ''); // Explicitly cast to string
+        
+        $query = $query->join('DataUnit', 'DeviceLocation.DataUnitId', '=', 'DataUnit.id')
+        ->select(
+            'DeviceLocation.id',
+            'DeviceLocation.NameDeviceLocation',
+            'DeviceLocation.DataUnitId',
+            'DeviceLocation.created_at as device_created_at',
+            'DeviceLocation.updated_at as device_updated_at',
+            'DeviceLocation.deleted_at as device_deleted_at',
+            'DataUnit.NameUnit',
+            'DataUnit.Plan'
+            );
 
         if ($searchText) {
             $query->where(function ($q) use ($searchText) {
                 $q->where('DeviceLocation.NameDeviceLocation', 'like', '%' . $searchText . '%')
-                    ->orwhere('DataUnit.NameUnit', 'like', '%' . $searchText . '%')
-                    ->orWhere('DataUnit.Plan', 'like', '%' . $searchText . '%');
+                    ->orwhere('DataUnit.NameUnit', 'like', '%' . $searchText . '%');
             });
         }
 
@@ -65,17 +76,6 @@ class GetDeviceLocationsQuery
         // Fetch the paginated results
         $deviceLocations = $query->offset($offset)
                                 ->limit($pageSize)
-                                ->join('DataUnit', 'DeviceLocation.DataUnitId', '=', 'DataUnit.id')
-                                ->select(
-                                    'DeviceLocation.id',
-                                    'DeviceLocation.NameDeviceLocation',
-                                    'DeviceLocation.DataUnitId',
-                                    'DeviceLocation.created_at as device_created_at',
-                                    'DeviceLocation.updated_at as device_updated_at',
-                                    'DeviceLocation.deleted_at as device_deleted_at',
-                                    'DataUnit.NameUnit',
-                                    'DataUnit.Plan'
-                                    )
                                 ->get();
 
         return new PaginatedListResponse(

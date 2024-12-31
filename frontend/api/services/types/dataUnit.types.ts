@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-namespace */
+import { Response } from "../types/commonResponses.types";
 export namespace ApiEndpoint {
     export namespace V1 {
             export const DataUnits = {
@@ -21,7 +22,7 @@ export interface DataUnitBase {
     NameUnit: string;
     Plan?: string;
 }
-export interface DataUnitDto extends Response, DataUnitBase {
+export interface DataUnitDto extends DataUnitBase {
     id: string;
 } 
 
