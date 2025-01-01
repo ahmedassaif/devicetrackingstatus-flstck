@@ -1,6 +1,6 @@
 export const API_CONFIG = {
   BASE_URL:
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api",
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://192.168.1.15:8000/api",
   TIMEOUT: 30000,
   HEADERS: {
     "Content-Type": "application/json",
