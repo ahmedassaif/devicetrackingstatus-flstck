@@ -39,7 +39,13 @@ const NextBreadcrumb = ({homeElement, separator, containerClasses, listClasses, 
                         return (
                             <React.Fragment key={index}>
                                 <BreadcrumbItem className={itemClasses}>
-                                    <BreadcrumbLink href={href}>{itemLink}</BreadcrumbLink>
+                                    <BreadcrumbLink href={href}>
+                                        {
+                                            itemLink.toLowerCase() === 'dataunits' ? 'Lokasi Kerja' :
+                                            itemLink.toLowerCase() === 'devicelocations' ? 'Lokasi Perangkat' :
+                                            itemLink
+                                        }
+                                    </BreadcrumbLink>
                                 </BreadcrumbItem>
                                 {pathNames.length !== index + 1 && <BreadcrumbSeparator>{separator}</BreadcrumbSeparator>}
                             </React.Fragment>

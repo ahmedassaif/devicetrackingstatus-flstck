@@ -78,6 +78,11 @@ const data = {
         },
       ],
     },
+    // {
+    //   title: "Audit",
+    //   url: "/audits",
+    //   icon: PackageCheck,
+    // },
     {
       title: "Models",
       url: "#",
@@ -151,12 +156,12 @@ const data = {
       icon: PackageCheck,
     },
     {
-      name: "Data Unit",
+      name: "Lokasi Kerja",
       url: "/dataunits",
       icon: Factory,
     },
     {
-      name: "Manage Main Location",
+      name: "Lokasi Perangkat",
       url: "/devicelocations",
       icon: MapPinHouse,
     },
