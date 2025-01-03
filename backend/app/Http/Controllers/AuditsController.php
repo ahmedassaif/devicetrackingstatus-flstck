@@ -151,6 +151,10 @@ class AuditsController extends Controller
      *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
      *         )
      *     ),
+     *     @OA\Response( 
+     *          response=400, 
+     *          description="Empty data" 
+     *     ),
      *     @OA\Response(
      *         response=500,
      *         description="Internal server error"
@@ -161,6 +165,10 @@ class AuditsController extends Controller
         
         $fileResponse = $this->getAuditsExportToExcelQuery->export(); 
         
+        if (is_array($fileResponse) && isset($fileResponse['error'])) { 
+            return response()->json($fileResponse, 400); // Return the error response if the data is empty 
+        }
+
         return response($fileResponse->content)
                         ->header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
                         ->header('Content-Disposition', 'attachment; filename="'.$fileResponse->fileName.'"'); 
