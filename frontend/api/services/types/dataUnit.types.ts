@@ -55,3 +55,10 @@ export class UpdateDataUnitRequest{
         this.Plan = Plan;
     }
 }
+
+const emptyDataUnit: DataUnitBase = {
+    NameUnit: '',
+    Plan: ''
+};
+
+export { emptyDataUnit };

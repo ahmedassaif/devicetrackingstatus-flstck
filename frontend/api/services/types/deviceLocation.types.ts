@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { z } from "zod";
+
 /* eslint-disable @typescript-eslint/no-namespace */
 export namespace ApiEndpoint {
     export namespace V1 {
@@ -56,3 +59,11 @@ export class UpdateDeviceLocationRequest{
         this.DataUnitId = DataUnitId;
     }
 }
+
+const deviceLocationFormSchema = z.object({
+    NameDeviceLocation: z.string().min(1, { message: "Nama Lokasi Perangkat Wajib Diisi" }),
+    DataUnitId: z.string().min(1, { message: "Lokasi Kerja harus dipilih" }),
+});
+const emptyDeviceLocation = { NameDeviceLocation: '', DataUnitId: ''};
+
+export { deviceLocationFormSchema }; export { emptyDeviceLocation };

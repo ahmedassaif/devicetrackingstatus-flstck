@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { DataUnitService } from '@/api/services/spesific-services/dataUnit.service';
-import { GetDataUnitsDataUnit, DataUnitBase } from '@/api/services/types/dataUnit.types';
+import { GetDataUnitsDataUnit, DataUnitBase, emptyDataUnit } from '@/api/services/types/dataUnit.types';
 import { ResponseResult } from '@/api/services/types/commonResponses.types';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -13,12 +13,11 @@ import { useRouter } from 'next/navigation';
 import { toast } from "sonner";
 import { CircleAlert, CircleCheck, CircleX } from 'lucide-react';
 
+
 export default function DataUnitFormPage() {
+
     const [loading, setLoading] = useState<boolean>(false);
-    const [model, setModel] = useState<DataUnitBase>({
-        NameUnit: '',
-        Plan: ''
-    });
+    const [model, setModel] = useState<DataUnitBase>(emptyDataUnit);
 
     const router = useRouter();
 

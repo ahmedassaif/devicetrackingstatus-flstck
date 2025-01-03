@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { DeviceLocationService } from '@/api/services/spesific-services/deviceLocation.service';
-import { GetDeviceLocationsDeviceLocation, UpdateDeviceLocationRequest } from '@/api/services/types/deviceLocation.types';
+import { GetDeviceLocationsDeviceLocation, UpdateDeviceLocationRequest, deviceLocationFormSchema, emptyDeviceLocation } from '@/api/services/types/deviceLocation.types';
 import { ResponseResult } from '@/api/services/types/commonResponses.types';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -19,11 +19,6 @@ import Image from "next/image";
 import { Form, FormField, FormItem, FormLabel, FormMessage, FormControl } from "@/components/ui/form";
 import { DataUnitSelect } from "@/components/selectors/dataunit.selector";
 
-const formSchema = z.object({
-    NameDeviceLocation: z.string().min(1, { message: "Nama Lokasi Perangkat Wajib Diisi" }),
-    DataUnitId: z.string().min(1, { message: "Lokasi Kerja harus dipilih" }),
-});
-
 interface Props {
   params: {
     id: string;
@@ -34,11 +29,8 @@ export default function DeviceLocationEditPage({ params }: Props) {
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
   const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      NameDeviceLocation: '',
-      DataUnitId: '',
-    },
+    resolver: zodResolver(deviceLocationFormSchema),
+    defaultValues: emptyDeviceLocation,
   });
 
   useEffect(() => {
@@ -73,7 +65,7 @@ export default function DeviceLocationEditPage({ params }: Props) {
     fetchDeviceLocationDetail();
   }, [params.id, form]); 
 
-  const saveData = async (values: z.infer<typeof formSchema>) => {
+  const saveData = async (values: z.infer<typeof deviceLocationFormSchema>) => {
     setLoading(true);
 
     try {

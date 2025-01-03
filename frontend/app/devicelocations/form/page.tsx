@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { DeviceLocationService } from "@/api/services/spesific-services/deviceLocation.service";
-import { CreateDeviceLocationRequest, GetDeviceLocationsDeviceLocation } from '@/api/services/types/deviceLocation.types';
+import { CreateDeviceLocationRequest, GetDeviceLocationsDeviceLocation, deviceLocationFormSchema, emptyDeviceLocation } from '@/api/services/types/deviceLocation.types';
 import { ResponseResult } from '@/api/services/types/commonResponses.types';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -16,22 +16,15 @@ import { toast } from "sonner";
 import { Form, FormField, FormItem, FormLabel, FormMessage, FormControl } from "@/components/ui/form";
 import { DataUnitSelect } from "@/components/selectors/dataunit.selector";
 
-const formSchema = z.object({
-    NameDeviceLocation: z.string().min(1, { message: "Nama Lokasi Perangkat Wajib Diisi" }),
-    DataUnitId: z.string().min(1, { message: "Lokasi Kerja harus dipilih" }),
-});
-
 export default function DeviceLocationFormPage() {
     const router = useRouter();
     const form = useForm({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-        NameDeviceLocation: '',
-        DataUnitId: '',
-        },
+        resolver: zodResolver(deviceLocationFormSchema),
+        defaultValues: emptyDeviceLocation,
     });
 
-    const saveData = async (values: z.infer<typeof formSchema>) => {
+
+    const saveData = async (values: z.infer<typeof deviceLocationFormSchema>) => {
         try {
         const deviceLocationService = new DeviceLocationService();
         const createDeviceLocationRequest = new CreateDeviceLocationRequest(

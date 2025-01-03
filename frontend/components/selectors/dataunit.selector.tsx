@@ -92,7 +92,7 @@ export function DataUnitSelect({ onValueChange, value }: DataUnitSelectProps) {
                 {dataUnits?.length > 0 ? (
                 dataUnits.map((dataUnit) => (
                     <SelectItem key={dataUnit.id} value={dataUnit.id}>
-                    {dataUnit.NameUnit} - {dataUnit.Plan}
+                    {dataUnit.NameUnit}{dataUnit.Plan ? ` - ${dataUnit.Plan}` : ''}
                     </SelectItem>
                 ))
                 ) : (
