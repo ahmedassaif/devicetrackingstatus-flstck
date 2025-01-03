@@ -20,7 +20,12 @@ class GetDeviceLocationsExportToExcelQuery
             $deviceLocations = DeviceLocation::query()
                             ->whereNull('DeviceLocation.deleted_at') // Ensure only non-deleted records are retrieved
                             ->orderByDesc('DeviceLocation.updated_at') // Order by Created in descending order
-                            ; 
+                            ;
+                            
+            // Check if the data is empty 
+            if ($deviceLocations->isEmpty()) { 
+                return response()->json(['error' => 'Main Location Table is Empty'], 400); 
+            }
 
             $deviceLocations = $deviceLocations
                             ->join('DataUnit', 'DeviceLocation.DataUnitId', '=', 'DataUnit.id')

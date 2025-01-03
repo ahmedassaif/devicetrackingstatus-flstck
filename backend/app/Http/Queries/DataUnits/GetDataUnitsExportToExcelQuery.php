@@ -19,6 +19,11 @@ class GetDataUnitsExportToExcelQuery
             // Fetch all DataUnit records where deleted_at is null
             $data = DataUnit::whereNull('deleted_at')->orderBy('updated_at', 'desc')->get();
 
+            // Check if the data is empty 
+            if ($data->isEmpty()) { 
+                return response()->json(['error' => 'DataUnit Table is Empty'], 400); 
+            }
+
             // Create new Spreadsheet object
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
