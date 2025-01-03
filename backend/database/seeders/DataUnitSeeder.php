@@ -13,7 +13,7 @@ class DataUnitSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::factory('DataUnit')->insert(
+        DB::factory('DataUnit')->insert([
             [
                 'NameUnit' => 'Head Office',
                 'Plan' => 'HOF',
@@ -70,6 +70,6 @@ class DataUnitSeeder extends Seeder
                 'updated_at' => now(),
                 'deleted_at' => null,
             ],
-        );
+        ]);
     }
 }
