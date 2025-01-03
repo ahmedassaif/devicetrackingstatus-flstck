@@ -183,8 +183,13 @@ class DeviceLocationsController extends Controller
         
         $fileResponse = $this->getDeviceLocationsExportToExcelQuery->export(); 
         
-        if (is_array($fileResponse) && isset($fileResponse['error'])) { 
-            return response()->json($fileResponse, 400); // Return the error response if the data is empty 
+        //if (is_array($fileResponse) && isset($fileResponse['error'])) { 
+        //    return response()->json($fileResponse, 400); // Return the error response if the data is empty 
+        //}
+        
+        // Check if the response is a JsonResponse 
+        if ($fileResponse instanceof \Illuminate\Http\JsonResponse) { 
+            return $fileResponse; // Return the JSON error response
         }
 
         return response($fileResponse->content)

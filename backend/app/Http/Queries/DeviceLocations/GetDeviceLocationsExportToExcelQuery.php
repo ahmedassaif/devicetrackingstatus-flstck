@@ -23,7 +23,7 @@ class GetDeviceLocationsExportToExcelQuery
                             ;
                             
             // Check if the data is empty 
-            if ($deviceLocations->isEmpty()) { 
+            if (!$deviceLocations->exists()) { 
                 return response()->json(['error' => 'Main Location Table is Empty'], 400); 
             }
 

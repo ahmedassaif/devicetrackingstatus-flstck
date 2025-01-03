@@ -167,6 +167,9 @@
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {}
                         }
                     },
+                    "400": {
+                        "description": "Empty data"
+                    },
                     "500": {
                         "description": "Internal server error"
                     }
@@ -403,6 +406,9 @@
                         "content": {
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {}
                         }
+                    },
+                    "400": {
+                        "description": "Empty data"
                     },
                     "500": {
                         "description": "Internal server error"
@@ -703,6 +709,9 @@
                         "content": {
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {}
                         }
+                    },
+                    "400": {
+                        "description": "Empty data"
                     },
                     "500": {
                         "description": "Internal server error"
