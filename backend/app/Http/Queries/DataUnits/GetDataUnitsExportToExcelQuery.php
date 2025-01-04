@@ -21,7 +21,9 @@ class GetDataUnitsExportToExcelQuery
 
             // Check if the data is empty 
             if ($data->isEmpty()) { 
-                return response()->json(['error' => 'DataUnit Table is Empty'], 400); 
+                return response()->json([
+                    'message' => 'DataUnit Table is Empty.'
+                ], 400); 
             }
 
             // Create new Spreadsheet object

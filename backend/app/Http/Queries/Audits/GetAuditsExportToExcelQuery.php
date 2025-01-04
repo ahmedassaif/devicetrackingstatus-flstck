@@ -19,8 +19,10 @@ class GetAuditsExportToExcelQuery
             $data = Audit::orderBy('updated_at', 'desc')->get();
 
             // Check if the data is empty 
-            if ($data->isEmpty()) { 
-                return response()->json(['error' => 'Audit Table is Empty'], 400); 
+            if ($data->isEmpty()) {
+                return response()->json([
+                    'message' => 'Audit Table is Empty.'
+                ], 400); 
             }
 
             // Create new Spreadsheet object

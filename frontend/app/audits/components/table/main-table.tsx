@@ -176,19 +176,22 @@ const MainTable: React.FC = () => {
                     });
                     
                 }
+                else if (response?.data?.error) {
+                    toast.error("Failed", {
+                        description: response.data.error,
+                    });
+                }
                 else
                 {
-                    const errorText = response?.data?.error || "Failed to Export Audits";
-                    toast.error("Failed", {
-                        description: errorText,
+                    toast.error("Error", {
+                        description: "Failed Export Audits",
                     });
-                    return;
                 }
             } 
             catch (error) 
             {
                 const errorMessage = error instanceof Error ? error.message : "Failed to handle Export Audits";
-                            toast.error("Failed", {
+                            toast.error("Handler Failed", {
                                 description: errorMessage,
                             });
             } finally {

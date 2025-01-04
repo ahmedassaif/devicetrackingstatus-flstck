@@ -30,16 +30,36 @@ export class AuditService extends BaseApiService {
   }
 
   public async exportAuditsToExcel(): Promise<AxiosResponse | undefined> {
-    const response = await this.api.get(`${ApiEndpoint.V1.ExportToExcel.Segment}`, {
-      responseType: "blob",
-    });
+    try {
+        const response = await this.api.get(`${ApiEndpoint.V1.ExportToExcel.Segment}`, {
+            responseType: "blob",
+        });
 
-    if (response.status !== 200) {
-      return undefined;
+        // If response status is not 200, parse the error message
+        if (response.status !== 200) {
+          const reader = new FileReader();
+          return new Promise((resolve, reject) => {
+              reader.onload = () => {
+                  if (reader.result) {
+                      const errorData = JSON.parse(reader.result as string);
+                      console.error('Failed to export audits: ', errorData);
+                      resolve({ status: response.status, data: errorData } as AxiosResponse);
+                  } else {
+                      reject(new Error('Failed to read response'));
+                  }
+              };
+              reader.onerror = () => reject(new Error('Failed to read response'));
+              reader.readAsText(response.data);
+          });
+      } else {
+          // Handle successful file download
+          FileDownloadHelper.downloadExcelFile(response);
+          return response;
+      }
+    } catch (error) {
+        console.error("Failed to export audits: ", error);
+        throw error;
     }
-
-    FileDownloadHelper.downloadExcelFile(response);
-
-    return response;
   }
+
 }
