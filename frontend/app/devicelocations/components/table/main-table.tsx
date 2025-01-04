@@ -183,13 +183,16 @@ const MainTable: React.FC = () => {
                 });
                 
             }
+            else if (response?.data?.message) {
+                toast.error("Failed", {
+                    description: response.data.message,
+                });
+            }
             else
             {
-                const errorText = response?.data?.error || "Failed to Export DeviceLocations";
-                toast.error("Failed", {
-                    description: errorText,
+                toast.error("Error", {
+                    description: "Failed Export Main Locations",
                 });
-                return;
             }
         } 
         catch (error) 

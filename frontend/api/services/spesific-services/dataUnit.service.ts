@@ -28,13 +28,43 @@ export class DataUnitService extends BaseApiService {
     }
 
     public async exportDataUnitsToExcel(): Promise<AxiosResponse | undefined> {
-        const response = await this.api.get(`${ApiEndpoint.V1.ExportToExcel.Segment}`, { responseType: 'blob', });
-        if (response.status !== 200) {
-            return undefined;
+        try {
+            const response = await this.api.get(`${ApiEndpoint.V1.ExportToExcel.Segment}`, {
+                    responseType: "blob",
+                    validateStatus: (status) => {
+                    return status < 500; // Resolve only if the status code is less than 500
+                }
+            });
+    
+            if (response.status === 200) {
+              // Handle successful file download
+                FileDownloadHelper.downloadExcelFile(response);
+                return response;
+            } else {
+                // Handle error response
+                const reader = new FileReader();
+                return new Promise((resolve, reject) => {
+                    reader.onloadend = () => {
+                        if (reader.result) {
+                            try {
+                                const errorData = JSON.parse(reader.result as string);
+                                console.error("Error data: ", errorData);
+                                resolve({ status: response.status, data: errorData } as AxiosResponse);
+                            } catch (error) {
+                                reject(new Error(`Failed to parse error response: ${error}`));
+                            }
+                        } else {
+                            reject(new Error('Failed to read response'));
+                        }
+                    };
+                    reader.onerror = () => reject(new Error('Failed to read response'));
+                    reader.readAsText(response.data);
+                });
+            }
+        } catch (error) {
+            console.error("Failed to export DataUnits: ", error);
+            throw error;
         }
-        
-        FileDownloadHelper.downloadExcelFile(response);
-        return response;
     }
 
     public async getLookupAllDataUnits(): Promise<ResponseResult<ListResponse<DataUnitDto>>> {

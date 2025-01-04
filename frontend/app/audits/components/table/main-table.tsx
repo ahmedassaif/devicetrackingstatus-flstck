@@ -176,9 +176,9 @@ const MainTable: React.FC = () => {
                     });
                     
                 }
-                else if (response?.data?.error) {
+                else if (response?.data?.message) {
                     toast.error("Failed", {
-                        description: response.data.error,
+                        description: response.data.message,
                     });
                 }
                 else
