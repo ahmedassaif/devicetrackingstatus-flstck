@@ -36,25 +36,25 @@ export const columns: ColumnDef<GetAuditsAudit>[] = [
         cell: ({ row }) => {
             const oldValues = row.getValue("old_values");
             const formattedValues = oldValues && oldValues !== "[]" 
-            ? JSON.parse(oldValues as string).map((item: { key: string; value: string }, index: number) => (
+            ? Object.keys(JSON.parse(oldValues as string)).map((key: string, index: number) => (
                 <tr key={index}>
-                    <td>{item.key}</td>
-                    <td>{item.value}</td>
+                    <td>{key}</td>
+                    <td>{JSON.parse(oldValues as string)[key]}</td>
                 </tr>
                 ))
             : <tr><td colSpan={2}>N/A</td></tr>;
             return (
-            <table>
+                <table>
                 <thead>
-                <tr>
+                    <tr>
                     <th>Key</th>
                     <th>Value</th>
-                </tr>
+                    </tr>
                 </thead>
                 <tbody>
                     {formattedValues}
                 </tbody>
-            </table>
+                </table>
             );
         },
     },
@@ -62,27 +62,27 @@ export const columns: ColumnDef<GetAuditsAudit>[] = [
         header: "New Values",
         accessorKey: "new_values",
         cell: ({ row }) => {
-            const oldValues = row.getValue("new_values");
-            const formattedValues = oldValues && oldValues !== "[]" 
-            ? JSON.parse(oldValues as string).map((item: { key: string; value: string }, index: number) => (
+            const newValues = row.getValue("new_values");
+            const formattedValues = newValues && newValues !== "[]" 
+            ? Object.keys(JSON.parse(newValues as string)).map((key: string, index: number) => (
                 <tr key={index}>
-                    <td>{item.key}</td>
-                    <td>{item.value}</td>
+                    <td>{key}</td>
+                    <td>{JSON.parse(newValues as string)[key]}</td>
                 </tr>
                 ))
             : <tr><td colSpan={2}>N/A</td></tr>;
             return (
-            <table>
+                <table>
                 <thead>
-                <tr>
+                    <tr>
                     <th>Key</th>
                     <th>Value</th>
-                </tr>
+                    </tr>
                 </thead>
                 <tbody>
                     {formattedValues}
                 </tbody>
-            </table>
+                </table>
             );
         },
     },
