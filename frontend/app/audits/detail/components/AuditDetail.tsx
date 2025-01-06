@@ -152,6 +152,9 @@ const AuditDetail: React.FC<AuditDetailProps> = ({ auditId }) => {
                 <div className="rounded bg-gray-100 p-4 shadow">
                   <h2 className="font-bold">Client Application ID</h2>
                   <p>{audit?.user_id || 'N/A'}</p>
+                </div><div className="rounded bg-gray-100 p-4 shadow">
+                  <h2 className="font-bold">Client Application Name</h2>
+                  <p>{audit?.user_type || 'N/A'}</p>
                 </div>
                 <div className="rounded bg-gray-100 p-4 shadow">
                   <h2 className="font-bold">From IP Address</h2>
