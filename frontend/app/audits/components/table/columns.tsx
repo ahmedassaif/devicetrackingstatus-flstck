@@ -34,40 +34,56 @@ export const columns: ColumnDef<GetAuditsAudit>[] = [
         header: "Old Values",
         accessorKey: "old_values",
         cell: ({ row }) => {
-        const oldValues = row.getValue("old_values");
-        return (
-            <div>
-            {oldValues && oldValues !== "[]" ? (
-                <pre className="whitespace-pre-wrap break-words">
-                {JSON.stringify(oldValues, null, 2)
-                    .replace(/"/g, "'")
-                    .replace(/\\/g, "")}
-                </pre>
-            ) : (
-                "N/A"
-            )}
-            </div>
-        );
+            const oldValues = row.getValue("old_values");
+            const formattedValues = oldValues && oldValues !== "[]" 
+            ? JSON.parse(oldValues as string).map((item: { key: string; value: string }, index: number) => (
+                <tr key={index}>
+                    <td>{item.key}</td>
+                    <td>{item.value}</td>
+                </tr>
+                ))
+            : <tr><td colSpan={2}>N/A</td></tr>;
+            return (
+            <table>
+                <thead>
+                <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {formattedValues}
+                </tbody>
+            </table>
+            );
         },
     },
     {
         header: "New Values",
         accessorKey: "new_values",
         cell: ({ row }) => {
-        const newValues = row.getValue("new_values");
-        return (
-            <div>
-            {newValues && newValues !== "[]" ? (
-                <pre className="whitespace-pre-wrap break-words">
-                {JSON.stringify(newValues, null, 2)
-                    .replace(/"/g, "'")
-                    .replace(/\\/g, "")}
-                </pre>
-            ) : (
-                "N/A"
-            )}
-            </div>
-        );
+            const oldValues = row.getValue("new_values");
+            const formattedValues = oldValues && oldValues !== "[]" 
+            ? JSON.parse(oldValues as string).map((item: { key: string; value: string }, index: number) => (
+                <tr key={index}>
+                    <td>{item.key}</td>
+                    <td>{item.value}</td>
+                </tr>
+                ))
+            : <tr><td colSpan={2}>N/A</td></tr>;
+            return (
+            <table>
+                <thead>
+                <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {formattedValues}
+                </tbody>
+            </table>
+            );
         },
     },
     {
