@@ -11,11 +11,29 @@ import loadingBackground from "@/public/images/beams.jpg";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-const prettifyJson = (json: string): string => {
+const prettifyJson = (jsonString: string) => {
   try {
-    return JSON.stringify(JSON.parse(json), null, 2);
-  } catch {
-    return json;
+      // Parse the JSON string into an object
+      const jsonObject = JSON.parse(jsonString);
+  
+      // Convert the object back to a JSON string with indentation
+      const formattedJson = JSON.stringify(jsonObject, null, 2)
+          .replace(/"/g, "'") // Replace double quotes with single quotes
+          .replace(/\\/g, ""); // Remove escape characters
+  
+      // Add a tab space at the beginning of each line (except the first and last lines)
+      const lines = formattedJson.split("\n");
+      const formattedLines = lines.map((line, index) => {
+          if (index === 0 || index === lines.length - 1) {
+          return line; // Skip the first and last lines
+          }
+          return `\t${line}`; // Add a tab space to the beginning of the line
+      });
+  
+      return formattedLines.join("\n"); // Join the lines back together
+  } catch (error) {
+      console.error("Error formatting JSON:", error);
+      return jsonString; // Return the original string if parsing fails
   }
 };
 
