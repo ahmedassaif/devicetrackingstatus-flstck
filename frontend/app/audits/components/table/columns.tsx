@@ -35,27 +35,42 @@ export const columns: ColumnDef<GetAuditsAudit>[] = [
         accessorKey: "old_values",
         cell: ({ row }) => {
             const oldValues = row.getValue("old_values");
-            const formattedValues = oldValues && oldValues !== "[]" 
-            ? Object.keys(JSON.parse(oldValues as string)).map((key: string, index: number) => (
-                <tr key={index}>
-                    <td>{key}</td>
-                    <td>{JSON.parse(oldValues as string)[key]}</td>
-                </tr>
-                ))
-            : <tr><td colSpan={2}>N/A</td></tr>;
-            return (
-                <table>
-                <thead>
-                    <tr>
-                    <th>Key</th>
-                    <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {formattedValues}
-                </tbody>
-                </table>
-            );
+            if (oldValues !== "[]") {
+                return (
+                    <table>
+                    <thead>
+                        <tr>
+                            <th colSpan={3}>{'{'}</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            Object.keys(JSON.parse(oldValues as string)).map((key: string, index: number) => (
+                                <tr key={index}>
+                                    <td colSpan={3}></td>
+                                    <td>{key}</td>
+                                    <td>:</td>
+                                    <td>{JSON.parse(oldValues as string)[key]}</td>
+                                </tr>
+                            ))
+                        }
+                        <tr>
+                            <td colSpan={3}>{'}'}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                    </table>
+                );
+            }
+            else
+            {
+                return () => "N/A";
+            }
         },
     },
     {
@@ -63,27 +78,42 @@ export const columns: ColumnDef<GetAuditsAudit>[] = [
         accessorKey: "new_values",
         cell: ({ row }) => {
             const newValues = row.getValue("new_values");
-            const formattedValues = newValues && newValues !== "[]" 
-            ? Object.keys(JSON.parse(newValues as string)).map((key: string, index: number) => (
-                <tr key={index}>
-                    <td>{key}</td>
-                    <td>{JSON.parse(newValues as string)[key]}</td>
-                </tr>
-                ))
-            : <tr><td colSpan={2}>N/A</td></tr>;
-            return (
-                <table>
-                <thead>
-                    <tr>
-                    <th>Key</th>
-                    <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {formattedValues}
-                </tbody>
-                </table>
-            );
+            if (newValues !== "[]") {
+                return (
+                    <table>
+                    <thead>
+                        <tr>
+                            <th colSpan={3}>{'{'}</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            Object.keys(JSON.parse(newValues as string)).map((key: string, index: number) => (
+                                <tr key={index}>
+                                    <td colSpan={3}></td>
+                                    <td>{key}</td>
+                                    <td>:</td>
+                                    <td>{JSON.parse(newValues as string)[key]}</td>
+                                </tr>
+                            ))
+                        }
+                        <tr>
+                            <td colSpan={3}>{'}'}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                    </table>
+                );
+            }
+            else
+            {
+                return () => "N/A";
+            }
         },
     },
     {
