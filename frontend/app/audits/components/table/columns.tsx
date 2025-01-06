@@ -37,33 +37,33 @@ export const columns: ColumnDef<GetAuditsAudit>[] = [
             const oldValues = row.getValue("old_values");
             if (oldValues !== "[]") {
                 return (
-                    <table>
-                    <thead>
-                        <tr>
-                            <th colSpan={3}>{'{'}</th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            Object.keys(JSON.parse(oldValues as string)).map((key: string, index: number) => (
-                                <tr key={index}>
-                                    <td colSpan={3}></td>
-                                    <td>{key}</td>
-                                    <td>:</td>
-                                    <td>{JSON.parse(oldValues as string)[key]}</td>
-                                </tr>
-                            ))
-                        }
-                        <tr>
-                            <td colSpan={3}>{'}'}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
+                    <table className="table-auto">
+                        <thead>
+                            <tr>
+                                <th colSpan={3}>{'{'}</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                Object.keys(JSON.parse(oldValues as string)).map((key: string, index: number) => (
+                                    <tr key={index}>
+                                        <td colSpan={3}>{' '}</td>
+                                        <td>{key}</td>
+                                        <td>:</td>
+                                        <td>{JSON.parse(oldValues as string)[key]}</td>
+                                    </tr>
+                                ))
+                            }
+                            <tr>
+                                <td colSpan={3}>{'}'}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
                     </table>
                 );
             }
