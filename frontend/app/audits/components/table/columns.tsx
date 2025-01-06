@@ -1,8 +1,34 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
+ 
+import { GetAuditsAudit } from "@/api/services/types/audit.types";
+import { ColumnDef } from "@tanstack/react-table";
 
-import { GetAuditsAudit } from "@/api/services/types/audit.types"
-import { ColumnDef } from "@tanstack/react-table"
+const formatJson = (jsonString: string) => {
+    try {
+        // Parse the JSON string into an object
+        const jsonObject = JSON.parse(jsonString);
+    
+        // Convert the object back to a JSON string with indentation
+        const formattedJson = JSON.stringify(jsonObject, null, 2)
+            .replace(/"/g, "'") // Replace double quotes with single quotes
+            .replace(/\\/g, ""); // Remove escape characters
+    
+        // Add a tab space at the beginning of each line (except the first and last lines)
+        const lines = formattedJson.split("\n");
+        const formattedLines = lines.map((line, index) => {
+            if (index === 0 || index === lines.length - 1) {
+            return line; // Skip the first and last lines
+            }
+            return `\t${line}`; // Add a tab space to the beginning of the line
+        });
+    
+        return formattedLines.join("\n"); // Join the lines back together
+    } catch (error) {
+        console.error("Error formatting JSON:", error);
+        return jsonString; // Return the original string if parsing fails
+    }
+};
 
 export const columns: ColumnDef<GetAuditsAudit>[] = [
     {
@@ -35,87 +61,37 @@ export const columns: ColumnDef<GetAuditsAudit>[] = [
         accessorKey: "old_values",
         cell: ({ row }) => {
             const oldValues = row.getValue("old_values");
-            if (oldValues !== "[]") {
-                return (
-                    <table className="table-auto">
-                        <thead>
-                            <tr>
-                                <th colSpan={3}>{'{'}</th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                Object.keys(JSON.parse(oldValues as string)).map((key: string, index: number) => (
-                                    <tr key={index}>
-                                        <td colSpan={3}>{' '}</td>
-                                        <td>{key}</td>
-                                        <td>:</td>
-                                        <td>{JSON.parse(oldValues as string)[key]}</td>
-                                    </tr>
-                                ))
-                            }
-                            <tr>
-                                <td colSpan={3}>{'}'}</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                );
-            }
-            else
-            {
-                return () => "N/A";
-            }
+            return (
+            <div>
+                {oldValues && oldValues !== "[]" ? (
+                <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                    {formatJson(String(oldValues))}
+                </pre>
+                ) : (
+                "N/A"
+                )}
+            </div>
+            );
         },
-    },
-    {
+        },
+        {
         header: "New Values",
         accessorKey: "new_values",
         cell: ({ row }) => {
             const newValues = row.getValue("new_values");
-            if (newValues !== "[]") {
-                return (
-                    <table>
-                    <thead>
-                        <tr>
-                            <th colSpan={3}>{'{'}</th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            Object.keys(JSON.parse(newValues as string)).map((key: string, index: number) => (
-                                <tr key={index}>
-                                    <td colSpan={3}></td>
-                                    <td>{key}</td>
-                                    <td>:</td>
-                                    <td>{JSON.parse(newValues as string)[key]}</td>
-                                </tr>
-                            ))
-                        }
-                        <tr>
-                            <td colSpan={3}>{'}'}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                    </table>
-                );
-            }
-            else
-            {
-                return () => "N/A";
-            }
+            return (
+            <div>
+                {newValues && newValues !== "[]" ? (
+                <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                    {formatJson(String(newValues))}
+                </pre>
+                ) : (
+                "N/A"
+                )}
+            </div>
+            );
         },
-    },
+        },
     {
         header: "URL",
         accessorKey: "url",
