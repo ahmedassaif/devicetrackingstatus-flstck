@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
- 
-import { GetAuditsAudit } from "@/api/services/types/audit.types";
-import { ColumnDef } from "@tanstack/react-table";
-import styles from "./columns.module.css";
+
+import { GetAuditsAudit } from "@/api/services/types/audit.types"
+import { ColumnDef } from "@tanstack/react-table"
 
 export const columns: ColumnDef<GetAuditsAudit>[] = [
     {
@@ -35,44 +34,40 @@ export const columns: ColumnDef<GetAuditsAudit>[] = [
         header: "Old Values",
         accessorKey: "old_values",
         cell: ({ row }) => {
-          const oldValues = row.getValue("old_values");
-          return (
+        const oldValues = row.getValue("old_values");
+        return (
             <div>
-              {oldValues && oldValues !== "[]" ? (
-                <pre className={styles.preWrapper}>
-                    <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-                    {JSON.stringify(oldValues, null, 2)
-                        .replace(/"/g, "'") // Replace double quotes with single quotes
-                        .replace(/\\/g, "") // Remove escape characters
-                    }
-                    </pre>
+            {oldValues && oldValues !== "[]" ? (
+                <pre className="whitespace-pre-wrap break-words">
+                {JSON.stringify(oldValues, null, 2)
+                    .replace(/"/g, "'")
+                    .replace(/\\/g, "")}
                 </pre>
-              ) : (
+            ) : (
                 "N/A"
-              )}
+            )}
             </div>
-          );
+        );
         },
-      },
-      {
+    },
+    {
         header: "New Values",
         accessorKey: "new_values",
         cell: ({ row }) => {
-          const newValues = row.getValue("new_values");
-          return (
+        const newValues = row.getValue("new_values");
+        return (
             <div>
-              {newValues && newValues !== "[]" ? (
-                <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-                  {JSON.stringify(newValues, null, 2)
-                    .replace(/"/g, "'") // Replace double quotes with single quotes
-                    .replace(/\\/g, "") // Remove escape characters
-                  }
+            {newValues && newValues !== "[]" ? (
+                <pre className="whitespace-pre-wrap break-words">
+                {JSON.stringify(newValues, null, 2)
+                    .replace(/"/g, "'")
+                    .replace(/\\/g, "")}
                 </pre>
-              ) : (
+            ) : (
                 "N/A"
-              )}
+            )}
             </div>
-          );
+        );
         },
     },
     {
