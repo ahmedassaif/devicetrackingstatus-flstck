@@ -5,8 +5,52 @@ import * as SelectPrimitive from "@radix-ui/react-select"
 import { Check, ChevronDown } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { useDataUnits } from "@/hooks/useDataUnits"
 import { SelectContent, SelectGroup, SelectLabel, SelectValue } from "@/components/ui/select"
+import { ListResponse, ResponseResult } from "@/api/services/types/commonResponses.types"
+import { DataUnitDto } from "@/api/services/types/dataUnit.types"
+import { DataUnitService } from "@/api/services/spesific-services/dataUnit.service"
+
+// Custom Hook Logic
+function useDataUnits() {
+    const [dataUnits, setDataUnits] = React.useState<DataUnitDto[]>([])
+
+    const handleDataUnitsResponse = React.useCallback(
+        (response: ResponseResult<ListResponse<DataUnitDto>>) => {
+        if (response.error) {
+            setDataUnits([]) // Clear DataUnits on error
+            return
+        }
+
+        if (Array.isArray(response.result)) {
+          setDataUnits(response.result) // Update DataUnits with fetched data
+        } else {
+          setDataUnits([]) // Clear DataUnits on unexpected response
+        }
+        },
+        [setDataUnits]
+    )
+
+    React.useEffect(() => {
+        const fetchData = async () => {
+        try {
+            const dataUnitService = new DataUnitService()
+            const response = await dataUnitService.getLookupAllDataUnits()
+
+            if (response.result) {
+            handleDataUnitsResponse(response)
+            } else {
+            console.error("Error: No result in response")
+            }
+        } catch (error) {
+            console.error("Error fetching data units:", error)
+        }
+    }
+
+    fetchData()
+    }, [handleDataUnitsResponse])
+
+    return dataUnits
+}
 
 const Select = SelectPrimitive.Root
 
