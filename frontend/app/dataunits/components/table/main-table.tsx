@@ -10,18 +10,14 @@ import { PaginatedListResponse, ResponseResult, SuccessResponse, toTableData } f
 import { columns } from "./columns";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { CircleX, Eye, RotateCw, SearchIcon, SheetIcon, Trash2,CircleCheck, LucidePencil } from "lucide-react";
+import { CircleX, Eye, RotateCw, SearchIcon, SheetIcon, Trash2,CircleCheck, LucidePencil, FilterIcon } from "lucide-react";
 import loadingBackground from "@/public/images/beams.jpg";
 import { useRouter } from "next/navigation";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle
-} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import DeleteDialog from "@/components/dialog/confirmtodelete.dialog";
+import TimeFilter from "@/components/dialog/timefilter.dialog";
+import timeFilterModel from "@/hooks/timeFilterModel";
+import { format } from "date-fns";
 
 const MainTable: React.FC = () => {
 
@@ -38,8 +34,10 @@ const MainTable: React.FC = () => {
     const [hasSearched, setHasSearched] = useState<boolean>(false);
     const [rows, setRows] = useState<number>(10);
     const [loadingDownloadFile, setLoadingDownloadFile] = useState<boolean>(false);
-    const [dialogOpen, setDialogOpen] = useState(false);
+    const [dialogDeleteOpen, setDialogDeleteOpen] = useState(false);
     const [currentId, setCurrentId] = useState<string | null>(null);
+    const [isTimeFilterDialogOpen, setIsTimeFilterDialogOpen] = useState(false);
+    const [filterModel, setFilterModel] = useState(timeFilterModel);
 
     const router = useRouter(); // Move useRouter here
 
@@ -75,22 +73,31 @@ const MainTable: React.FC = () => {
         [pageSize] // Add pageSize in dependency array to ensure it triggers when pageSize changes
     );
 
+    const formatDateToCustomFormat = (date: Date): string => {
+            return format(date, "yyyy-MM-dd HH:mm:ss");
+    };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         const source: CancelTokenSource = axios.CancelToken.source();
 
         const fetchDataUnits = async () => {
-        setLoading(true);
-        setError(null); // Reset previous errors on new fetch
-                
+            
+            setLoading(true);
+            setError(null); // Reset previous errors on new fetch
+            
+            // Example usage
+            const fromDateFormatted = formatDateToCustomFormat(filterModel.from);
+            const toDateFormatted = formatDateToCustomFormat(filterModel.to);
+            
             const request: PaginatedListRequest = {
                 page: currentPage,
                 pageSize: pageSize,
                 searchText: keyword?.trim() ? keyword : undefined,
                 sortField: sortField,
                 sortOrder: sortOrder,
-                from: undefined,
-                to: undefined,
+                from: fromDateFormatted, // Use the `from` value from filterModel
+                to: toDateFormatted, // Use the `to` value from filterModel
                 cancelToken: source.token, // Add cancel token directly
             };
             
@@ -116,7 +123,7 @@ const MainTable: React.FC = () => {
         fetchDataUnits();
 
         return () => source.cancel('Request canceled by the user.');
-    }, [currentPage, handleDataUnitResponse, pageSize, keyword, sortField, sortOrder]);
+    }, [currentPage, handleDataUnitResponse, pageSize, keyword, sortField, sortOrder, filterModel]);
 
     const handleSort = (field: string) => {
         if (sortField === field) {
@@ -213,7 +220,7 @@ const MainTable: React.FC = () => {
             const response: ResponseResult<SuccessResponse> = await dataUnitService.deleteDataUnit(id);
             if (response.result) {
                 setDataUnits(dataUnits.filter(unit => unit.id !== id)); // Update state to remove deleted item
-                setDialogOpen(false); // Close the dialog
+                setDialogDeleteOpen(false); // Close the dialog
                 toast.success("Success", {
                     description: "Data Lokasi Kerja berhasil dihapus!",
                 });
@@ -236,8 +243,8 @@ const MainTable: React.FC = () => {
 
     const handleClickToDelete = (DataUnitId: string) => {
         setCurrentId(DataUnitId);
-        setDialogOpen(true);
-      };
+        setDialogDeleteOpen(true);
+    };
 
     return (
         <div className="container h-full">
@@ -298,9 +305,13 @@ const MainTable: React.FC = () => {
                             </form>
                         </div>
                         <div className="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
+                            <Button variant={"outline"} onClick={() => setIsTimeFilterDialogOpen(true)}>
+                                <FilterIcon size={20} />
+                                Open Time Filter
+                            </Button>
                             <Button className="bg-lime-500 pr-2" onClick={handleExport}>
-                            {showLoadingForDownloadExcel}
-                            Export Data Lokasi Kerja
+                                {showLoadingForDownloadExcel}
+                                Export Data Lokasi Kerja
                             </Button>
                         </div>
                         </div>
@@ -351,9 +362,19 @@ const MainTable: React.FC = () => {
                         />
                     </div>
                     <DeleteDialog
-                        isOpen={dialogOpen}
-                        onOpenChange={setDialogOpen}
+                        isOpen={dialogDeleteOpen}
+                        onOpenChange={setDialogDeleteOpen}
                         onDelete={() => handleDelete(currentId!)}
+                    />
+                    {/* Render the TimeFilter dialog */}
+                    <TimeFilter
+                        isOpen={isTimeFilterDialogOpen}
+                        onOpenChange={setIsTimeFilterDialogOpen}
+                        title="Set Time Filter"
+                        timeFilterModel={filterModel} // Pass the current model
+                        onUpdateModel={(updatedModel) => {
+                            setFilterModel(updatedModel); // Update the model in the parent component
+                        }}
                     />
                 </div>
             )}

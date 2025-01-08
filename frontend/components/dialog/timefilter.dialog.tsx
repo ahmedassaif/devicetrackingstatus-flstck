@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
@@ -42,6 +43,9 @@ const TimeFilter: React.FC<TimeFilterProps> = ({
     timeFilterModel,
     onUpdateModel, // Destructure the new prop
 }) => {
+
+    const [fromPopoverOpen, setFromPopoverOpen] = useState(false); 
+    const [toPopoverOpen, setToPopoverOpen] = useState(false);
 
     const [fromDate, setFromDate] = useState<Date>(() => {
         const date = timeFilterModel.fromDate;
@@ -131,49 +135,57 @@ const TimeFilter: React.FC<TimeFilterProps> = ({
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div className="rounded p-4">
                                 <h2 className="font-bold">Date From</h2>
-                                <Popover>
+                                <Popover open={fromPopoverOpen} onOpenChange={setFromPopoverOpen}>
                                     <PopoverTrigger asChild>
                                         <Button
-                                        variant={"outline"}
-                                        className={cn(
-                                            "w-full justify-start text-left font-normal",
-                                            !fromDate && "text-muted-foreground"
-                                        )}
+                                            variant={"outline"}
+                                            className={cn(
+                                                "w-full justify-start text-left font-normal",
+                                                !fromDate && "text-muted-foreground"
+                                                )}
+                                            onClick={() => setFromPopoverOpen(true)}
                                         >
-                                        <CalendarIcon />
-                                        {fromDate ? format(fromDate, "PPP") : <span>Pick a date</span>}
+                                            <CalendarIcon />
+                                            {fromDate ? format(fromDate, "PPP") : <span>Pick a date</span>}
                                         </Button>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-full p-0" align="start">
                                         <Calendar
-                                        mode="single"
-                                        selected={fromDate}
-                                        onSelect={(date: Date | undefined) => date && setFromDate(date)}
-                                        initialFocus
+                                            mode="single"
+                                            selected={fromDate}
+                                            onSelect={(date: Date | undefined) => {
+                                                date && setFromDate(date);
+                                                setFromPopoverOpen(false);
+                                            }}
+                                            initialFocus
                                         />
                                     </PopoverContent>
                                 </Popover>
                             </div>
                             <div className="rounded p-4">
                                 <h2 className="font-bold">Date To</h2>
-                                <Popover>
+                                <Popover open={toPopoverOpen} onOpenChange={setToPopoverOpen}>
                                     <PopoverTrigger asChild>
                                         <Button
-                                        variant={"outline"}
-                                        className={cn(
-                                            "w-full justify-start text-left font-normal",
-                                            !toDate && "text-muted-foreground"
-                                        )}
+                                            variant={"outline"}
+                                            className={cn(
+                                                        "w-full justify-start text-left font-normal",
+                                                        !toDate && "text-muted-foreground"
+                                                    )}
+                                            onClick={() => setToPopoverOpen(true)}
                                         >
-                                        <CalendarIcon />
-                                        {toDate ? format(toDate, "PPP") : <span>Pick a date</span>}
+                                            <CalendarIcon />
+                                            {toDate ? format(toDate, "PPP") : <span>Pick a date</span>}
                                         </Button>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-auto p-0" align="start">
                                         <Calendar
                                         mode="single"
                                         selected={toDate}
-                                        onSelect={(date: Date | undefined) => date && setToDate(date)}
+                                        onSelect={(date: Date | undefined) => {
+                                            date && setToDate(date);
+                                            setToPopoverOpen(false);
+                                        }}
                                         initialFocus
                                         />
                                     </PopoverContent>

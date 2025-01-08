@@ -16,9 +16,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import TimeFilter from "@/components/dialog/timefilter.dialog";
 import timeFilterModel from "@/hooks/timeFilterModel";
-import { TimeValue } from '@react-types/datepicker';
 import { format } from "date-fns";
-import { Time } from '@internationalized/date';
 
 const MainTable: React.FC = () => {
     const [audits, setAudits] = useState<GetAuditsAudit[]>([]);
@@ -72,23 +70,6 @@ const MainTable: React.FC = () => {
         },
         [pageSize] // Add pageSize in dependency array to ensure it triggers when pageSize changes
     );
-
-    // Callback function to update the timeFilterModel
-    const handleSetTimeFilter = (
-        fromDate: Date,
-        fromTime: Time,
-        toDate: Date,
-        toTime: Time
-    ) => {
-        // Update the filter model with the new values
-        setFilterModel((prev) => ({
-            ...prev,
-            fromDate,
-            fromTime,
-            toDate,
-            toTime,
-        }));
-    };
 
     const formatDateToCustomFormat = (date: Date): string => {
         return format(date, "yyyy-MM-dd HH:mm:ss");
@@ -261,7 +242,7 @@ const MainTable: React.FC = () => {
                     <div className="w-full">
                     <div className="relative bg-white shadow-md sm:rounded-lg dark:bg-gray-800">
                         <div className="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
-                            <div className="w-full md:w-1/2">
+                            <div className="w-full md:w-1/4">
                                 <form onSubmit={searchData} className="flex items-center space-x-1 pl-2">
                                     <div className="relative w-full">
                                         <input 
