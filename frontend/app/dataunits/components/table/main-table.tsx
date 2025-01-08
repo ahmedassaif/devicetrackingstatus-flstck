@@ -270,54 +270,55 @@ const MainTable: React.FC = () => {
                 <p className="text-red-600">Error: {error}</p>
             ) : (
                 <div>
-                <section className="flex w-full items-center pb-2 dark:bg-gray-900">
-                    <div className="w-full">
-                    <div className="relative bg-white shadow-md sm:rounded-lg dark:bg-gray-800">
-                        <div className="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
-                        <div className="w-full md:w-1/2">
-                            <form onSubmit={searchData} className="flex items-center space-x-1 pl-2">
-                            <div className="relative w-full">
-                                <input 
-                                type="text"
-                                value={query}
-                                onChange={(e) => setQuery(e.target.value)}
-                                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pe-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500  dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" 
-                                placeholder="Ketik pencarian disini..." />
-                                {query && (
-                                <div className="absolute inset-y-0 end-0 flex items-center pe-3.5">
-                                    <CircleX
-                                    className="cursor-pointer" 
-                                    onClick={handleClearInput} 
-                                    size={20} 
-                                    />
-                                </div>
-                                )}
-                            </div>
-
-                            {/* Custom button */}
-                            <button
-                                type="submit"
-                                className="rounded-full bg-blue-500 p-2 text-white hover:bg-blue-600 focus:outline-none"
-                                aria-label="search"
-                            >
-                                <SearchIcon size={25} />
-                            </button>
-                            </form>
-                        </div>
-                        <div className="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
-                            <Button variant={"outline"} onClick={() => setIsTimeFilterDialogOpen(true)}>
-                                <FilterIcon size={20} />
-                                Open Time Filter
-                            </Button>
-                            <Button className="bg-lime-500 pr-2" onClick={handleExport}>
-                                {showLoadingForDownloadExcel}
-                                Export Data Lokasi Kerja
-                            </Button>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
-                    </section>
+                    <div className="grid grid-cols-3 gap-4 p-4 shadow-md sm:rounded-lg">
+                                            <div>
+                                                <div className="flex w-full shrink-0 flex-col items-stretch justify-start space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
+                                                    <form onSubmit={searchData} className="flex items-center space-x-1">
+                                                        <div className="relative w-full">
+                                                        <input 
+                                                            type="text"
+                                                            value={query}
+                                                            onChange={(e) => setQuery(e.target.value)}
+                                                            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500  dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" 
+                                                            placeholder="Ketik pencarian disini..." />
+                                                            {query && (
+                                                                    <div className="absolute inset-y-0 end-0 flex items-center pe-3.5">
+                                                                    <CircleX
+                                                                        className="cursor-pointer" 
+                                                                        onClick={handleClearInput} 
+                                                                        size={20} 
+                                                                        />
+                                                                    </div>
+                                                                    )}
+                                                                </div>
+                    
+                                                                {/* Custom button */}
+                                                                <button
+                                                                    type="submit"
+                                                                    className="rounded-full bg-blue-500 p-2 text-white hover:bg-blue-600 focus:outline-none"
+                                                                    aria-label="search"
+                                                                >
+                                                                    <SearchIcon size={25} />
+                                                                </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center justify-center">
+                                                <p>Data from <b>{filterModel.from.toLocaleString()}</b> to <b>{filterModel.to.toLocaleString()}</b> </p>
+                                            </div>
+                                            <div>
+                                                        <div className="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
+                                                            <Button variant={"outline"} onClick={() => setIsTimeFilterDialogOpen(true)}>
+                                                                <FilterIcon size={20} />
+                                                                Open Time Filter
+                                                            </Button>
+                                                            <Button className="bg-lime-500 pr-2" onClick={handleExport}>
+                                                                {showLoadingForDownloadExcel}
+                                                                Export DataUnit
+                                                            </Button>
+                                                        </div>
+                                            </div>
+                                        </div>
                     <div className="container mx-auto overflow-x-auto">
                         <DataTable
                             columns={columns.map(column => {
