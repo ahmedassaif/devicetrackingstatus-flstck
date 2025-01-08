@@ -10,10 +10,14 @@ import { PaginatedListResponse, ResponseResult, toTableData } from "@/api/servic
 import { columns } from "./columns";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { CircleCheck, CircleX, Eye, RotateCw, SearchIcon, SheetIcon } from "lucide-react";
+import { CircleCheck, CircleX, Eye, FilterIcon, RotateCw, SearchIcon, SheetIcon } from "lucide-react";
 import loadingBackground from "@/public/images/beams.jpg";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import TimeFilter from "@/components/dialog/timefilter.dialog";
+import timeFilterModel from "@/hooks/timeFilterModel";
+import { TimeValue } from '@react-types/datepicker';
+import { format } from "date-fns";
 
 const MainTable: React.FC = () => {
     const [audits, setAudits] = useState<GetAuditsAudit[]>([]);
@@ -29,6 +33,8 @@ const MainTable: React.FC = () => {
     const [hasSearched, setHasSearched] = useState<boolean>(false);
     const [rows, setRows] = useState<number>(10);
     const [loadingDownloadFile, setLoadingDownloadFile] = useState<boolean>(false);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [filterModel, setFilterModel] = useState(timeFilterModel);
 
     const router = useRouter(); // Move useRouter here
 
@@ -66,6 +72,27 @@ const MainTable: React.FC = () => {
         [pageSize] // Add pageSize in dependency array to ensure it triggers when pageSize changes
     );
 
+    // Callback function to update the timeFilterModel
+    const handleSetTimeFilter = (
+        fromDate: Date,
+        fromTime: TimeValue,
+        toDate: Date,
+        toTime: TimeValue
+    ) => {
+        // Update the filter model with the new values
+        setFilterModel((prev) => ({
+            ...prev,
+            fromDate,
+            fromTime,
+            toDate,
+            toTime,
+        }));
+    };
+
+    const formatDateToCustomFormat = (date: Date): string => {
+        return format(date, "yyyy-MM-dd HH:mm:ss");
+    };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         const source: CancelTokenSource = axios.CancelToken.source();
@@ -73,17 +100,23 @@ const MainTable: React.FC = () => {
         const fetchAudits = async () => {
         setLoading(true);
         setError(null); // Reset previous errors on new fetch
-                
+        
+        // Example usage
+        const fromDateFormatted = formatDateToCustomFormat(filterModel.from);
+        const toDateFormatted = formatDateToCustomFormat(filterModel.to);
+        
         const request: PaginatedListRequest = {
             page: currentPage,
             pageSize: pageSize,
             searchText: keyword?.trim() ? keyword : undefined,
             sortField: sortField,
             sortOrder: sortOrder,
-            from: undefined,
-            to: undefined,
+            from: fromDateFormatted, // Use the `from` value from filterModel
+            to: toDateFormatted, // Use the `to` value from filterModel
             cancelToken: source.token, // Add cancel token directly
         };
+
+        console.log(request);
         
         try {
             const auditService = new AuditService();
@@ -108,7 +141,7 @@ const MainTable: React.FC = () => {
         fetchAudits();
       
         return () => source.cancel('Request canceled by the user.');
-      }, [currentPage, handleAuditResponse, pageSize, keyword, sortField, sortOrder]);
+      }, [currentPage, handleAuditResponse, pageSize, keyword, sortField, sortOrder, filterModel]);
 
     
 
@@ -227,42 +260,46 @@ const MainTable: React.FC = () => {
                     <div className="w-full">
                     <div className="relative bg-white shadow-md sm:rounded-lg dark:bg-gray-800">
                         <div className="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
-                        <div className="w-full md:w-1/2">
-                            <form onSubmit={searchData} className="flex items-center space-x-1 pl-2">
-                            <div className="relative w-full">
-                                <input 
-                                type="text"
-                                value={query}
-                                onChange={(e) => setQuery(e.target.value)}
-                                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pe-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500  dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" 
-                                placeholder="Ketik pencarian disini..." />
-                                {query && (
-                                <div className="absolute inset-y-0 end-0 flex items-center pe-3.5">
-                                    <CircleX
-                                    className="cursor-pointer" 
-                                    onClick={handleClearInput} 
-                                    size={20} 
-                                    />
-                                </div>
-                                )}
-                            </div>
+                            <div className="w-full md:w-1/2">
+                                <form onSubmit={searchData} className="flex items-center space-x-1 pl-2">
+                                    <div className="relative w-full">
+                                        <input 
+                                        type="text"
+                                        value={query}
+                                        onChange={(e) => setQuery(e.target.value)}
+                                        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pe-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500  dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" 
+                                        placeholder="Ketik pencarian disini..." />
+                                        {query && (
+                                        <div className="absolute inset-y-0 end-0 flex items-center pe-3.5">
+                                            <CircleX
+                                            className="cursor-pointer" 
+                                            onClick={handleClearInput} 
+                                            size={20} 
+                                            />
+                                        </div>
+                                        )}
+                                    </div>
 
-                            {/* Custom button */}
-                            <button
-                                type="submit"
-                                className="rounded-full bg-blue-500 p-2 text-white hover:bg-blue-600 focus:outline-none"
-                                aria-label="search"
-                            >
-                                <SearchIcon size={25} />
-                            </button>
-                            </form>
-                        </div>
-                        <div className="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
-                            <Button className="bg-lime-500 pr-2" onClick={handleExport}>
-                            {showLoadingForDownloadExcel}
-                            Export Audits
-                            </Button>
-                        </div>
+                                    {/* Custom button */}
+                                    <button
+                                        type="submit"
+                                        className="rounded-full bg-blue-500 p-2 text-white hover:bg-blue-600 focus:outline-none"
+                                        aria-label="search"
+                                    >
+                                        <SearchIcon size={25} />
+                                    </button>
+                                </form>
+                            </div>
+                            <div className="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
+                                <Button variant={"outline"} onClick={() => setIsDialogOpen(true)}>
+                                    <FilterIcon size={20} />
+                                    Open Time Filter
+                                </Button>
+                                <Button className="bg-lime-500 pr-2" onClick={handleExport}>
+                                    {showLoadingForDownloadExcel}
+                                    Export Audits
+                                </Button>
+                            </div>
                         </div>
                     </div>
                     </div>
@@ -283,7 +320,7 @@ const MainTable: React.FC = () => {
                                                         size="icon"
                                                         title="View details"
                                                     >
-                                                         <Eye />
+                                                        <Eye />
                                                     </Button>
                                                 </div>
                                             );
@@ -304,6 +341,16 @@ const MainTable: React.FC = () => {
                     </div>
                 </div>
             )}
+            {/* Render the TimeFilter dialog */}
+            <TimeFilter
+                isOpen={isDialogOpen}
+                onOpenChange={setIsDialogOpen}
+                title="Set Time Filter"
+                timeFilterModel={filterModel} // Pass the current model
+                onUpdateModel={(updatedModel) => {
+                    setFilterModel(updatedModel); // Update the model in the parent component
+                }}
+            />
         </div>
     );
 };

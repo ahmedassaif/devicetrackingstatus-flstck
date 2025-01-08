@@ -5,8 +5,8 @@ export class PaginatedListRequest {
   searchText: string | undefined;
   sortField: string | undefined;
   sortOrder: string | undefined;
-  from: Date | undefined;
-  to: Date | undefined;
+  from: string | undefined;
+  to: string | undefined;
   [key: string]: any;
 
   constructor(
@@ -15,8 +15,8 @@ export class PaginatedListRequest {
     searchText: string,
     sortField: string,
     sortOrder: "asc" | "desc",
-    from: Date,
-    to: Date,
+    from: string,
+    to: string,
   ) {
     this.page = page;
     this.pageSize = pageSize;

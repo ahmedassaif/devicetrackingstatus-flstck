@@ -20,8 +20,8 @@ class GetAuditsQuery
 
     public function getAudits(GetAuditsRequest $request)
     {
-        $from = optional($request)->from ?? $this->auditOptions->getFilterMinimumCreated();
-        $to = optional($request)->to ?? $this->auditOptions->getFilterMaximumCreated();
+        $from = $request->input('from', $this->auditOptions->getFilterMinimumCreated());
+        $to = $request->input('to', $this->auditOptions->getFilterMaximumCreated());
         Log::info('Request data:', $request->all());
 
         $page = (int) $request->query('page', 1);

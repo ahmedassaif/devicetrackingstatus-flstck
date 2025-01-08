@@ -21,7 +21,7 @@ import {
   DialogTitle
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import DeleteDialog from "@/components/dialogues/DeleteDialog";
+import DeleteDialog from "@/components/dialog/confirmtodelete.dialog";
 
 const MainTable: React.FC = () => {
 

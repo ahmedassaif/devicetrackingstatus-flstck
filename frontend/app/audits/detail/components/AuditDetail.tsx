@@ -136,7 +136,7 @@ const AuditDetail: React.FC<AuditDetailProps> = ({ auditId }) => {
             {/* <div className="relative bg-white shadow-md sm:rounded-lg dark:bg-gray-800">
               
             </div> */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="rounded bg-gray-100 p-4 shadow">
                   <h2 className="font-bold">Table Name</h2>
                   <p>{audit?.auditable_type || 'N/A'}</p>
