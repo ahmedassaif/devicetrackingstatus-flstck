@@ -18,8 +18,8 @@ class GetDeviceLocationsQuery
 
     public function getDeviceLocations(GetDeviceLocationsRequest $request)
     {
-        $from = optional($request)->from ?? $this->deviceLocationOptions->getFilterMinimumCreated();
-        $to = optional($request)->to ?? $this->deviceLocationOptions->getFilterMaximumCreated();
+        $from = $request->input('from', $this->deviceLocationOptions->getFilterMinimumCreated());
+        $to = $request->input('to', $this->deviceLocationOptions->getFilterMaximumCreated());
 
         $page = (int) $request->query('page', 1);
         $pageSize = (int) $request->query('pageSize', 10);

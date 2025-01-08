@@ -18,6 +18,7 @@ import TimeFilter from "@/components/dialog/timefilter.dialog";
 import timeFilterModel from "@/hooks/timeFilterModel";
 import { TimeValue } from '@react-types/datepicker';
 import { format } from "date-fns";
+import { Time } from '@internationalized/date';
 
 const MainTable: React.FC = () => {
     const [audits, setAudits] = useState<GetAuditsAudit[]>([]);
@@ -75,9 +76,9 @@ const MainTable: React.FC = () => {
     // Callback function to update the timeFilterModel
     const handleSetTimeFilter = (
         fromDate: Date,
-        fromTime: TimeValue,
+        fromTime: Time,
         toDate: Date,
-        toTime: TimeValue
+        toTime: Time
     ) => {
         // Update the filter model with the new values
         setFilterModel((prev) => ({

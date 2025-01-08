@@ -2,7 +2,7 @@
 "use client"
 
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -24,7 +24,8 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { CalendarIcon } from "lucide-react";
-
+import { AnyTime, CycleTimeOptions, Time, TimeDuration, TimeField, TimeFields } from "@internationalized/date";
+import { TimeSelector } from "@/components/selectors/time.selector"; // Import TimeSelector
 
 interface TimeFilterProps {
     isOpen: boolean;
@@ -52,8 +53,31 @@ const TimeFilter: React.FC<TimeFilterProps> = ({
         return date;
     });
 
-    const [fromTimeValue, setFromTimeValue] = useState<TimeValue>(timeFilterModel.fromTime);
-    const [toTimeValue, setToTimeValue] = useState<TimeValue>(timeFilterModel.toTime);
+    const [fromTimeValue, setFromTimeValue] = useState<Time>(timeFilterModel.fromTime);
+    const [toTimeValue, setToTimeValue] = useState<Time>(timeFilterModel.toTime);
+
+    useEffect(() => {
+        if (isOpen) {
+            setFromDate(timeFilterModel.fromDate);
+            setToDate(timeFilterModel.toDate);
+            setFromTimeValue(timeFilterModel.fromTime);
+            setToTimeValue(timeFilterModel.toTime);
+        }
+    }, [isOpen, timeFilterModel]);
+
+    const handleTimeChange = (
+        type: 'from' | 'to', 
+        hour: string, 
+        minute: string) => { 
+            
+            const timeValue = new Time(parseInt(hour), parseInt(minute), 0);
+            
+            if (type === 'from') { 
+                setFromTimeValue(timeValue); 
+            } else { 
+                setToTimeValue(timeValue); 
+            }
+        }
 
     const handleSetFilter = () => {
         if (fromDate && fromTimeValue && toDate && toTimeValue) {
@@ -105,7 +129,7 @@ const TimeFilter: React.FC<TimeFilterProps> = ({
                         <DialogTitle>{title}</DialogTitle>
                     </DialogHeader>
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <div className="rounded bg-gray-100 p-4 shadow">
+                            <div className="rounded p-4">
                                 <h2 className="font-bold">Date From</h2>
                                 <Popover>
                                     <PopoverTrigger asChild>
@@ -130,7 +154,7 @@ const TimeFilter: React.FC<TimeFilterProps> = ({
                                     </PopoverContent>
                                 </Popover>
                             </div>
-                            <div className="rounded bg-gray-100 p-4 shadow">
+                            <div className="rounded p-4">
                                 <h2 className="font-bold">Date To</h2>
                                 <Popover>
                                     <PopoverTrigger asChild>
@@ -155,10 +179,14 @@ const TimeFilter: React.FC<TimeFilterProps> = ({
                                     </PopoverContent>
                                 </Popover>
                             </div>
-                            <div className="rounded bg-gray-100 p-4 shadow">
-                                {/* <h2 className="font-bold">Time From</h2>
-                                <TimePicker onChange={onChangeFromTime} value={fromTimeValue} /> */}
-                                <TimeInput 
+                            <div className="rounded p-4">
+                                <h2 className="font-bold">Time From</h2> 
+                                <TimeSelector 
+                                    defaultHour={fromTimeValue.hour.toString().padStart(2, '0')} 
+                                    defaultMinute={fromTimeValue.minute.toString().padStart(2, '0')} 
+                                    onTimeChange={(hour: string, minute: string) => handleTimeChange('from', hour, minute)} 
+                                />
+                                {/* <TimeInput 
                                     label="Time From" 
                                     onChange={(timeValue) => timeValue && setFromTimeValue(timeValue)}
                                     defaultValue={fromTimeValue}
@@ -168,21 +196,14 @@ const TimeFilter: React.FC<TimeFilterProps> = ({
                                         return "Please enter a valid time";
                                         }
                                     }}
-                                />
+                                /> */}
                             </div>
-                            <div className="rounded bg-gray-100 p-4 shadow">
-                                {/* <h2 className="font-bold">Time To</h2> */}
-                                {/* <TimePicker onChange={onChangeToTime} value={toTimeValue} /> */}
-                                <TimeInput 
-                                    label="Time To" 
-                                    onChange={(timeValue) => timeValue && setToTimeValue(timeValue)}
-                                    defaultValue={toTimeValue}
-                                    isInvalid
-                                    errorMessage={(value) => {
-                                        if (value.isInvalid) {
-                                        return "Please enter a valid time";
-                                        }
-                                    }} 
+                            <div className="rounded p-4">
+                                <h2 className="font-bold">Time To</h2>
+                                <TimeSelector 
+                                    defaultHour={toTimeValue.hour.toString().padStart(2, '0')} 
+                                    defaultMinute={toTimeValue.minute.toString().padStart(2, '0')} 
+                                    onTimeChange={(hour: string, minute: string) => handleTimeChange('to', hour, minute)} 
                                 />
                             </div>
                         </div>

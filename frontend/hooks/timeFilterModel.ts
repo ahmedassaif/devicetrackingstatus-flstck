@@ -1,11 +1,10 @@
-import { TimeValue } from '@react-types/datepicker';
 import { Time } from '@internationalized/date';
 
 interface TimeFilterModel {
     fromDate: Date;
-    fromTime: TimeValue;
+    fromTime: Time;
     toDate: Date;
-    toTime: TimeValue;
+    toTime: Time;
     from: Date;
     to: Date;
 }

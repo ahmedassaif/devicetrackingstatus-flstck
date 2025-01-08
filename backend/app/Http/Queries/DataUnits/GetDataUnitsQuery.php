@@ -17,8 +17,8 @@ class GetDataUnitsQuery
 
     public function getDataUnits(GetDataUnitsRequest $request)
     {
-        $from = optional($request)->from ?? $this->dataUnitOptions->getFilterMinimumCreated();
-        $to = optional($request)->to ?? $this->dataUnitOptions->getFilterMaximumCreated();
+        $from = $request->input('from', $this->dataUnitOptions->getFilterMinimumCreated());
+        $to = $request->input('to', $this->dataUnitOptions->getFilterMaximumCreated());
 
         $page = (int) $request->query('page', 1);
         $pageSize = (int) $request->query('pageSize', 10);
