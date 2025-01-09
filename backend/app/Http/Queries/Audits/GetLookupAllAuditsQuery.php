@@ -14,7 +14,7 @@ class GetLookupAllAuditsQuery
             // Fetch all audit records
             $audits = Audit::all();
             // Return as a collection of resources
-            return AuditResource::collection($audits);
+            return AuditResource::collection($audits)->toArray(request());
         } catch (ModelNotFoundException $e) {
             // Handle case where no audits are found
             return [];
