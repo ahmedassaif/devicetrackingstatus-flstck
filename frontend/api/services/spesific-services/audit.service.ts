@@ -2,6 +2,7 @@ import { BaseApiService } from "../base-api";
 import { ApiEndpoint, GetAuditsAudit } from "../types/audit.types";
 import { PaginatedListRequest } from "../types/commonRequest.types";
 import { 
+  ListResponse,
   PaginatedListResponse,
   ResponseResult,
   toResponseResult,
@@ -67,6 +68,14 @@ export class AuditService extends BaseApiService {
         console.error("Failed to export audits: ", error);
         throw error;
     }
+  }
+
+  public async getLookupAllAudits(): Promise<ResponseResult<ListResponse<GetAuditsAudit>>> {
+    
+    const response = await this.api.get(`${ApiEndpoint.V1.LookupAll.Segment}`);
+
+    return toResponseResult<ListResponse<GetAuditsAudit>>(response); 
+  
   }
 
 }

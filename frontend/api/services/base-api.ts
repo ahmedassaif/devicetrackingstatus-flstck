@@ -17,13 +17,13 @@ export class BaseApiService {
     // Add request interceptor
     this.api.interceptors.request.use(
       (config) => {
-        // You can modify requests here (add auth tokens etc.)
-        const token = localStorage.getItem('token');
-
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
+        // Only access localStorage on the client side
+        if (typeof window !== "undefined") {
+          const token = localStorage.getItem('token');
+          if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+          }
         }
-
         return config;
       },
       (error) => Promise.reject(error)

@@ -1,5 +1,21 @@
+import { AuditService } from "@/api/services/spesific-services/audit.service";
 import AuditDetail from "../components/AuditDetail";
+export async function generateStaticParams() { 
+    const auditService = new AuditService();
+    const response = await auditService.getLookupAllAudits();
+    const audits = response.result;
 
+    if (!audits?.items) { 
+        return []; 
+    }
+    else { 
+        const paths = audits.items.map((audit) => ({ 
+            id: audit.id, 
+        })); 
+    
+        return paths;
+    }
+}
 interface Props {
     params: {
     id: string;

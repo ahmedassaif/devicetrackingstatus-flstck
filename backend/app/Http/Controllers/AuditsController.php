@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Queries\Audits\GetAuditsQuery;
 use App\Http\Queries\Audits\GetAuditQuery;
 use App\Http\Queries\Audits\GetAuditsExportToExcelQuery;
+use App\Http\Queries\Audits\GetLookupAllAuditsQuery;
 use App\Http\Requests\Audits\GetAuditsRequest;
 use OpenApi\Annotations as OA;
 
@@ -13,16 +14,19 @@ class AuditsController extends Controller
     protected $getAuditsQuery;
     protected $getAuditQuery;
     protected $getAuditsExportToExcelQuery;
+    protected $getLookupAllAuditsQuery;
 
     public function __construct(
         GetAuditsQuery $getAuditsQuery,
         GetAuditQuery $getAuditQuery,
-        GetAuditsExportToExcelQuery $getAuditsExportToExcelQuery
+        GetAuditsExportToExcelQuery $getAuditsExportToExcelQuery,
+        GetLookupAllAuditsQuery $getLookupAllAuditsQuery
         )
     {
         $this->getAuditsQuery = $getAuditsQuery;
         $this->getAuditQuery = $getAuditQuery;
         $this->getAuditsExportToExcelQuery = $getAuditsExportToExcelQuery;
+        $this->getLookupAllAuditsQuery = $getLookupAllAuditsQuery;
     }
 
     /**
@@ -177,6 +181,27 @@ class AuditsController extends Controller
         return response($fileResponse->content)
                         ->header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
                         ->header('Content-Disposition', 'attachment; filename="'.$fileResponse->fileName.'"'); 
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/getLookupAllAudits",
+     *     summary="Get all Audits",
+     *     description="Returns a list of all Audits",
+     *     tags={"Audits"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Audits retrieved successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Audit")
+     *     ),
+     *     @OA\Response(response=500, description="Internal Server Error")
+     * )
+     */
+    public function getLookupAllAudits() { 
+        
+        $Audits = $this->getLookupAllAuditsQuery->getLookup(); 
+        
+        return response()->json($Audits); 
     }
 
 }

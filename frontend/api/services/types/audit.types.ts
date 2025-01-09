@@ -13,6 +13,9 @@ export namespace ApiEndpoint {
     export const ExportToExcel = {
       Segment: "v1/exportAuditsToExcel",
     };
+    export const LookupAll = {
+      Segment: 'v1/getLookupAllAudits'
+  }
   }
 }
 

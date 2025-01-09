@@ -15,6 +15,7 @@ Route::prefix('v1')->group(function () {
     Route::get('audits', [AuditsController::class, 'getAudits']);
     Route::get('audit/{id}', [AuditsController::class, 'getAudit']);
     Route::get('exportAuditsToExcel', [AuditsController::class, 'exportAuditsToExcel']);
+    Route::get('getLookupAllAudits', [AuditsController::class, 'getLookupAllAudits']);
 });
 
 // Define the routes for the DataUnits API
