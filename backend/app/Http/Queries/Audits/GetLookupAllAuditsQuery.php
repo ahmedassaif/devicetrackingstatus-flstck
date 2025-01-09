@@ -12,7 +12,7 @@ class GetLookupAllAuditsQuery
     {
         try {
             // Fetch all audit records
-            $audits = Audit::all()->orderBy('created_at', 'desc');
+            $audits = Audit::all();
             // Return as a collection of resources
             return AuditResource::collection($audits);
         } catch (ModelNotFoundException $e) {
