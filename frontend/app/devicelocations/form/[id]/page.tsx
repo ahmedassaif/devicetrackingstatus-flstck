@@ -17,7 +17,7 @@
 // import loadingBackground from "@/public/images/beams.jpg";
 // import Image from "next/image";
 // import { Form, FormField, FormItem, FormLabel, FormMessage, FormControl } from "@/components/ui/form";
-// import { DataUnitSelect } from "@/components/selectors/dataunit.selector";
+// import { DeviceLocationSelect } from "@/components/selectors/deviceLocation.selector";
 
 // interface Props {
 //   params: {
@@ -45,7 +45,7 @@
 //         if (response.result) {
 //           form.reset({
 //             NameDeviceLocation: response.result.NameDeviceLocation,
-//             DataUnitId: response.result.DataUnitId
+//             DeviceLocationId: response.result.DeviceLocationId
 //           });
 //         } else {
 //           toast.error("Failed", {
@@ -73,7 +73,7 @@
 //       const updateDeviceLocationRequest = new UpdateDeviceLocationRequest(
 //         params.id,
 //         values.NameDeviceLocation,
-//         values.DataUnitId
+//         values.DeviceLocationId
 //       );
 
 //       const response: ResponseResult<GetDeviceLocationsDeviceLocation> = 
@@ -131,12 +131,12 @@
 //               <form onSubmit={form.handleSubmit(saveData)} className="flex flex-col gap-4">
 //                 <FormField
 //                   control={form.control}
-//                   name="DataUnitId"
+//                   name="DeviceLocationId"
 //                   render={({ field }) => (
 //                     <FormItem>
 //                       <FormLabel>Lokasi Kerja</FormLabel>
 //                       <FormControl>
-//                         <DataUnitSelect onValueChange={field.onChange} value={field.value} />
+//                         <DeviceLocationSelect onValueChange={field.onChange} value={field.value} />
 //                       </FormControl>
 //                       <FormMessage />
 //                     </FormItem>
@@ -210,11 +210,11 @@ interface Props {
 
 export default async function DeviceLocationFormPage({ params }: Props) {
     
-  // Validate ID
-  const auditId = Number(params.id);
-  if (isNaN(auditId)) {
-      return <div>Invalid ID</div>;
-  }
+  // // Validate ID
+  // const deviceLocationId = String(params.id);
+  // if (!deviceLocationId) {
+  //     return <div>Invalid ID</div>;
+  // }
 
   return <DeviceLocationEditForm deviceLocationId={params.id} />;
 }

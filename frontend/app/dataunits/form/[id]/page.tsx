@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // /* eslint-disable @typescript-eslint/no-unused-vars */
 // "use client"
 
@@ -194,23 +195,110 @@
 // }
 import { DataUnitService } from "@/api/services/spesific-services/dataUnit.service";
 import DataUnitEditForm from "./Form";
+import { toListData } from "@/api/services/types/commonResponses.types";
 
 export async function generateStaticParams() { 
-    const dataUnitService = new DataUnitService(); 
-    const response = await dataUnitService.getLookupAllDataUnits();
-    const dataUnits = response.result;
+    try {
+        console.log('generateStaticParams called');
+
+        const dataUnitService = new DataUnitService(); 
+        console.log('DataUnitService created');
+
+        const response = await dataUnitService.getLookupAllDataUnits();
+        console.log('Response from getLookupAllDataUnits:', response);
+
+        if (response.error) {
+            return [];
+        }
+        
+
+        if (response.result)
+        {
+            const listData = toListData(response.result); 
+            console.log('ListData:', listData);
+            
+            if (listData.items.length > 0)
+            {
+                const dataUnitIdList = listData.items.map((dataUnit) => dataUnit.id);
+                console.log('DataUnitIdList:', dataUnitIdList);
+
+                const paths = await Promise.all(dataUnitIdList.map(async (id) => {
+                    try {
+                        const dataUnitResponse = await dataUnitService.getDataUnit(id);
+                        console.log('Response from getDataUnit:', dataUnitResponse);
     
-    if (!dataUnits?.items) { 
-        return []; 
-    }
-    else { 
-        const paths = dataUnits.items.map((dataUnit) => ({ 
-            id: dataUnit.id, 
-        })); 
-    
-        return paths;
+                        if (dataUnitResponse.result) {
+                            return {
+                                params: {
+                                    id: id,
+                                },
+                                path: `/dataunits/form/${id}`,
+                            };
+                        } else {
+                            console.log('No result found in dataUnitResponse');
+                            return null;
+                        }
+                    } catch (error) {
+                        console.error('Error fetching dataUnit:', error);
+                        return null;
+                    }
+                }));
+
+                console.log('Paths:', paths);
+
+                return paths.filter((path) => path !== null);
+
+            }
+            else {
+                console.log('No dataUnitIdList found');
+                return [];
+            }
+        }
+        else {
+            return [];
+        }
+
+    } catch (error) {
+        console.error('Error generating static params:', error);
+        return [];
     }
 };
+
+// export async function generateStaticParams() { 
+//     try {
+//         const dataUnitService = new DataUnitService(); 
+//         console.log('DataUnitService created');
+
+//         const response = await dataUnitService.getLookupAllDataUnits();
+//         console.log('Response from getLookupAllDataUnits:', response);
+
+//         const dataUnits = response.result;
+
+//         // Check if items exist and are not empty
+//         if (!dataUnits?.items || dataUnits.items.length === 0) { 
+//             console.log('No items found in dataUnits');
+//             return []; 
+//         }
+
+//         // Extract IDs from dataUnits
+//         const paths = dataUnits.items.map((dataUnit) => ({
+//             params: {
+//                 id: dataUnit.id, // Ensure this matches the dynamic segment in your route
+//             },
+//         }));
+
+//         console.log('Generated paths:', paths);
+//         return paths;
+
+//     } catch (error) {
+//         console.error('Error generating static params:', error);
+//         return [];
+//     }
+// }
+
+// export function generateStaticParams() {
+//     return [ { id: [""] } ]
+// }
 
 interface Props {
     params: {
@@ -220,11 +308,11 @@ interface Props {
 
 export default async function DataUnitDetailPage({ params }: Props) {
     
-    // Validate ID
-    const auditId = Number(params.id);
-    if (isNaN(auditId)) {
-        return <div>Invalid ID</div>;
-    }
+    // // Validate ID
+    // const dataUnitId = String(params.id);
+    // if (!dataUnitId) {
+    //     return <div>Invalid ID</div>;
+    // }
 
     return <DataUnitEditForm dataUnitId={params.id} />;
 }

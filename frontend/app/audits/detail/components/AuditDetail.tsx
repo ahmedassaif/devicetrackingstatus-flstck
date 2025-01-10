@@ -38,7 +38,7 @@ const prettifyJson = (jsonString: string) => {
 };
 
 interface AuditDetailProps {
-    auditId: string; // Accept auditId as a prop
+    auditId: number; // Accept auditId as a prop
 }
 
 const AuditDetail: React.FC<AuditDetailProps> = ({ auditId }) => {
@@ -62,7 +62,7 @@ const AuditDetail: React.FC<AuditDetailProps> = ({ auditId }) => {
         try {
           
           const auditService = new AuditService();
-          const response: ResponseResult<GetAuditsAudit> = await auditService.getAudit(Number(auditId));
+          const response: ResponseResult<GetAuditsAudit> = await auditService.getAudit(auditId);
           if (response.result) {
             setAudit(response.result);
           } else {

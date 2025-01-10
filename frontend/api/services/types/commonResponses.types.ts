@@ -94,7 +94,17 @@ export function toTableData<T>(result: PaginatedListResponse<T>): TableData<T> {
   };
 }
 
+export function toListData<T>(result: ListResponse<T>): ListData<T> {
+  return {
+    items: result.items,
+  };
+}
+
 interface TableData<T> {
     totalItems: number;
     items: T[];
-  }
+}
+
+interface ListData<T> {
+    items: T[];
+}

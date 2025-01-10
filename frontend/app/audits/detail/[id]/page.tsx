@@ -1,34 +1,43 @@
 import { AuditService } from "@/api/services/spesific-services/audit.service";
 import AuditDetail from "../components/AuditDetail";
-export async function generateStaticParams() { 
-    const auditService = new AuditService();
-    const response = await auditService.getLookupAllAudits();
-    const audits = response.result;
-
-    if (!audits?.items) { 
-        return []; 
-    }
-    else { 
-        const paths = audits.items.map((audit) => ({ 
-            id: audit.id, 
-        })); 
+export async function generateStaticParams() {
+    try {
+        const auditService = new AuditService();
+        console.log('AuditService created:', auditService);
+        const response = await auditService.getLookupAllAudits();
+        console.log('Response from getLookupAllAudits:', response);
     
-        return paths;
+        if (response.error) {
+            return [];
+        }
+    
+        if (Array.isArray(response.result)) {
+            const audits = response.result;
+            const paths = audits.items.map((audit) => ({
+            id: audit.id,
+            }));
+            return paths;
+        } else {
+            return [];
+        }
+    } catch (error) {
+        console.error("Error generating static params:", error);
+        return [];
     }
 }
 interface Props {
     params: {
-    id: string;
+    id: number;
     }
 }
 
 export default async function AuditDetailPage({ params }: Props) {
     
-    // Validate ID
-    const auditId = Number(params.id);
-    if (isNaN(auditId)) {
-        return <div>Invalid ID</div>;
-    }
+    // // Validate ID
+    // const auditId = Number(params.id);
+    // if (isNaN(auditId)) {
+    //     return <div>Invalid ID</div>;
+    // }
 
     return <AuditDetail auditId={params.id} />;
 }

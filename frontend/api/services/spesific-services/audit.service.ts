@@ -1,3 +1,4 @@
+"use client"
 import { BaseApiService } from "../base-api";
 import { ApiEndpoint, GetAuditsAudit } from "../types/audit.types";
 import { PaginatedListRequest } from "../types/commonRequest.types";
