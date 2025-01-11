@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: 'export', trailingSlash: true, // Enable trailing slash
+    output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
+    trailingSlash: true, // Enable trailing slash
     images: {
         unoptimized: true,
       },

@@ -31,7 +31,7 @@ interface Props {
     }
 }
 
-export default async function AuditDetailPage({ params }: Props) {
+export default async function Page({ params }: Props) {
     
     // // Validate ID
     // const auditId = Number(params.id);
