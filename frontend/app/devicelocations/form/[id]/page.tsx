@@ -185,22 +185,22 @@ import { DeviceLocationService } from "@/api/services/spesific-services/deviceLo
 import { GetStaticPaths, GetStaticProps } from 'next';
 import DeviceLocationEditForm from "./Form";
 
-export async function generateStaticParams() { 
-    const deviceLocationService = new DeviceLocationService(); 
-    const response = await deviceLocationService.getLookupAllDeviceLocations();
-    const deviceLocations = response.result;
+// export async function generateStaticParams() { 
+//     const deviceLocationService = new DeviceLocationService(); 
+//     const response = await deviceLocationService.getLookupAllDeviceLocations();
+//     const deviceLocations = response.result;
     
-    if (!deviceLocations?.items) { 
-        return []; 
-    }
-    else { 
-        const paths = deviceLocations.items.map((deviceLocation) => ({ 
-            id: deviceLocation.id, 
-        })); 
+//     if (!deviceLocations?.items) { 
+//         return []; 
+//     }
+//     else { 
+//         const paths = deviceLocations.items.map((deviceLocation) => ({ 
+//             id: deviceLocation.id, 
+//         })); 
     
-        return paths;
-    }
-};
+//         return paths;
+//     }
+// };
 
 interface Props {
   params: {

@@ -197,72 +197,72 @@ import { DataUnitService } from "@/api/services/spesific-services/dataUnit.servi
 import DataUnitEditForm from "./Form";
 import { toListData } from "@/api/services/types/commonResponses.types";
 
-export async function generateStaticParams() { 
-    try {
-        console.log('generateStaticParams called');
+// export async function generateStaticParams() { 
+//     try {
+//         console.log('generateStaticParams called');
 
-        const dataUnitService = new DataUnitService(); 
-        console.log('DataUnitService created');
+//         const dataUnitService = new DataUnitService(); 
+//         console.log('DataUnitService created');
 
-        const response = await dataUnitService.getLookupAllDataUnits();
-        console.log('Response from getLookupAllDataUnits:', response);
+//         const response = await dataUnitService.getLookupAllDataUnits();
+//         console.log('Response from getLookupAllDataUnits:', response);
 
-        if (response.error) {
-            return [];
-        }
+//         if (response.error) {
+//             return [];
+//         }
         
 
-        if (response.result)
-        {
-            const listData = toListData(response.result); 
-            console.log('ListData:', listData);
+//         if (response.result)
+//         {
+//             const listData = toListData(response.result); 
+//             console.log('ListData:', listData);
             
-            if (listData.items.length > 0)
-            {
-                const dataUnitIdList = listData.items.map((dataUnit) => dataUnit.id);
-                console.log('DataUnitIdList:', dataUnitIdList);
+//             if (listData.items.length > 0)
+//             {
+//                 const dataUnitIdList = listData.items.map((dataUnit) => dataUnit.id);
+//                 console.log('DataUnitIdList:', dataUnitIdList);
 
-                const paths = await Promise.all(dataUnitIdList.map(async (id) => {
-                    try {
-                        const dataUnitResponse = await dataUnitService.getDataUnit(id);
-                        console.log('Response from getDataUnit:', dataUnitResponse);
+//                 const paths = await Promise.all(dataUnitIdList.map(async (id) => {
+//                     try {
+//                         const dataUnitResponse = await dataUnitService.getDataUnit(id);
+//                         console.log('Response from getDataUnit:', dataUnitResponse);
     
-                        if (dataUnitResponse.result) {
-                            return {
-                                params: {
-                                    id: id,
-                                },
-                                path: `/dataunits/form/${id}`,
-                            };
-                        } else {
-                            console.log('No result found in dataUnitResponse');
-                            return null;
-                        }
-                    } catch (error) {
-                        console.error('Error fetching dataUnit:', error);
-                        return null;
-                    }
-                }));
+//                         if (dataUnitResponse.result) {
+//                             return {
+//                                 params: {
+//                                     id: id,
+//                                 },
+//                                 path: `/dataunits/form/${id}`,
+//                             };
+//                         } else {
+//                             console.log('No result found in dataUnitResponse');
+//                             return null;
+//                         }
+//                     } catch (error) {
+//                         console.error('Error fetching dataUnit:', error);
+//                         return null;
+//                     }
+//                 }));
 
-                console.log('Paths:', paths);
+//                 console.log('Paths:', paths);
 
-                return paths.filter((path) => path !== null);
+//                 return paths.filter((path) => path !== null);
 
-            }
-            else {
-                console.log('No dataUnitIdList found');
-                return [];
-            }
-        }
-        else {
-            return [];
-        }
+//             }
+//             else {
+//                 console.log('No dataUnitIdList found');
+//                 return [];
+//             }
+//         }
+//         else {
+//             return [];
+//         }
 
-    } catch (error) {
-        console.error('Error generating static params:', error);
-        return [];
-    }
-};
+//     } catch (error) {
+//         console.error('Error generating static params:', error);
+//         return [];
+//     }
+// };
 
 // export async function generateStaticParams() { 
 //     try {

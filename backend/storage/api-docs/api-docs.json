@@ -176,6 +176,31 @@
                 }
             }
         },
+        "/api/v1/getLookupAllAudits": {
+            "get": {
+                "tags": [
+                    "Audits"
+                ],
+                "summary": "Get all Audits",
+                "description": "Returns a list of all Audits",
+                "operationId": "e98298fe11adaa516edd49579292d4b5",
+                "responses": {
+                    "200": {
+                        "description": "Audits retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Audit"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/api/v1/dataUnits": {
             "get": {
                 "tags": [
