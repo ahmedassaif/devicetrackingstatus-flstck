@@ -252,7 +252,6 @@ class DeviceLocationsController extends Controller
      *          description="Duplicate Data" 
      *     ),
      *     @OA\Response(response=404, description="DeviceLocation not found"),
-     *     @OA\Response(response=400, description="Bad Request"),
      *     @OA\Response(response=500, description="Internal Server Error")
      * )
      */
