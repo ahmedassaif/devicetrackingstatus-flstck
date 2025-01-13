@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\DeviceLocation;
 use App\Models\DataUnit;
 use Illuminate\Support\Facades\Log;
+use Exception;
 
 class CreateDeviceLocationCommand
 {
@@ -39,7 +40,8 @@ class CreateDeviceLocationCommand
             ->first();
 
         if ($existingDeviceLocation) {
-            return response()->json(['error' => 'Ada Data yang Sama'], 400); 
+            throw new Exception('Ada Data yang Sama');
+            //return response()->json(['error' => 'Ada Data yang Sama'], 400); 
         }
 
         // Convert the request object to an array
