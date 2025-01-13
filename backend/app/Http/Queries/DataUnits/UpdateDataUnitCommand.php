@@ -15,7 +15,6 @@ class UpdateDataUnitCommand
      * Handle the update of a DataUnit.
      *
      * @param UpdateDataUnitRequest $updateDataUnitRequest
-     * @param string $id
      * @return DataUnitResource
      * @throws ValidationException
      * @throws ModelNotFoundException
@@ -31,7 +30,8 @@ class UpdateDataUnitCommand
             throw new ValidationException($validator);
         }
 
-        $dataUnit = DataUnit::findOrFail($updateDataUnitRequest->id); // Fetch the DataUnit by ID
+        // Lock the DataUnit for update
+        $dataUnit = DataUnit::where('id', $updateDataUnitRequest->id)->lockForUpdate()->firstOrFail();
         $dataUnit->NameUnit = $updateDataUnitRequest->NameUnit;
         $dataUnit->Plan = $updateDataUnitRequest->Plan;
         $dataUnit->save();
