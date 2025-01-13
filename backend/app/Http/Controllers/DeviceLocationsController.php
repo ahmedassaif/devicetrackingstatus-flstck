@@ -212,7 +212,10 @@ class DeviceLocationsController extends Controller
      *         description="DeviceLocation created successfully",
      *         @OA\JsonContent(ref="#/components/schemas/DeviceLocation")
      *     ),
-     *     @OA\Response(response=400, description="Bad Request"),
+     *     @OA\Response( 
+     *          response=400, 
+     *          description="Duplicate Data" 
+     *     ),
      *     @OA\Response(response=500, description="Internal Server Error")
      * )
      */
@@ -244,12 +247,16 @@ class DeviceLocationsController extends Controller
      *         description="DeviceLocation updated successfully",
      *         @OA\JsonContent(ref="#/components/schemas/DeviceLocation")
      *     ),
+     *     @OA\Response( 
+     *          response=400, 
+     *          description="Duplicate Data" 
+     *     ),
      *     @OA\Response(response=404, description="DeviceLocation not found"),
      *     @OA\Response(response=400, description="Bad Request"),
      *     @OA\Response(response=500, description="Internal Server Error")
      * )
      */
-    public function updateDeviceLocation(Request $request, string $id)
+    public function updateDeviceLocation(Request $request)
     {
         $updateDeviceLocationRequest = new UpdateDeviceLocationRequest(
             id: $request->input('id'),

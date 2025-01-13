@@ -33,6 +33,15 @@ class CreateDeviceLocationCommand
             throw new ValidationException($validator);
         }
 
+        // Check if a DeviceLocation with the same NameDeviceLocation and DataUnitId already exists
+        $existingDeviceLocation = DeviceLocation::where('NameDeviceLocation', $createDeviceLocationRequest->NameDeviceLocation)
+            ->where('DataUnitId', $createDeviceLocationRequest->DataUnitId)
+            ->first();
+
+        if ($existingDeviceLocation) {
+            return response()->json(['error' => 'Ada Data yang Sama'], 400); 
+        }
+
         // Convert the request object to an array
         $deviceLocationData = [
             'NameDeviceLocation' => $createDeviceLocationRequest->NameDeviceLocation,
@@ -52,7 +61,6 @@ class CreateDeviceLocationCommand
         $deviceLocation->NameUnit = $dataUnitData['NameUnit'];
         $deviceLocation->Plan = $dataUnitData['Plan'];
 
-        
         // Return the DeviceLocationResource with manual DataUnit data
         return new DeviceLocationResource($deviceLocation);
     }

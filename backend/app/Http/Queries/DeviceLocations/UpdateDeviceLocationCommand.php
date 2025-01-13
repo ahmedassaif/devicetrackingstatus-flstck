@@ -32,7 +32,17 @@ class UpdateDeviceLocationCommand
             throw new ValidationException($validator);
         }
 
-        $deviceLocation = DeviceLocation::findOrFail($updateDeviceLocationRequest->id); // Fetch the DeviceLocation by ID
+        // Check if a DeviceLocation with the same NameDeviceLocation and DataUnitId already exists (excluding the current record)
+        $existingDeviceLocation = DeviceLocation::where('NameDeviceLocation', $updateDeviceLocationRequest->NameDeviceLocation)
+            ->where('DataUnitId', $updateDeviceLocationRequest->DataUnitId)
+            ->first();
+
+        if ($existingDeviceLocation) {
+            return response()->json(['error' => 'Ada Data yang Sama'], 400); 
+        }
+
+        // Lock the DeviceLocation for update
+        $deviceLocation = DeviceLocation::where('id', $updateDeviceLocationRequest->id)->lockForUpdate()->firstOrFail();
         $deviceLocation->NameDeviceLocation = $updateDeviceLocationRequest->NameDeviceLocation;
         $deviceLocation->DataUnitId = $updateDeviceLocationRequest->DataUnitId;
         $deviceLocation->save();
