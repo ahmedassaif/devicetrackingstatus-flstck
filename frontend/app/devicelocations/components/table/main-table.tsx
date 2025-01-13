@@ -312,7 +312,7 @@ const MainTable: React.FC = () => {
                                         </Button>
                                         <Button className="bg-lime-500 pr-2" onClick={handleExport}>
                                             {showLoadingForDownloadExcel}
-                                            Export Audits
+                                            Export Main Location
                                         </Button>
                                     </div>
                         </div>
