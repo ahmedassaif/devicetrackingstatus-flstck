@@ -242,7 +242,7 @@ const MainTable: React.FC = () => {
     const handleClickToDelete = (DeviceLocationId: string) => {
         setCurrentId(DeviceLocationId);
         setDialogDeleteOpen(true);
-      };
+    };
 
     return (
         <div className="container h-full">
@@ -317,7 +317,7 @@ const MainTable: React.FC = () => {
                                     </div>
                         </div>
                     </div>
-                    <div className="container mx-auto overflow-x-auto">
+                    <div className="container mx-auto pt-4 overflow-x-auto">
                         <DataTable
                             columns={columns.map(column => {
                                 if (column.header === "Actions") {
