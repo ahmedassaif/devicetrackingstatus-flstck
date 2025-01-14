@@ -25,32 +25,65 @@ export default function DeviceLocationFormPage() {
 
 
     const saveData = async (values: z.infer<typeof deviceLocationFormSchema>) => {
+        // try {
+        //     const deviceLocationService = new DeviceLocationService();
+        //     const createDeviceLocationRequest = new CreateDeviceLocationRequest(
+        //         values.NameDeviceLocation,
+        //         values.DataUnitId
+        //     );
+
+        //     const response: ResponseResult<GetDeviceLocationsDeviceLocation> = 
+        //         await deviceLocationService.createDeviceLocation(createDeviceLocationRequest);
+
+        //     if (response.result) {
+        //         toast.success("Success", {
+        //         description: "Data Lokasi Kerja berhasil tersimpan!",
+        //         });
+        //         router.push(`/devicelocations/form/${response.result.id}`);
+        //     } else {
+        //         const errorText = response?.error?.detail || "Failed to Create DeviceLocations";
+        //         toast.error("Failed", {
+        //         description: errorText,
+        //         });
+        //     }
+        // } catch (error: unknown) {
+        //     const errorMessage = error instanceof Error ? error.message : "Failed to handle Create DeviceLocations";
+        //     toast.error("Failed", {
+        //         description: errorMessage,
+        //     });
+        // }
+
         try {
-        const deviceLocationService = new DeviceLocationService();
-        const createDeviceLocationRequest = new CreateDeviceLocationRequest(
-            values.NameDeviceLocation,
-            values.DataUnitId
-        );
+            const deviceLocationService = new DeviceLocationService();
+            const createDeviceLocationRequest = new CreateDeviceLocationRequest(
+                values.NameDeviceLocation,
+                values.DataUnitId
+            );
 
-        const response: ResponseResult<GetDeviceLocationsDeviceLocation> = 
-            await deviceLocationService.createDeviceLocation(createDeviceLocationRequest);
+            const response: ResponseResult<GetDeviceLocationsDeviceLocation> = 
+                await deviceLocationService.createDeviceLocation(createDeviceLocationRequest);
 
-        if (response.result) {
-            toast.success("Success", {
-            description: "Data Lokasi Kerja berhasil tersimpan!",
-            });
-            router.push(`/devicelocations/form/${response.result.id}`);
-        } else {
-            const errorText = response?.error?.detail || "Failed to Create DeviceLocations";
-            toast.error("Failed", {
-            description: errorText,
-            });
-        }
+            if (response.result) {
+                toast.success("Success", {
+                description: "Data Lokasi Kerja berhasil tersimpan!",
+                });
+                router.push(`/devicelocations/form/${response.result.id}`);
+            }
         } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : "Failed to handle Create DeviceLocations";
-        toast.error("Failed", {
-            description: errorMessage,
-        });
+            const errorMessage = error instanceof Error ? error.message : 'Failed to handle Create DeviceLocations';
+            if (error && typeof error === 'object' && 'response' in error && 
+                error.response && typeof error.response === 'object' && 
+                'data' in error.response && error.response.data && 
+                typeof error.response.data === 'object' && 
+                'error' in error.response.data) {
+                toast.error('Failed', {
+                    description: (error.response.data as { error: string }).error,
+                });
+            } else {
+                toast.error('Failed', {
+                    description: errorMessage,
+                });
+            }
         }
     };
 

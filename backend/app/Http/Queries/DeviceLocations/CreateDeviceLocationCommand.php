@@ -40,8 +40,9 @@ class CreateDeviceLocationCommand
             ->first();
 
         if ($existingDeviceLocation) {
-            throw new Exception('Ada Data yang Sama');
+            //throw new Exception('Ada Data yang Sama');
             //return response()->json(['error' => 'Ada Data yang Sama'], 400); 
+            throw new ValidationException('Data Already Exist');
         }
 
         // Convert the request object to an array

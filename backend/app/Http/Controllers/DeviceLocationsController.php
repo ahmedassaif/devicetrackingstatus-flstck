@@ -14,6 +14,8 @@ use App\Http\Queries\DeviceLocations\DeleteDeviceLocationCommand;
 use App\Http\Queries\DeviceLocations\GetLookupAllDeviceLocationsQuery;
 use OpenApi\Annotations as OA;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Exception;
 
 class DeviceLocationsController extends Controller
 {
@@ -221,15 +223,21 @@ class DeviceLocationsController extends Controller
      */
     public function insertDeviceLocation(Request $request) 
     { 
+        try {
+            $createDeviceLocationRequest = new CreateDeviceLocationRequest(
+                $request->input('NameDeviceLocation'), 
+                $request->input('DataUnitId') 
+            );
+    
+            $deviceLocationResource = $this->createDeviceLocationCommand->handle($createDeviceLocationRequest);
+    
+            return response()->json($deviceLocationResource, 201);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
         
-        $createDeviceLocationRequest = new CreateDeviceLocationRequest(
-            $request->input('NameDeviceLocation'), 
-            $request->input('DataUnitId') 
-        );
-
-        $deviceLocationResource = $this->createDeviceLocationCommand->handle($createDeviceLocationRequest);
-
-        return response()->json($deviceLocationResource, 201);
     }
 
     /**
