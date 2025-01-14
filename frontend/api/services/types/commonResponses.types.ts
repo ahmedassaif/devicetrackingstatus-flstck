@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { AxiosResponse } from "axios";
 
 import {
@@ -72,7 +73,22 @@ export async function toResponseResult<T>(
         responseResult.result = axiosResponse.data as T;
       }
     } else {
-      responseResult.error = createErrorResponse(axiosResponse);
+      if (axiosResponse.data && typeof axiosResponse.data === 'object' && 'error' in axiosResponse.data) {
+        const errorMessage = String(axiosResponse.data.error);
+        responseResult.error = {
+            type: 'https://datatracker.ietf.org/doc/html/rfc7231#section-6.6',
+            title: errorMessage,
+            status: axiosResponse.status,
+            detail: errorMessage,
+        };
+      } else {
+          responseResult.error = {
+              type: 'https://datatracker.ietf.org/doc/html/rfc7231#section-6.6',
+              title: 'Unknown Error',
+              status: axiosResponse.status,
+              detail: 'An unknown error occurred',
+          };
+      }
     }
   } catch (error) {
     

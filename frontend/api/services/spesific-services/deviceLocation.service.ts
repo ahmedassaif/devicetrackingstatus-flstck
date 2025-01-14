@@ -87,7 +87,13 @@ export class DeviceLocationService extends BaseApiService {
         return toResponseResult<GetDeviceLocationsDeviceLocation>(response);
     }
 
-    public async deleteDeviceLocation(id: string): Promise<ResponseResult<SuccessResponse>> {
+/*************  ✨ Codeium Command ⭐  *************/
+    /**
+     * Update a DeviceLocation
+     * @param request The request payload containing the DeviceLocation data to update
+     * @returns A ResponseResult containing the updated DeviceLocation, or an error if one occurs
+     */
+/******  d2263235-6e8b-48b1-bc20-26cf55c11a7d  *******/    public async deleteDeviceLocation(id: string): Promise<ResponseResult<SuccessResponse>> {
         const response = await this.api.delete(`${ApiEndpoint.V1.DeviceLocation.Segment}/${id}`);
 
         return toResponseResult<SuccessResponse>(response);

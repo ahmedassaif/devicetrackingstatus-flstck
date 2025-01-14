@@ -68,22 +68,16 @@ export default function DeviceLocationFormPage() {
                 description: "Data Lokasi Kerja berhasil tersimpan!",
                 });
                 router.push(`/devicelocations/form/${response.result.id}`);
+            } else {
+                toast.error("Failed", {
+                    description: response.error?.detail || "Failed to create DeviceLocation",
+                });
             }
         } catch (error: unknown) {
-            const errorMessage = error instanceof Error ? error.message : 'Failed to handle Create DeviceLocations';
-            if (error && typeof error === 'object' && 'response' in error && 
-                error.response && typeof error.response === 'object' && 
-                'data' in error.response && error.response.data && 
-                typeof error.response.data === 'object' && 
-                'error' in error.response.data) {
-                toast.error('Failed', {
-                    description: (error.response.data as { error: string }).error,
-                });
-            } else {
-                toast.error('Failed', {
-                    description: errorMessage,
-                });
-            }
+            const errorMessage = error instanceof Error ? error.message : "Failed to handle Create DeviceLocations";
+            toast.error("Failed", {
+                description: errorMessage,
+            });
         }
     };
 
