@@ -24,64 +24,97 @@ export default function DeviceLocationFormPage() {
     });
 
 
+    // const saveData = async (values: z.infer<typeof deviceLocationFormSchema>) => {
+    //     // try {
+    //     //     const deviceLocationService = new DeviceLocationService();
+    //     //     const createDeviceLocationRequest = new CreateDeviceLocationRequest(
+    //     //         values.NameDeviceLocation,
+    //     //         values.DataUnitId
+    //     //     );
+
+    //     //     const response: ResponseResult<GetDeviceLocationsDeviceLocation> = 
+    //     //         await deviceLocationService.createDeviceLocation(createDeviceLocationRequest);
+
+    //     //     if (response.result) {
+    //     //         toast.success("Success", {
+    //     //         description: "Data Lokasi Kerja berhasil tersimpan!",
+    //     //         });
+    //     //         router.push(`/devicelocations/form/${response.result.id}`);
+    //     //     } else {
+    //     //         const errorText = response?.error?.detail || "Failed to Create DeviceLocations";
+    //     //         toast.error("Failed", {
+    //     //         description: errorText,
+    //     //         });
+    //     //     }
+    //     // } catch (error: unknown) {
+    //     //     const errorMessage = error instanceof Error ? error.message : "Failed to handle Create DeviceLocations";
+    //     //     toast.error("Failed", {
+    //     //         description: errorMessage,
+    //     //     });
+    //     // }
+
+    //     try {
+    //         const deviceLocationService = new DeviceLocationService();
+    //         const createDeviceLocationRequest = new CreateDeviceLocationRequest(
+    //             values.NameDeviceLocation,
+    //             values.DataUnitId
+    //         );
+
+    //         const response: ResponseResult<GetDeviceLocationsDeviceLocation> = 
+    //             await deviceLocationService.createDeviceLocation(createDeviceLocationRequest);
+
+    //         if (response.result) {
+    //             toast.success("Success", {
+    //             description: "Data Lokasi Kerja berhasil tersimpan!",
+    //             });
+    //             router.push(`/devicelocations/form/${response.result.id}`);
+    //         }
+    //         else 
+    //         {
+    //             toast.error("Failed", {
+    //                 description: response.error?.detail || "Failed to create DeviceLocation",
+    //             });
+    //         }
+    //     } catch (error: unknown) {
+    //         const errorMessage = error instanceof Error ? error.message : "Failed to handle Create DeviceLocations";
+    //         toast.error("Failed", {
+    //             description: errorMessage,
+    //         });
+    //     }
+    // };
+
     const saveData = async (values: z.infer<typeof deviceLocationFormSchema>) => {
-        // try {
-        //     const deviceLocationService = new DeviceLocationService();
-        //     const createDeviceLocationRequest = new CreateDeviceLocationRequest(
-        //         values.NameDeviceLocation,
-        //         values.DataUnitId
-        //     );
-
-        //     const response: ResponseResult<GetDeviceLocationsDeviceLocation> = 
-        //         await deviceLocationService.createDeviceLocation(createDeviceLocationRequest);
-
-        //     if (response.result) {
-        //         toast.success("Success", {
-        //         description: "Data Lokasi Kerja berhasil tersimpan!",
-        //         });
-        //         router.push(`/devicelocations/form/${response.result.id}`);
-        //     } else {
-        //         const errorText = response?.error?.detail || "Failed to Create DeviceLocations";
-        //         toast.error("Failed", {
-        //         description: errorText,
-        //         });
-        //     }
-        // } catch (error: unknown) {
-        //     const errorMessage = error instanceof Error ? error.message : "Failed to handle Create DeviceLocations";
-        //     toast.error("Failed", {
-        //         description: errorMessage,
-        //     });
-        // }
-
         try {
             const deviceLocationService = new DeviceLocationService();
             const createDeviceLocationRequest = new CreateDeviceLocationRequest(
-                values.NameDeviceLocation,
-                values.DataUnitId
+            values.NameDeviceLocation,
+            values.DataUnitId
             );
 
             const response: ResponseResult<GetDeviceLocationsDeviceLocation> = 
-                await deviceLocationService.createDeviceLocation(createDeviceLocationRequest);
+            await deviceLocationService.createDeviceLocation(createDeviceLocationRequest);
 
             if (response.result) {
-                toast.success("Success", {
-                description: "Data Lokasi Kerja berhasil tersimpan!",
-                });
-                router.push(`/devicelocations/form/${response.result.id}`);
-            }
-            else 
-            {
-                toast.error("Failed", {
-                    description: response.error?.detail || "Failed to create DeviceLocation",
-                });
-            }
-        } catch (error: unknown) {
-            const errorMessage = error instanceof Error ? error.message : "Failed to handle Create DeviceLocations";
+            // Handle success
+            toast.success("Success", {
+                description: "Data Lokasi Utama Perangkat berhasil tersimpan!",
+            });
+            router.push(`/devicelocations/form/${response.result.id}`);
+            } else if (response.error) {
+            // Handle error response
+            const errorMessage = response.error.detail || "Failed to create DeviceLocation";
             toast.error("Failed", {
                 description: errorMessage,
             });
+            }
+        } catch (error: unknown) {
+            // Handle unexpected errors
+            const errorMessage = error instanceof Error ? error.message : "Failed to handle Create DeviceLocations";
+            toast.error("Failed", {
+            description: errorMessage,
+            });
         }
-    };
+        };
 
     return (
         <div className="container mx-auto p-4">

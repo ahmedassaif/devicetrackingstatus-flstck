@@ -43,7 +43,13 @@ class CreateDeviceLocationCommand
             //throw new Exception('Ada Data yang Sama');
             //return response()->json(['error' => 'Ada Data yang Sama'], 400); 
             //throw new ValidationException('Data Already Exist');
-            return response()->json(['message' => 'Data Already Exist'], 400);
+            // return response()->json(['message' => 'Data Already Exist'], 400);
+            return response()->json([
+                'type' => 'https://datatracker.ietf.org/doc/html/rfc7231#section-6.6',
+                'title' => 'Duplicate Data',
+                'status' => 400,
+                'detail' => 'Data Already Exist',
+            ], 400);
         }
 
         // Convert the request object to an array

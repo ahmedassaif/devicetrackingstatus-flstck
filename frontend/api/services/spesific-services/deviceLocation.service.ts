@@ -79,46 +79,64 @@ export class DeviceLocationService extends BaseApiService {
 
     public async createDeviceLocation(request: CreateDeviceLocationRequest): Promise<ResponseResult<GetDeviceLocationsDeviceLocation>> {
         try {
-            const response = await this.api.post(`${ApiEndpoint.V1.DeviceLocation.Segment}`, request);
-        
-            if (response.status === 200) {
-                return toResponseResult<GetDeviceLocationsDeviceLocation>(response);
-                console.log('Success');
+          const response = await this.api.post(`${ApiEndpoint.V1.DeviceLocation.Segment}`, request);
+      
+          if (response.status === 200) {
+            // Handle success response
+            return toResponseResult<GetDeviceLocationsDeviceLocation>(response);
+          } else {
+            // Handle error response
+            const errorData = response.data;
+            if (errorData && typeof errorData === 'object') {
+              // Extract error message from the response data
+              const errorMessage = errorData.detail || errorData.message || 'An unknown error occurred';
+              return {
+                error: {
+                  type: errorData.type || 'https://datatracker.ietf.org/doc/html/rfc7231#section-6.6',
+                  title: errorData.title || 'Error creating device location',
+                  status: response.status,
+                  detail: errorMessage,
+                },
+              };
             } else {
-                console.error('Error');
-                return new Promise((resolve, reject) => {
-                    response.data.onloadend = () => {
-                        if (response.data.result) {
-                            try {
-                                const errorData = JSON.parse(response.data.result as string);
-                                console.error("Error data: ", errorData);
-                                resolve(toResponseResult({
-                                    status: response.status,
-                                    data: errorData,
-                                    statusText: "",
-                                    headers: {},
-                                    config: {
-                                        headers: new axios.AxiosHeaders(),
-                                        method: 'post',
-                                        url: `${ApiEndpoint.V1.DeviceLocation.Segment}`
-                                    }
-                                }));
-                            } catch (error) {
-                                reject(new Error(`Failed to parse error response: ${error}`));
-                            }
-                        } else {
-                            reject(new Error('Failed to read response'));
-                        }
-                    };
-                    response.data.result.onerror = () => reject(new Error('Failed to read response'));
-                    response.data.result.readAsText(response.data);
-                });
+              // Handle non-object error response
+              return {
+                error: {
+                  type: 'https://datatracker.ietf.org/doc/html/rfc7231#section-6.6',
+                  title: 'Error creating device location',
+                  status: response.status,
+                  detail: 'An unknown error occurred',
+                },
+              };
             }
+          }
         } catch (error) {
-            console.error('Failed to create device location:', error);
-            throw error;
+          console.error('Failed to create device location:', error);
+      
+          // Handle AxiosError specifically
+          if (axios.isAxiosError(error)) {
+            const errorMessage = error.response?.data?.detail || error.response?.data?.message || error.message;
+            return {
+              error: {
+                type: error.response?.data?.type || 'https://datatracker.ietf.org/doc/html/rfc7231#section-6.6',
+                title: error.response?.data?.title || 'Error creating device location',
+                status: error.response?.status || 500,
+                detail: errorMessage,
+              },
+            };
+          }
+      
+          // Handle generic errors
+          return {
+            error: {
+              type: 'https://datatracker.ietf.org/doc/html/rfc7231#section-6.6',
+              title: 'Error creating device location',
+              status: 500,
+              detail: 'An unknown error occurred',
+            },
+          };
         }
-    }
+      }
 
     public async updateDeviceLocation(request: UpdateDeviceLocationRequest): Promise<ResponseResult<GetDeviceLocationsDeviceLocation>> {
         const response = await this.api.put(`${ApiEndpoint.V1.DeviceLocation.Segment}/${request.id}`, request);
