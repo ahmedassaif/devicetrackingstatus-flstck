@@ -43,7 +43,7 @@ class CreateDeviceLocationCommand
             //throw new Exception('Ada Data yang Sama');
             //return response()->json(['error' => 'Ada Data yang Sama'], 400); 
             //throw new ValidationException('Data Already Exist');
-            return response()->json(['error' => 'Data Already Exist'], 400);
+            return response()->json(['message' => 'Data Already Exist'], 400);
         }
 
         // Convert the request object to an array

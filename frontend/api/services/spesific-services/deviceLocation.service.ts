@@ -11,7 +11,7 @@ import {
 
 import { FileDownloadHelper } from "@/api/utils/FileDownloadHelper";
 import { AddQueryParameters } from "@/api/utils/AddQueryParameters";
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 
 export class DeviceLocationService extends BaseApiService {
 
@@ -26,6 +26,8 @@ export class DeviceLocationService extends BaseApiService {
 
         return toResponseResult<GetDeviceLocationsDeviceLocation>(response);
     }
+
+
 
     public async exportDeviceLocationsToExcel(): Promise<AxiosResponse | undefined> {
         try {
@@ -76,9 +78,46 @@ export class DeviceLocationService extends BaseApiService {
     }
 
     public async createDeviceLocation(request: CreateDeviceLocationRequest): Promise<ResponseResult<GetDeviceLocationsDeviceLocation>> {
-        const response = await this.api.post(`${ApiEndpoint.V1.DeviceLocation.Segment}`, request);
-
-        return toResponseResult<GetDeviceLocationsDeviceLocation>(response);
+        try {
+            const response = await this.api.post(`${ApiEndpoint.V1.DeviceLocation.Segment}`, request);
+        
+            if (response.status === 200) {
+                return toResponseResult<GetDeviceLocationsDeviceLocation>(response);
+                console.log('Success');
+            } else {
+                console.error('Error');
+                return new Promise((resolve, reject) => {
+                    response.data.onloadend = () => {
+                        if (response.data.result) {
+                            try {
+                                const errorData = JSON.parse(response.data.result as string);
+                                console.error("Error data: ", errorData);
+                                resolve(toResponseResult({
+                                    status: response.status,
+                                    data: errorData,
+                                    statusText: "",
+                                    headers: {},
+                                    config: {
+                                        headers: new axios.AxiosHeaders(),
+                                        method: 'post',
+                                        url: `${ApiEndpoint.V1.DeviceLocation.Segment}`
+                                    }
+                                }));
+                            } catch (error) {
+                                reject(new Error(`Failed to parse error response: ${error}`));
+                            }
+                        } else {
+                            reject(new Error('Failed to read response'));
+                        }
+                    };
+                    response.data.result.onerror = () => reject(new Error('Failed to read response'));
+                    response.data.result.readAsText(response.data);
+                });
+            }
+        } catch (error) {
+            console.error('Failed to create device location:', error);
+            throw error;
+        }
     }
 
     public async updateDeviceLocation(request: UpdateDeviceLocationRequest): Promise<ResponseResult<GetDeviceLocationsDeviceLocation>> {

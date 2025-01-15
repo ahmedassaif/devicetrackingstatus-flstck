@@ -68,7 +68,9 @@ export default function DeviceLocationFormPage() {
                 description: "Data Lokasi Kerja berhasil tersimpan!",
                 });
                 router.push(`/devicelocations/form/${response.result.id}`);
-            } else {
+            }
+            else 
+            {
                 toast.error("Failed", {
                     description: response.error?.detail || "Failed to create DeviceLocation",
                 });
