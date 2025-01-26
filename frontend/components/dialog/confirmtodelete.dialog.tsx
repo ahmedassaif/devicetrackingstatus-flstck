@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { RotateCw } from "lucide-react";
 
 interface DeleteDialogProps {
   isOpen: boolean;
@@ -28,6 +29,17 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
   title = "Confirm Deletion",
   description = "Are you sure you want to delete this data?",
 }) => {
+  const [isDeleting, setIsDeleting] = React.useState(false);
+
+  const handleDelete = async () => {
+      setIsDeleting(true);
+      try {
+        await onDelete();
+      } finally {
+        setIsDeleting(false);
+      }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
@@ -39,8 +51,14 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button variant="destructive" onClick={onDelete}>
-            Delete
+          <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
+            {isDeleting ? (
+                <div className='flex items-center gap-2'>
+                  <RotateCw className="animate-spin" size={20} />
+                  Deleting...
+                </div>
+              ) : "Delete"
+            }
           </Button>
         </div>
       </DialogContent>

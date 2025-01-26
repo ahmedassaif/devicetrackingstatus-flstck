@@ -83,27 +83,27 @@ const DataUnitEditForm: React.FC<DataUnitEditFormProps> = ({ dataUnitId }) => {
         setLoading(true);
 
         try {
-        const dataUnitService = new DataUnitService();
-        const updateDataUnitRequest = {
-            id: dataUnitId,
-            NameUnit: model.NameUnit,
-            Plan: model.Plan || ''
-        };
+            const dataUnitService = new DataUnitService();
+            const updateDataUnitRequest = {
+                id: dataUnitId,
+                NameUnit: model.NameUnit,
+                Plan: model.Plan || ''
+            };
 
-        const response: ResponseResult<GetDataUnitsDataUnit> = 
-            await dataUnitService.updateDataUnit(updateDataUnitRequest);
+            const response: ResponseResult<GetDataUnitsDataUnit> = 
+                await dataUnitService.updateDataUnit(updateDataUnitRequest);
 
-        if (response.result) {
-            toast.success("Success", {
-                description: "Data Lokasi Kerja berhasil diubah!",
-            });
-        } else {
-            const errorText = response?.error?.detail || "Failed to Update DataUnits";
-                    toast.error("Failed", {
-                        description: errorText,
-                    });
-                    return;
-        }
+            if (response.result) {
+                toast.success("Success", {
+                    description: "Data Lokasi Kerja berhasil diubah!",
+                });
+            } else {
+                const errorText = response?.error?.detail || "Failed to Update DataUnits";
+                        toast.error("Failed", {
+                            description: errorText,
+                        });
+                        return;
+            }
         } catch (error: unknown) { 
             const errorMessage = error instanceof Error ? error.message : "Failed to handle Create DataUnits";
                             toast.error("Failed", {
@@ -172,7 +172,7 @@ const DataUnitEditForm: React.FC<DataUnitEditFormProps> = ({ dataUnitId }) => {
                             className="bg-green-700 hover:bg-green-800"
                             disabled={loading}
                             >
-                            {loading ? 'Saving...' : 'Save'}
+                                {loading ? (<div className='flex items-center gap-2'><RotateCw className="animate-spin" size={20} /> Save</div>) : "Save"}
                             </Button>
                             <Button 
                             type="button"

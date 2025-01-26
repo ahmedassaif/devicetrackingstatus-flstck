@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
 import { toast } from "sonner";
-import { CircleAlert, CircleCheck, CircleX } from 'lucide-react';
+import { CircleAlert, CircleCheck, CircleX, RotateCw } from 'lucide-react';
 
 
 export default function DataUnitFormPage() {
@@ -114,7 +114,7 @@ export default function DataUnitFormPage() {
                             className="bg-green-700 hover:bg-green-800"
                             disabled={loading}
                             >
-                            {loading ? 'Saving...' : 'Save'}
+                                {loading ? (<div className='flex items-center gap-2'><RotateCw className="animate-spin" size={20} /> Save</div>) : "Save"}
                             </Button>
                             <Button 
                             type="button"
