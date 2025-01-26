@@ -686,6 +686,9 @@
                     },
                     "500": {
                         "description": "Internal Server Error"
+                    },
+                    "409": {
+                        "description": "Duplicate Data"
                     }
                 }
             },
@@ -778,6 +781,9 @@
                     },
                     "500": {
                         "description": "Internal Server Error"
+                    },
+                    "409": {
+                        "description": "Duplicate Data"
                     }
                 }
             }

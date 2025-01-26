@@ -36,9 +36,6 @@ class CreateDeviceLocationCommand
         $deviceLocation = DeviceLocation::where('NameDeviceLocation', $createDeviceLocationRequest->NameDeviceLocation)
                                         ->where('DataUnitId', $createDeviceLocationRequest->DataUnitId)
                                         ->first();
-        // if ($deviceLocation) {
-        //     throw new ModelNotFoundException('DeviceLocation already exists');
-        // }
 
         if ($deviceLocation) {
             throw new \Illuminate\Http\Exceptions\HttpResponseException(

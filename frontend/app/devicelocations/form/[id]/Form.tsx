@@ -63,38 +63,45 @@ const DeviceLocationEditForm : React.FC<DeviceLocationEditFormProps> = ({ device
         fetchDeviceLocationDetail();
     }, [deviceLocationId, form]); 
 
+    let showLoadingForSaveData;
+    if (loading) {
+        showLoadingForSaveData = (
+            <RotateCw className="animate-spin" size={20} />
+        ); 
+    }
+
     const saveData = async (values: z.infer<typeof deviceLocationFormSchema>) => {
         setLoading(true);
 
         try {
-        const deviceLocationService = new DeviceLocationService();
-        const updateDeviceLocationRequest = new UpdateDeviceLocationRequest(
-            deviceLocationId,
-            values.NameDeviceLocation,
-            values.DataUnitId
-        );
+            const deviceLocationService = new DeviceLocationService();
+            const updateDeviceLocationRequest = new UpdateDeviceLocationRequest(
+                deviceLocationId,
+                values.NameDeviceLocation,
+                values.DataUnitId
+            );
 
-        const response: ResponseResult<GetDeviceLocationsDeviceLocation> = 
-            await deviceLocationService.updateDeviceLocation(updateDeviceLocationRequest);
+            const response: ResponseResult<GetDeviceLocationsDeviceLocation> = 
+                await deviceLocationService.updateDeviceLocation(updateDeviceLocationRequest);
 
-        if (response.result) {
-            toast.success("Success", {
-            description: "Data Lokasi Kerja berhasil diubah!",
-            });
-            router.push(`/devicelocations/form/${response.result.id}`);
-        } else {
-            const errorText = response?.error?.detail || "Failed to Update DeviceLocations";
-            toast.error("Failed", {
-            description: errorText,
-            });
-        }
+            if (response.result) {
+                toast.success("Success", {
+                description: "Data Lokasi Kerja berhasil diubah!",
+                });
+                router.push(`/devicelocations/form/${response.result.id}`);
+            } else {
+                const errorText = response?.error?.detail || "Failed to Update DeviceLocations";
+                toast.error("Failed", {
+                description: errorText,
+                });
+            }
         } catch (error: unknown) { 
-        const errorMessage = error instanceof Error ? error.message : "Failed to update DeviceLocations";
-        toast.error("Failed", {
-            description: errorMessage,
-        });
+            const errorMessage = error instanceof Error ? error.message : "Failed to update DeviceLocations";
+            toast.error("Failed", {
+                description: errorMessage,
+            });
         } finally {
-        setLoading(false);
+            setLoading(false);
         }
     };
 
@@ -158,6 +165,7 @@ const DeviceLocationEditForm : React.FC<DeviceLocationEditFormProps> = ({ device
                         type="submit" 
                         className="bg-green-700 hover:bg-green-800"
                     >
+                        {showLoadingForSaveData}
                         Save
                     </Button>
                     <Button 

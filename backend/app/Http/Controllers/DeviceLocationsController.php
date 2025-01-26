@@ -213,7 +213,8 @@ class DeviceLocationsController extends Controller
      *         @OA\JsonContent(ref="#/components/schemas/DeviceLocation")
      *     ),
      *     @OA\Response(response=400, description="Bad Request"),
-     *     @OA\Response(response=500, description="Internal Server Error")
+     *     @OA\Response(response=500, description="Internal Server Error"),
+     *     @OA\Response(response=409, description="Duplicate Data")
      * )
      */
     public function insertDeviceLocation(Request $request) 
@@ -246,10 +247,11 @@ class DeviceLocationsController extends Controller
      *     ),
      *     @OA\Response(response=404, description="DeviceLocation not found"),
      *     @OA\Response(response=400, description="Bad Request"),
-     *     @OA\Response(response=500, description="Internal Server Error")
+     *     @OA\Response(response=500, description="Internal Server Error"),
+     *     @OA\Response(response=409, description="Duplicate Data") 
      * )
      */
-    public function updateDeviceLocation(Request $request, string $id)
+    public function updateDeviceLocation(Request $request)
     {
         $updateDeviceLocationRequest = new UpdateDeviceLocationRequest(
             id: $request->input('id'),

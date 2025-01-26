@@ -99,9 +99,23 @@ export class DeviceLocationService extends BaseApiService {
     }
 
     public async updateDeviceLocation(request: UpdateDeviceLocationRequest): Promise<ResponseResult<GetDeviceLocationsDeviceLocation>> {
-        const response = await this.api.put(`${ApiEndpoint.V1.DeviceLocation.Segment}/${request.id}`, request);
+        try {
+            
+            const response = await this.api.put(`${ApiEndpoint.V1.DeviceLocation.Segment}/${request.id}`, request);
 
-        return toResponseResult<GetDeviceLocationsDeviceLocation>(response);
+            return toResponseResult<GetDeviceLocationsDeviceLocation>(response);   
+        
+        } catch (error) {
+            
+            // Handle Axios errors and convert to ResponseResult
+            if (axios.isAxiosError(error)) {
+                return {
+                    error: createErrorResponse(error.response!)
+                };
+            }
+            
+            throw error;        
+        }
     }
 
     public async deleteDeviceLocation(id: string): Promise<ResponseResult<SuccessResponse>> {

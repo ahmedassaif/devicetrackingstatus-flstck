@@ -32,6 +32,16 @@ class UpdateDeviceLocationCommand
             throw new ValidationException($validator);
         }
 
+        $deviceLocation = DeviceLocation::where('NameDeviceLocation', $updateDeviceLocationRequest->NameDeviceLocation)
+                                        ->where('DataUnitId', $updateDeviceLocationRequest->DataUnitId)
+                                        ->first();
+
+        if ($deviceLocation && $deviceLocation->id != $updateDeviceLocationRequest->id) {
+            throw new \Illuminate\Http\Exceptions\HttpResponseException(
+                response()->json(['message' => 'Data already exists'], 409)
+            );
+        }
+
         $deviceLocation = DeviceLocation::findOrFail($updateDeviceLocationRequest->id); // Fetch the DeviceLocation by ID
         $deviceLocation->NameDeviceLocation = $updateDeviceLocationRequest->NameDeviceLocation;
         $deviceLocation->DataUnitId = $updateDeviceLocationRequest->DataUnitId;
