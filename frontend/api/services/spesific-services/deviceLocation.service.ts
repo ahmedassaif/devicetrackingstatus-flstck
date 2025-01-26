@@ -11,7 +11,8 @@ import {
 
 import { FileDownloadHelper } from "@/api/utils/FileDownloadHelper";
 import { AddQueryParameters } from "@/api/utils/AddQueryParameters";
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
+import { createErrorResponse } from "@/api/utils/error-handler";
 
 export class DeviceLocationService extends BaseApiService {
 
@@ -75,10 +76,26 @@ export class DeviceLocationService extends BaseApiService {
         
     }
 
-    public async createDeviceLocation(request: CreateDeviceLocationRequest): Promise<ResponseResult<GetDeviceLocationsDeviceLocation>> {
-        const response = await this.api.post(`${ApiEndpoint.V1.DeviceLocation.Segment}`, request);
+    // public async createDeviceLocation(request: CreateDeviceLocationRequest): Promise<ResponseResult<GetDeviceLocationsDeviceLocation>> {
+    //     const response = await this.api.post(`${ApiEndpoint.V1.DeviceLocation.Segment}`, request);
 
-        return toResponseResult<GetDeviceLocationsDeviceLocation>(response);
+    //     return toResponseResult<GetDeviceLocationsDeviceLocation>(response);
+    // }
+
+    // deviceLocation.service.ts
+    public async createDeviceLocation(request: CreateDeviceLocationRequest): Promise<ResponseResult<GetDeviceLocationsDeviceLocation>> {
+        try {
+            const response = await this.api.post(`${ApiEndpoint.V1.DeviceLocation.Segment}`, request);
+            return toResponseResult<GetDeviceLocationsDeviceLocation>(response);
+        } catch (error) {
+            // Handle Axios errors and convert to ResponseResult
+            if (axios.isAxiosError(error)) {
+                return {
+                    error: createErrorResponse(error.response!)
+                };
+            }
+            throw error;
+        }
     }
 
     public async updateDeviceLocation(request: UpdateDeviceLocationRequest): Promise<ResponseResult<GetDeviceLocationsDeviceLocation>> {

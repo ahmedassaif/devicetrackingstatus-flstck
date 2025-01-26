@@ -48,6 +48,13 @@ export interface ListResponse<T> extends Response
   items: T[];
 }
 
+interface ErrorResponse {
+  message?: string;
+  // Add other possible error fields from your backend
+  detail?: string;
+  title?: string;
+}
+
 export async function toResponseResult<T>(
   axiosResponse: AxiosResponse<T>,
 ): Promise<ResponseResult<T>> {
@@ -55,11 +62,14 @@ export async function toResponseResult<T>(
 
   try {
     if (axiosResponse.status >= 200 && axiosResponse.status < 300) {
+      // console.log("1");
+      // console.log(axiosResponse);
       if (axiosResponse.headers["content-disposition"]) {
         const contentDisposition = axiosResponse.headers["content-disposition"];
         const { fileName } = parseContentDisposition(contentDisposition);
-
+        // console.log("2");
         if (!axiosResponse.data) {
+          // console.log("3");
           throw new Error("Response content is null");
         }
 
@@ -69,10 +79,22 @@ export async function toResponseResult<T>(
           contentType: axiosResponse.headers["content-type"],
         } as unknown as T;
       } else {
+        // console.log("4");
         responseResult.result = axiosResponse.data as T;
       }
     } else {
+      // console.log("5");
       responseResult.error = createErrorResponse(axiosResponse);
+
+      // Add direct error message from backend if available
+      // Modify the line in commonResponses.types.ts
+      if (axiosResponse.data && typeof axiosResponse.data === 'object') {
+          // responseResult.error.detail = (axiosResponse.data as { message?: string }).message || responseResult.error.detail;
+          const errorData = axiosResponse.data as ErrorResponse;
+          if (errorData.message) {
+            responseResult.error.detail = errorData.message;
+          }
+      }
     }
   } catch (error) {
     

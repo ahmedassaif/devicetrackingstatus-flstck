@@ -33,6 +33,19 @@ class CreateDeviceLocationCommand
             throw new ValidationException($validator);
         }
 
+        $deviceLocation = DeviceLocation::where('NameDeviceLocation', $createDeviceLocationRequest->NameDeviceLocation)
+                                        ->where('DataUnitId', $createDeviceLocationRequest->DataUnitId)
+                                        ->first();
+        // if ($deviceLocation) {
+        //     throw new ModelNotFoundException('DeviceLocation already exists');
+        // }
+
+        if ($deviceLocation) {
+            throw new \Illuminate\Http\Exceptions\HttpResponseException(
+                response()->json(['message' => 'Data already exists'], 409)
+            );
+        }
+
         // Convert the request object to an array
         $deviceLocationData = [
             'NameDeviceLocation' => $createDeviceLocationRequest->NameDeviceLocation,

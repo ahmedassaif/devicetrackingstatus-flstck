@@ -15,8 +15,11 @@ import { useRouter } from 'next/navigation';
 import { toast } from "sonner";
 import { Form, FormField, FormItem, FormLabel, FormMessage, FormControl } from "@/components/ui/form";
 import { DataUnitSelect } from "@/components/selectors/dataunit.selector";
+import { useState } from "react";
+import { RotateCw } from "lucide-react";
 
 export default function DeviceLocationFormPage() {
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
     const form = useForm({
         resolver: zodResolver(deviceLocationFormSchema),
@@ -25,6 +28,7 @@ export default function DeviceLocationFormPage() {
 
 
     const saveData = async (values: z.infer<typeof deviceLocationFormSchema>) => {
+        setLoading(true);
         try {
         const deviceLocationService = new DeviceLocationService();
         const createDeviceLocationRequest = new CreateDeviceLocationRequest(
@@ -35,24 +39,34 @@ export default function DeviceLocationFormPage() {
         const response: ResponseResult<GetDeviceLocationsDeviceLocation> = 
             await deviceLocationService.createDeviceLocation(createDeviceLocationRequest);
 
-        if (response.result) {
-            toast.success("Success", {
-            description: "Data Lokasi Kerja berhasil tersimpan!",
-            });
-            router.push(`/devicelocations/form/${response.result.id}`);
-        } else {
-            const errorText = response?.error?.detail || "Failed to Create DeviceLocations";
+            if (response.result) {
+                toast.success("Success", {
+                description: "Data Lokasi Kerja berhasil tersimpan!",
+                });
+                router.push(`/devicelocations/form/${response.result.id}`);
+            } else {
+                const errorText = response?.error?.detail || "Failed to Create DeviceLocations";
+                toast.error("Failed", {
+                description: errorText,
+                });
+            }
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : "Failed to handle Create DeviceLocations";
             toast.error("Failed", {
-            description: errorText,
+                description: errorMessage,
             });
         }
-        } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : "Failed to handle Create DeviceLocations";
-        toast.error("Failed", {
-            description: errorMessage,
-        });
+        finally {
+            setLoading(false);
         }
     };
+
+    let showLoadingForSaveData;
+    if (loading) {
+        showLoadingForSaveData = (
+            <RotateCw className="animate-spin" size={20} />
+        ); 
+    }
 
     return (
         <div className="container mx-auto p-4">
@@ -93,6 +107,7 @@ export default function DeviceLocationFormPage() {
                         type="submit" 
                         className="bg-green-700 hover:bg-green-800"
                     >
+                        {showLoadingForSaveData}
                         Save
                     </Button>
                     <Button 

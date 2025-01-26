@@ -64,12 +64,25 @@ export function handleNetworkError(error: AxiosError): never {
 }
 
 export function createErrorResponse(response: AxiosResponse): CommonErrorResponse {
+  // Extract backend's error message if available
+  const backendMessage = response.data?.message || response.data?.detail;
+
   if (response.status === 0 && response.statusText === "Network Error") {
     return {
       title: "Service Unavailable",
       status: 503,
       type: "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.4",
-      detail: `Service at ${response.config.url} is not available. Error message: ${response.statusText}`,
+      detail: backendMessage || `Service at ${response.config.url} is not available. Error message: ${response.statusText}`,
+    };
+  }
+
+  // Handle 409 Conflict explicitly
+  if (response.status === 409) {
+    return {
+      title: "Conflict",
+      status: 409,
+      type: "https://tools.ietf.org/html/rfc7231#section-6.5.8",
+      detail: response.data?.message || "DeviceLocation already exists",
     };
   }
 
@@ -79,7 +92,7 @@ export function createErrorResponse(response: AxiosResponse): CommonErrorRespons
         title: "The specified resource was not found",
         status: 404,
         type: "https://tools.ietf.org/html/rfc7231#section-6.5.4",
-        detail: `The specified resource at ${response.config.url} was not found.`,
+        detail: backendMessage || `The specified resource at ${response.config.url} was not found.`,
       };
     case 415:
       return {
@@ -102,7 +115,7 @@ export function createErrorResponse(response: AxiosResponse): CommonErrorRespons
         title: "Unknown Error",
         status: 500,
         type: "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
-        detail: "Something went wrong.",
+        detail: backendMessage || "Something went wrong.",
       };
   }
 }
