@@ -1,6 +1,6 @@
 import { BaseApiService } from "../base-api";
 import { ApiEndpoint, GetDataUnitsDataUnit, CreateDataUnitRequest, UpdateDataUnitRequest, DataUnitDto } from "../types/dataUnit.types";
-import { PaginatedListRequest } from "../types/commonRequest.types";
+import { PaginatedListRequest, SelectorListRequest } from "../types/commonRequest.types";
 import { 
     PaginatedListResponse,
     ResponseResult,
@@ -67,12 +67,9 @@ export class DataUnitService extends BaseApiService {
         }
     }
 
-    public async getLookupAllDataUnits(): Promise<ResponseResult<ListResponse<DataUnitDto>>> {
-        
-        const response = await this.api.get(`${ApiEndpoint.V1.LookupAll.Segment}`);
-
+    public async getLookupDataUnits(request: SelectorListRequest): Promise<ResponseResult<ListResponse<DataUnitDto>>> {
+        const response = await this.api.get(`${ApiEndpoint.V1.LookupAll.Segment}`, { params: request });
         return toResponseResult<ListResponse<DataUnitDto>>(response);
-        
     }
 
     public async createDataUnit(request: CreateDataUnitRequest): Promise<ResponseResult<GetDataUnitsDataUnit>> {

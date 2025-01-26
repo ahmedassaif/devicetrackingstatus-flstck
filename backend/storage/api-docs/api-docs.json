@@ -441,6 +441,42 @@
                 }
             }
         },
+        "/api/v1/getLookupAllDataUnits": {
+            "get": {
+                "tags": [
+                    "DataUnits"
+                ],
+                "summary": "Get all DataUnits",
+                "description": "Returns a list of all DataUnits",
+                "operationId": "fbaaae0f6fafbdc10dc908e4652364a9",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search data",
+                        "required": false,
+                        "schema": {
+                            "type": "text"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "DataUnits retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DataUnitDto"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/api/v1/dataUnit": {
             "post": {
                 "tags": [
@@ -472,31 +508,6 @@
                     },
                     "400": {
                         "description": "Bad Request"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/api/v1/getLookupAllDataUnits": {
-            "get": {
-                "tags": [
-                    "DataUnits"
-                ],
-                "summary": "Get all DataUnits",
-                "description": "Returns a list of all DataUnits",
-                "operationId": "fbaaae0f6fafbdc10dc908e4652364a9",
-                "responses": {
-                    "200": {
-                        "description": "DataUnits retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/DataUnitDto"
-                                }
-                            }
-                        }
                     },
                     "500": {
                         "description": "Internal Server Error"

@@ -27,3 +27,14 @@ export class PaginatedListRequest {
     this.to = to;
   }
 }
+
+export class SelectorListRequest {
+  searchText: string | undefined;
+  [key: string]: any;
+
+  constructor(
+    searchText: string,
+  ) {
+    this.searchText = searchText;
+  }
+}

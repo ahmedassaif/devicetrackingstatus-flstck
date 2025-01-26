@@ -14,9 +14,9 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from 'next/navigation';
 import { toast } from "sonner";
 import { Form, FormField, FormItem, FormLabel, FormMessage, FormControl } from "@/components/ui/form";
-import { DataUnitSelect } from "@/components/selectors/dataunit.selector";
 import { useState } from "react";
 import { RotateCw } from "lucide-react";
+import DataUnitsSelector from "@/components/selectors/dataunits.selector";
 
 export default function DeviceLocationFormPage() {
     const [loading, setLoading] = useState(false);
@@ -81,11 +81,11 @@ export default function DeviceLocationFormPage() {
                         name="DataUnitId"
                         render={({ field }) => (
                             <FormItem>
-                            <FormLabel>Lokasi Kerja</FormLabel>
-                            <FormControl>
-                                <DataUnitSelect onValueChange={(value) => form.setValue("DataUnitId", value)} value={field.value} />
-                            </FormControl>
-                            <FormMessage />
+                                <FormLabel>Lokasi Kerja</FormLabel>
+                                <FormControl>
+                                    <DataUnitsSelector onValueChange={(value) => form.setValue("DataUnitId", value)} value={field.value} />
+                                </FormControl>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />
@@ -94,11 +94,11 @@ export default function DeviceLocationFormPage() {
                         name="NameDeviceLocation"
                         render={({ field }) => (
                             <FormItem>
-                            <FormLabel>Lokasi Perangkat</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Nama Lokasi Perangkat" {...field} />
-                            </FormControl>
-                            <FormMessage />
+                                <FormLabel>Lokasi Perangkat</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Nama Lokasi Perangkat" {...field} />
+                                </FormControl>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />

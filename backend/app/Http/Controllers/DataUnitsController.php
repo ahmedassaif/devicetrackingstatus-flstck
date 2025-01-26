@@ -14,6 +14,7 @@ use App\Http\Queries\DataUnits\DeleteDataUnitCommand;
 use App\Http\Queries\DataUnits\GetLookupAllDataUnitsQuery;
 use OpenApi\Annotations as OA;
 use Illuminate\Http\Request;
+use App\Http\Requests\SearchInSelectorRequest;
 
 class DataUnitsController extends Controller
 {
@@ -198,6 +199,34 @@ class DataUnitsController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/api/v1/getLookupAllDataUnits",
+     *     summary="Get all DataUnits",
+     *     description="Returns a list of all DataUnits",
+     *     tags={"DataUnits"},
+     *     @OA\Parameter(
+     *         name="searchText",
+     *         in="query",
+     *         description="search data",
+     *         required=false,
+     *         @OA\Schema(type="text")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="DataUnits retrieved successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/DataUnitDto")
+     *     ),
+     *     @OA\Response(response=500, description="Internal Server Error")
+     * )
+     */
+    public function getLookupAllDataUnits(SearchInSelectorRequest $request) { 
+        
+        $dataUnits = $this->getLookupAllDataUnitsQuery->getLookup($request); 
+        
+        return response()->json($dataUnits); 
+    }
+
+    /**
      * @OA\Post(
      *     path="/api/v1/dataUnit",
      *     summary="Create a new DataUnit",
@@ -249,7 +278,7 @@ class DataUnitsController extends Controller
      *     @OA\Response(response=500, description="Internal Server Error")
      * )
      */
-    public function updateDataUnit(Request $request, string $id)
+    public function updateDataUnit(Request $request)
     {
         $updateDataUnitRequest = new UpdateDataUnitRequest(
             id: $request->input('id'),
@@ -288,27 +317,6 @@ class DataUnitsController extends Controller
         $response = $this->deleteDataUnitCommand->handle($id);
 
         return $response;
-    }
-
-    /**
-     * @OA\Get(
-     *     path="/api/v1/getLookupAllDataUnits",
-     *     summary="Get all DataUnits",
-     *     description="Returns a list of all DataUnits",
-     *     tags={"DataUnits"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="DataUnits retrieved successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/DataUnitDto")
-     *     ),
-     *     @OA\Response(response=500, description="Internal Server Error")
-     * )
-     */
-    public function getLookupAllDataUnits() { 
-        
-        $dataUnits = $this->getLookupAllDataUnitsQuery->getLookup(); 
-        
-        return response()->json($dataUnits); 
     }
 
 }

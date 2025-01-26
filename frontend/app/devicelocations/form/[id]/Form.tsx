@@ -17,7 +17,7 @@ import { RotateCw } from 'lucide-react';
 import loadingBackground from "@/public/images/beams.jpg";
 import Image from "next/image";
 import { Form, FormField, FormItem, FormLabel, FormMessage, FormControl } from "@/components/ui/form";
-import { DataUnitSelect } from "@/components/selectors/dataunit.selector";
+import DataUnitsSelector from '@/components/selectors/dataunits.selector';
 
 interface DeviceLocationEditFormProps {
     deviceLocationId: string;
@@ -139,11 +139,11 @@ const DeviceLocationEditForm : React.FC<DeviceLocationEditFormProps> = ({ device
                     name="DataUnitId"
                     render={({ field }) => (
                         <FormItem>
-                        <FormLabel>Lokasi Kerja</FormLabel>
-                        <FormControl>
-                            <DataUnitSelect onValueChange={field.onChange} value={field.value} />
-                        </FormControl>
-                        <FormMessage />
+                            <FormLabel>Lokasi Kerja</FormLabel>
+                            <FormControl>
+                                <DataUnitsSelector onValueChange={field.onChange} value={field.value} />
+                            </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                     />
@@ -152,11 +152,11 @@ const DeviceLocationEditForm : React.FC<DeviceLocationEditFormProps> = ({ device
                     name="NameDeviceLocation"
                     render={({ field }) => (
                         <FormItem>
-                        <FormLabel>Kode Plan</FormLabel>
-                        <FormControl>
-                            <Input placeholder="Lokasi Utama Perangkat" {...field} />
-                        </FormControl>
-                        <FormMessage />
+                            <FormLabel>Kode Plan</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Lokasi Utama Perangkat" {...field} />
+                            </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                     />
