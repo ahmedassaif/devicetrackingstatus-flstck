@@ -60,6 +60,25 @@ export class UpdateDeviceLocationRequest{
     }
 }
 
+export class GetLookupDeviceLocationsByDataUnitRequest{
+    DataUnitId: string | undefined;
+    searchText: string | undefined;
+    [key: string]: any;
+
+    constructor(DataUnitId: string, searchText: string){
+
+        this.searchText = searchText;
+        this.DataUnitId = DataUnitId;
+    }
+}
+
+export interface GetLookupDeviceLocationsByDataUnitResponse {
+    id: string;
+    NameDeviceLocation: string;
+    NameUnit: string;
+    Plan: string;
+}
+
 const deviceLocationFormSchema = z.object({
     NameDeviceLocation: z.string().min(1, { message: "Nama Lokasi Perangkat Wajib Diisi" }),
     DataUnitId: z.string().min(1, { message: "Lokasi Kerja harus dipilih" }),

@@ -1,5 +1,5 @@
 import { BaseApiService } from "../base-api";
-import { ApiEndpoint, GetDeviceLocationsDeviceLocation, CreateDeviceLocationRequest, UpdateDeviceLocationRequest, DeviceLocationDto } from "../types/deviceLocation.types";
+import { ApiEndpoint, GetDeviceLocationsDeviceLocation, CreateDeviceLocationRequest, UpdateDeviceLocationRequest, GetLookupDeviceLocationsByDataUnitRequest, GetLookupDeviceLocationsByDataUnitResponse } from "../types/deviceLocation.types";
 import { PaginatedListRequest } from "../types/commonRequest.types";
 import { 
     PaginatedListResponse,
@@ -68,21 +68,14 @@ export class DeviceLocationService extends BaseApiService {
         }
     }
 
-    public async getLookupAllDeviceLocations(): Promise<ResponseResult<ListResponse<DeviceLocationDto>>> {
+    public async getLookupAllDeviceLocations(request: GetLookupDeviceLocationsByDataUnitRequest): Promise<ResponseResult<ListResponse<GetLookupDeviceLocationsByDataUnitResponse>>> {
         
-        const response = await this.api.get(`${ApiEndpoint.V1.LookupAll.Segment}`);
+        const response = await this.api.get(`${ApiEndpoint.V1.LookupAll.Segment}?${AddQueryParameters(request)}`);
 
-        return toResponseResult<ListResponse<DeviceLocationDto>>(response);
+        return toResponseResult<ListResponse<GetLookupDeviceLocationsByDataUnitResponse>>(response);
         
     }
 
-    // public async createDeviceLocation(request: CreateDeviceLocationRequest): Promise<ResponseResult<GetDeviceLocationsDeviceLocation>> {
-    //     const response = await this.api.post(`${ApiEndpoint.V1.DeviceLocation.Segment}`, request);
-
-    //     return toResponseResult<GetDeviceLocationsDeviceLocation>(response);
-    // }
-
-    // deviceLocation.service.ts
     public async createDeviceLocation(request: CreateDeviceLocationRequest): Promise<ResponseResult<GetDeviceLocationsDeviceLocation>> {
         try {
             const response = await this.api.post(`${ApiEndpoint.V1.DeviceLocation.Segment}`, request);
