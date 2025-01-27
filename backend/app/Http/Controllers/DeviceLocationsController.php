@@ -8,10 +8,11 @@ use App\Http\Queries\DeviceLocations\GetDeviceLocationsQuery;
 use App\Http\Queries\DeviceLocations\GetDeviceLocationQuery;
 use App\Http\Queries\DeviceLocations\GetDeviceLocationsExportToExcelQuery;
 use App\Http\Requests\DeviceLocations\GetDeviceLocationsRequest;
+use App\Http\Requests\DeviceLocations\DeviceLocationsSelectorRequest;
 use App\Http\Queries\DeviceLocations\CreateDeviceLocationCommand;
 use App\Http\Queries\DeviceLocations\UpdateDeviceLocationCommand;
 use App\Http\Queries\DeviceLocations\DeleteDeviceLocationCommand;
-use App\Http\Queries\DeviceLocations\GetLookupAllDeviceLocationsQuery;
+use App\Http\Queries\DeviceLocations\GetLookupDeviceLocationsByDataUnit;
 use OpenApi\Annotations as OA;
 use Illuminate\Http\Request;
 
@@ -24,7 +25,7 @@ class DeviceLocationsController extends Controller
     protected $updateDeviceLocationCommand;
     protected $deleteDeviceLocationCommand;
     protected $getLookupAllDeviceLocationsQuery;
-
+    protected $getLookupDeviceLocationsByDataUnit;
     public function __construct(
         GetDeviceLocationsQuery $getDeviceLocationsQuery,
         GetDeviceLocationQuery $getDeviceLocationQuery,
@@ -32,7 +33,9 @@ class DeviceLocationsController extends Controller
         CreateDeviceLocationCommand $createDeviceLocationCommand,
         UpdateDeviceLocationCommand $updateDeviceLocationCommand,
         DeleteDeviceLocationCommand $deleteDeviceLocationCommand,
-        GetLookupAllDeviceLocationsQuery $getLookupAllDeviceLocationsQuery
+        // GetLookupAllDeviceLocationsQuery $getLookupAllDeviceLocationsQuery,
+        GetLookupDeviceLocationsByDataUnit $getLookupDeviceLocationsByDataUnit
+        // GetLookupAllDeviceLocationsQuery $getLookupAllDeviceLocationsQuery
     ) {
         $this->getDeviceLocationsQuery = $getDeviceLocationsQuery;
         $this->getDeviceLocationQuery = $getDeviceLocationQuery;
@@ -40,7 +43,10 @@ class DeviceLocationsController extends Controller
         $this->createDeviceLocationCommand = $createDeviceLocationCommand;
         $this->updateDeviceLocationCommand = $updateDeviceLocationCommand;
         $this->deleteDeviceLocationCommand = $deleteDeviceLocationCommand;
-        $this->getLookupAllDeviceLocationsQuery = $getLookupAllDeviceLocationsQuery;
+        // $this->getLookupAllDeviceLocationsQuery = $getLookupAllDeviceLocationsQuery;
+        $this->getLookupDeviceLocationsByDataUnit = $getLookupDeviceLocationsByDataUnit;
+        $this->deleteDeviceLocationCommand = $deleteDeviceLocationCommand;
+        // $this->getLookupAllDeviceLocationsQuery = $getLookupAllDeviceLocationsQuery;
     }
 
     /**
@@ -294,10 +300,24 @@ class DeviceLocationsController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/getLookupAllDeviceLocations",
-     *     summary="Get all DeviceLocations",
-     *     description="Returns a list of all DeviceLocations",
+     *     path="/api/v1/getLookupDeviceLocationsByDataUnit",
+     *     summary="Get DeviceLocations by DataUnit",
+     *     description="Returns a list of DeviceLocations by DataUnit",
      *     tags={"DeviceLocations"},
+     *     @OA\Parameter(
+     *         name="DataUnitId",
+     *         in="query",
+     *         required=true,
+     *         description="DataUnit ID",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="searchText",
+     *         in="query",
+     *         description="search data",
+     *         required=false,
+     *         @OA\Schema(type="text")
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="DeviceLocations retrieved successfully",
@@ -306,9 +326,9 @@ class DeviceLocationsController extends Controller
      *     @OA\Response(response=500, description="Internal Server Error")
      * )
      */
-    public function getLookupAllDeviceLocations() { 
+    public function getLookupDeviceLocationsByDataUnit(DeviceLocationsSelectorRequest $request) { 
         
-        $deviceLocations = $this->getLookupAllDeviceLocationsQuery->getLookup(); 
+        $deviceLocations = $this->getLookupDeviceLocationsByDataUnit->getLookup($request); 
         
         return response()->json($deviceLocations); 
     }

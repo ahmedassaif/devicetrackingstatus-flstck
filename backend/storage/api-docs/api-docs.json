@@ -515,6 +515,350 @@
                 }
             }
         },
+        "/api/v1/detaileddevicelocations": {
+            "get": {
+                "tags": [
+                    "DetailedDeviceLocations"
+                ],
+                "summary": "Get all DetailedDeviceLocations",
+                "description": "Returns a paginated list of DetailedDeviceLocations with filters",
+                "operationId": "6991dfa44660002707d8f9f733f9c8f5",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search data",
+                        "required": false,
+                        "schema": {
+                            "type": "text"
+                        }
+                    },
+                    {
+                        "name": "sortField",
+                        "in": "query",
+                        "description": "sorting field",
+                        "required": false,
+                        "schema": {
+                            "type": "text"
+                        }
+                    },
+                    {
+                        "name": "sortOrder",
+                        "in": "query",
+                        "description": "sorting field (asc or desc)",
+                        "required": false,
+                        "schema": {
+                            "type": "text"
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Start date for filter",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "description": "End date for filter",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns a paginated list of DetailedDeviceLocations",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DetailedDeviceLocation"
+                                            }
+                                        },
+                                        "totalCount": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/detaileddevicelocation/{id}": {
+            "get": {
+                "tags": [
+                    "DetailedDeviceLocations"
+                ],
+                "summary": "Get DetailedDeviceLocation by id",
+                "description": "Returns a DetailedDeviceLocation by id",
+                "operationId": "abbbe521a358e5ea4c48656b4188847f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The id of DetailedDeviceLocation",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns a DetailedDeviceLocation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DetailedDeviceLocation"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "DetailedDeviceLocations"
+                ],
+                "summary": "Update DetailedDeviceLocation",
+                "description": "Update DetailedDeviceLocation",
+                "operationId": "fcff7c49ac1e8153e0042a3d5579e1bb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateDetailedDeviceLocationRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Returns the DetailedDeviceLocation updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DetailedDeviceLocation"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    },
+                    "409": {
+                        "description": "Duplicate Data"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "DetailedDeviceLocations"
+                ],
+                "summary": "Delete DetailedDeviceLocation",
+                "description": "Delete DetailedDeviceLocation",
+                "operationId": "208c26192b820a41b2ffbeee2f6d3599",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "DetailedDeviceLocation ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "DeviceLocation deleted successfully"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/detaileddevicelocations/exporttoexcel": {
+            "get": {
+                "tags": [
+                    "DetailedDeviceLocations"
+                ],
+                "summary": "Get DetailedDeviceLocations export to excel",
+                "description": "Returns a DetailedDeviceLocations export to excel",
+                "operationId": "94e82ee278efac0234ba7277c7400b4d",
+                "responses": {
+                    "200": {
+                        "description": "Successful export",
+                        "content": {
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {}
+                        }
+                    },
+                    "400": {
+                        "description": "Empty data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/api/v1/detaileddevicelocations/lookup": {
+            "get": {
+                "tags": [
+                    "DetailedDeviceLocations"
+                ],
+                "summary": "Get Lookup DetailedDeviceLocations by DeviceLocation",
+                "description": "Returns a list of Lookup DetailedDeviceLocations by DeviceLocation",
+                "operationId": "2e9be641aadd0b0bb4b12dcb4a2d87dc",
+                "parameters": [
+                    {
+                        "name": "DeviceLocationId",
+                        "in": "query",
+                        "description": "The id of DeviceLocation",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search data",
+                        "required": false,
+                        "schema": {
+                            "type": "text"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns a list of Lookup DetailedDeviceLocations by DeviceLocation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DetailedDeviceLocation"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/detaileddevicelocation": {
+            "post": {
+                "tags": [
+                    "DetailedDeviceLocations"
+                ],
+                "summary": "Create DetailedDeviceLocation",
+                "description": "Create DetailedDeviceLocation",
+                "operationId": "3ce3fbd50bd8e52a8658c54c57ba2277",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateDetailedDeviceLocationRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Returns the DetailedDeviceLocation created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DetailedDeviceLocation"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    },
+                    "409": {
+                        "description": "Duplicate Data"
+                    }
+                }
+            }
+        },
         "/api/v1/deviceLocations": {
             "get": {
                 "tags": [
@@ -799,14 +1143,34 @@
                 }
             }
         },
-        "/api/v1/getLookupAllDeviceLocations": {
+        "/api/v1/getLookupDeviceLocationsByDataUnit": {
             "get": {
                 "tags": [
                     "DeviceLocations"
                 ],
-                "summary": "Get all DeviceLocations",
-                "description": "Returns a list of all DeviceLocations",
-                "operationId": "2527a7cb08b5c1b70cdc3eca175b270d",
+                "summary": "Get DeviceLocations by DataUnit",
+                "description": "Returns a list of DeviceLocations by DataUnit",
+                "operationId": "63d913fdf61cc4539b5887914ede004a",
+                "parameters": [
+                    {
+                        "name": "DataUnitId",
+                        "in": "query",
+                        "description": "DataUnit ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search data",
+                        "required": false,
+                        "schema": {
+                            "type": "text"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "DeviceLocations retrieved successfully",
@@ -875,6 +1239,37 @@
                 },
                 "type": "object"
             },
+            "DetailedDeviceLocationDto": {
+                "description": "DetailedDeviceLocationDto schema",
+                "properties": {
+                    "id": {
+                        "description": "Unique identifier",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "NameUnit": {
+                        "description": "Lokasi Kerja",
+                        "type": "string"
+                    },
+                    "NameDeviceLocation": {
+                        "description": "Detail Lokasi Perangkat",
+                        "type": "string"
+                    },
+                    "NameDetailLocation": {
+                        "description": "Detail Lokasi Perangkat",
+                        "type": "string"
+                    },
+                    "MainDetailLocation": {
+                        "description": "Sub dari Detail Lokasi Perangkat",
+                        "type": "string"
+                    },
+                    "SubOfMainDetailLocation": {
+                        "description": "Sub dari Sub Detail Lokasi Perangkat",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "DeviceLocationDto": {
                 "description": "DeviceLocationDto schema",
                 "properties": {
@@ -928,6 +1323,61 @@
                     },
                     "Plan": {
                         "description": "Kode Plan untuk Lokasi Kerja",
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "CreateDetailedDeviceLocationRequest": {
+                "description": "Create DetailedDeviceLocation Request schema",
+                "properties": {
+                    "DeviceLocationId": {
+                        "description": "Id DeviceLocation",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "NameDetailLocation": {
+                        "description": "Detail Lokasi Perangkat",
+                        "type": "string"
+                    },
+                    "MainDetailLocation": {
+                        "description": "Sub dari Detail Lokasi Perangkat",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "SubOfMainDetailLocation": {
+                        "description": "Sub dari Sub Detail Lokasi Perangkat",
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateDetailedDeviceLocationRequest": {
+                "description": "Update DetailedDeviceLocation Request schema",
+                "properties": {
+                    "id": {
+                        "description": "Unique identifier",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "DeviceLocationId": {
+                        "description": "Id DeviceLocation",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "NameDetailLocation": {
+                        "description": "Detail Lokasi Perangkat",
+                        "type": "string"
+                    },
+                    "MainDetailLocation": {
+                        "description": "Sub dari Detail Lokasi Perangkat",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "SubOfMainDetailLocation": {
+                        "description": "Sub dari Sub Detail Lokasi Perangkat",
                         "type": "string",
                         "nullable": true
                     }
@@ -1076,6 +1526,47 @@
                 },
                 "type": "object"
             },
+            "DetailedDeviceLocation": {
+                "description": "DetailedDeviceLocation schema",
+                "properties": {
+                    "id": {
+                        "description": "Unique identifier",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "NameDetailLocation": {
+                        "description": "Detail Lokasi Perangkat",
+                        "type": "string"
+                    },
+                    "MainDetailLocation": {
+                        "description": "Sub dari Detail Lokasi Perangkat",
+                        "type": "string"
+                    },
+                    "SubOfMainDetailLocation": {
+                        "description": "Sub dari Sub Detail Lokasi Perangkat",
+                        "type": "string"
+                    },
+                    "DeviceLocationId": {
+                        "description": "Id DeviceLocation",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "NameDeviceLocation": {
+                        "description": "Lokasi Utama Perangkat",
+                        "type": "string"
+                    },
+                    "DataUnitId": {
+                        "description": "Id Lokasi Kerja",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "NameUnit": {
+                        "description": "Lokasi Kerja",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "DeviceLocation": {
                 "description": "DeviceLocation schema",
                 "properties": {
@@ -1130,6 +1621,10 @@
         {
             "name": "DataUnits",
             "description": "DataUnits"
+        },
+        {
+            "name": "DetailedDeviceLocations",
+            "description": "DetailedDeviceLocations"
         },
         {
             "name": "DeviceLocations",
