@@ -161,7 +161,7 @@ const data = {
       icon: Factory,
     },
     {
-      name: "Lokasi Perangkat",
+      name: "Lokasi Utama Perangkat",
       url: "/devicelocations",
       icon: MapPinHouse,
     },

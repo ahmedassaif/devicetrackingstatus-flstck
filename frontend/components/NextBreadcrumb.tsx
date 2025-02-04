@@ -42,7 +42,8 @@ const NextBreadcrumb = ({homeElement, separator, containerClasses, listClasses, 
                                     <BreadcrumbLink href={href}>
                                         {
                                             itemLink.toLowerCase() === 'dataunits' ? 'Lokasi Kerja' :
-                                            itemLink.toLowerCase() === 'devicelocations' ? 'Lokasi Perangkat' :
+                                            itemLink.toLowerCase() === 'devicelocations' ? 'Lokasi Utama Perangkat' :
+                                            itemLink.toLowerCase() === 'detaileddevicelocations' ? 'Detail Lokasi Utama Perangkat' :
                                             itemLink
                                         }
                                     </BreadcrumbLink>

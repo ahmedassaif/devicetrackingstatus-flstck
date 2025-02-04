@@ -13,7 +13,7 @@ export const columns: ColumnDef<GetDeviceLocationsDeviceLocation>[] = [
     },
     {
         accessorKey: "NameDeviceLocation",
-        header: "Lokasi Perangkat",
+        header: "Lokasi Utama Perangkat",
         cell: ({ row }) => row.getValue("NameDeviceLocation"),
     }
 ];

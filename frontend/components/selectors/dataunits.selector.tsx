@@ -19,37 +19,36 @@ import { toast } from "@/hooks/use-toast"
 interface DataUnitSelectProps { 
     onValueChange: (value: string) => void; 
     value: string;
+    refresh: boolean; // New prop for refreshing data
 }
 
-const DataUnitsSelector: React.FC<DataUnitSelectProps> = ({ onValueChange, value }) => {
+const DataUnitsSelector: React.FC<DataUnitSelectProps> = ({ onValueChange, value, refresh }) => {
 
     const [dataUnits, setDataUnits] = React.useState<DataUnitDto[]>([]);
     const [searchTerm, setSearchTerm] = React.useState("");
     const [isLoading, setIsLoading] = React.useState(false);
 
     const handleDataUnitsResponse = React.useCallback(
-            (response: ResponseResult<ListResponse<DataUnitDto>>) => {
-                if (response.error) {
-                    setDataUnits([]) // Clear DataUnits on error
-                    return
-                }
-    
-                if (Array.isArray(response.result)) {
+        (response: ResponseResult<ListResponse<DataUnitDto>>) => {
+            if (response.error) {
+                setDataUnits([]) // Clear DataUnits on error
+                return
+            }
+
+            if (Array.isArray(response.result)) {
                 setDataUnits(response.result) // Update DataUnits with fetched data
-                } else {
+            } else {
                 setDataUnits([]) // Clear DataUnits on unexpected response
-                }
-            },
-            [setDataUnits]
+            }
+        },
+        [setDataUnits]
     )
 
     useEffect(() => {
         const source: CancelTokenSource = axios.CancelToken.source();
 
         const fetchDataUnits = async () => {
-            
             setIsLoading(true);
-            
             const request: SelectorListRequest = {
                 searchText: searchTerm?.trim() ? searchTerm : undefined,
             };
@@ -58,7 +57,7 @@ const DataUnitsSelector: React.FC<DataUnitSelectProps> = ({ onValueChange, value
                 const dataUnitService = new DataUnitService();
                 const response: ResponseResult<ListResponse<DataUnitDto>> = await dataUnitService.getLookupDataUnits({
                     ...request,
-                cancelToken: source.token, // Add cancel token to the request
+                    cancelToken: source.token, // Add cancel token to the request
                 });
 
                 handleDataUnitsResponse(response); // Call the improved function
@@ -78,40 +77,18 @@ const DataUnitsSelector: React.FC<DataUnitSelectProps> = ({ onValueChange, value
 
         fetchDataUnits();
 
-        // if (searchTerm) {
-        //     setIsLoading(true)
-        //     const timeout = setTimeout(() => setIsLoading(false), 300) // Simulate search delay
-        //     return () => clearTimeout(timeout)
-        // } else {
-        //     setIsLoading(false)
-        // }
-
         return () => source.cancel('Request canceled by the user.');
-    }, [handleDataUnitsResponse, searchTerm]);
+    }, [handleDataUnitsResponse, searchTerm, refresh]); // Add refresh to dependencies
 
-    // // Add loading state simulation (replace with real loading logic if needed)
-    // React.useEffect(() => {
-    //     if (searchTerm) {
-    //         setIsLoading(true)
-    //         const timeout = setTimeout(() => setIsLoading(false), 300) // Simulate search delay
-    //         return () => clearTimeout(timeout)
-    //     } else {
-    //         setIsLoading(false)
-    //     }
-    // }, [searchTerm])
-
-    // Add clear input handler
     const handleClearInput = (e: React.MouseEvent) => {
         e.stopPropagation() // Prevent triggering select dropdown toggle
         setSearchTerm("")
     }
 
-    // const Select = SelectPrimitive.Root
-    
     const SelectTrigger = React.forwardRef<
         React.ElementRef<typeof SelectPrimitive.Trigger>,
         React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
-        >(({ className, children, ...props }, ref) => (
+    >(({ className, children, ...props }, ref) => (
         <SelectPrimitive.Trigger
             ref={ref}
             className={cn(
@@ -122,32 +99,8 @@ const DataUnitsSelector: React.FC<DataUnitSelectProps> = ({ onValueChange, value
         >
             {children}
         </SelectPrimitive.Trigger>
-        ))
-        SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
-    
-    //     const SelectItem = React.forwardRef<
-    //     React.ElementRef<typeof SelectPrimitive.Item>,
-    //     React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
-    //     >(({ className, children, ...props }, ref) => (
-    //     <SelectPrimitive.Item
-    //         ref={ref}
-    //         className={cn(
-    //         "flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
-    //         className
-    //         )}
-    //         {...props}
-    //     >
-    //         <span className="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
-    //         <SelectPrimitive.ItemIndicator>
-    //             <Check className="h-4 w-4" />
-    //         </SelectPrimitive.ItemIndicator>
-    //         </span>
-    //         <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-    //     </SelectPrimitive.Item>
-    // ))
-
-    // SelectItem.displayName = SelectPrimitive.Item.displayName;
-
+    ))
+    SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
 
     return (
         <div>
@@ -164,48 +117,35 @@ const DataUnitsSelector: React.FC<DataUnitSelectProps> = ({ onValueChange, value
                 </SelectTrigger>
                 <SelectContent>
                     <div className="sticky top-0 p-1 bg-background z-10">
-                            <Input
-                                type="text"
-                                placeholder="Search..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="focus-visible:ring-0" // Remove focus ring to match style
-                            />
-                            {searchTerm && (
-                                        <div className="absolute inset-y-0 end-0 flex items-center pe-3.5">
-                                            <CircleX
-                                                className="cursor-pointer" 
-                                                onClick={handleClearInput} 
-                                                size={20} 
-                                            />
-                                        </div>
-                            )}
-                    </div>
-                    {/* <SelectGroup>
-                        {dataUnits?.length > 0 ? (
-                        dataUnits.map((dataUnit) => (
-                            <SelectItem key={dataUnit.id} value={dataUnit.id}>
-                            {dataUnit.NameUnit}{dataUnit.Plan ? ` - ${dataUnit.Plan}` : ''}
-                            </SelectItem>
-                        ))
-                        ) : (
-                        <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                            No data available
-                        </div>
+                        <Input
+                            type="text"
+                            placeholder="Search..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="focus-visible:ring-0" // Remove focus ring to match style
+                        />
+                        {searchTerm && (
+                            <div className="absolute inset-y-0 end-0 flex items-center pe-3.5">
+                                <CircleX
+                                    className="cursor-pointer" 
+                                    onClick={handleClearInput} 
+                                    size={20} 
+                                />
+                            </div>
                         )}
-                    </SelectGroup> */}
+                    </div>
                     <SelectGroup>
-                            {dataUnits.length > 0 ? (
-                                dataUnits.map((dataUnit) => (
-                                    <SelectItem key={dataUnit.id} value={dataUnit.id}>
-                                        {dataUnit.NameUnit}{dataUnit.Plan ? ` - ${dataUnit.Plan}` : ''}
-                                    </SelectItem>
-                                ))
-                            ) : (
-                                <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                                    No data available
-                                </div>
-                            )}
+                        {dataUnits.length > 0 ? (
+                            dataUnits.map((dataUnit) => (
+                                <SelectItem key={dataUnit.id} value={dataUnit.id}>
+                                    {dataUnit.NameUnit}
+                                </SelectItem>
+                            ))
+                        ) : (
+                            <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                                No data available
+                            </div>
+                        )}
                     </SelectGroup>
                 </SelectContent>
             </Select>

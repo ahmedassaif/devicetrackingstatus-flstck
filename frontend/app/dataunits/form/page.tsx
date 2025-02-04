@@ -86,14 +86,14 @@ export default function DataUnitFormPage() {
                 <Card className="p-6">
                     <form className="flex flex-col gap-4" onSubmit={saveData}>
                         <div className="space-y-2">
-                            <Label htmlFor="NameUnit">Lokasi Kerja</Label>
+                            <Label htmlFor="NameUnit">Nama</Label>
                             <Input
                             id="NameUnit"
                             name="NameUnit"
                             value={model.NameUnit}
                             onChange={handleInputChange}
                             required
-                            placeholder="Nama Unit"
+                            placeholder="Nama Lokasi Kerja"
                             />
                         </div>
             
