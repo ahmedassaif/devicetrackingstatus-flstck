@@ -123,14 +123,14 @@ class DownloadBulkTemplateCreateDeviceLocationQuery{
         $headerRow = 3;
         foreach ($headers as $index => $header) {
             $column = chr(65 + $index); // Convert index to column letter (A, B, C, etc.)
-            $sheet1->setCellValue("{$column}{$headerRow}", $header);
-            $sheet1->getStyle("{$column}{$headerRow}")
+            $sheet2->setCellValue("{$column}{$headerRow}", $header);
+            $sheet2->getStyle("{$column}{$headerRow}")
                 ->getFont()
                 ->setBold(true);
-            $sheet1->getStyle("{$column}{$headerRow}")
+            $sheet2->getStyle("{$column}{$headerRow}")
                 ->getAlignment()
                 ->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet1->getStyle("{$column}{$headerRow}")
+            $sheet2->getStyle("{$column}{$headerRow}")
                 ->getBorders()
                 ->getAllBorders()
                 ->setBorderStyle(Border::BORDER_MEDIUM);
