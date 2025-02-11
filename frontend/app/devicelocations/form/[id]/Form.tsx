@@ -43,31 +43,31 @@ const DeviceLocationEditForm : React.FC<DeviceLocationEditFormProps> = ({ device
 
     useEffect(() => {
         const fetchDeviceLocationDetail = async () => {
-        if (!deviceLocationId) return;
-        
-        try {
-            const deviceLocationService = new DeviceLocationService();
-            const response: ResponseResult<GetDeviceLocationsDeviceLocation> = 
-            await deviceLocationService.getDeviceLocation(deviceLocationId);
+            if (!deviceLocationId) return;
+            
+            try {
+                const deviceLocationService = new DeviceLocationService();
+                const response: ResponseResult<GetDeviceLocationsDeviceLocation> = 
+                await deviceLocationService.getDeviceLocation(deviceLocationId);
 
-            if (response.result) {
-            form.reset({
-                NameDeviceLocation: response.result.NameDeviceLocation,
-                DataUnitId: response.result.DataUnitId
-            });
-            } else {
-            toast.error("Failed", {
-                description: response.error?.detail || "Failed to fetch DeviceLocation detail",
-            });
+                if (response.result) {
+                form.reset({
+                    NameDeviceLocation: response.result.NameDeviceLocation,
+                    DataUnitId: response.result.DataUnitId
+                });
+                } else {
+                toast.error("Failed", {
+                    description: response.error?.detail || "Failed to fetch DeviceLocation detail",
+                });
+                }
+            } catch (error: unknown) { 
+                const errorMessage = error instanceof Error ? error.message : "Failed to fetch DeviceLocation details";
+                toast.error("Failed", {
+                description: errorMessage,
+                });
+            } finally {
+                setLoading(false);
             }
-        } catch (error: unknown) { 
-            const errorMessage = error instanceof Error ? error.message : "Failed to fetch DeviceLocation details";
-            toast.error("Failed", {
-            description: errorMessage,
-            });
-        } finally {
-            setLoading(false);
-        }
         };
     
         fetchDeviceLocationDetail();

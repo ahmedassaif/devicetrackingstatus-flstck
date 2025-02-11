@@ -9,7 +9,14 @@ import { DeviceLocationService } from "@/api/services/spesific-services/deviceLo
 import { CreateDeviceLocationRequest, GetDeviceLocationsDeviceLocation, deviceLocationFormSchema, emptyDeviceLocation } from '@/api/services/types/deviceLocation.types';
 import { ResponseResult } from '@/api/services/types/commonResponses.types';
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input";
 import { useRouter } from 'next/navigation';
 import { toast } from "sonner";
@@ -24,6 +31,12 @@ import {
 } from "@/components/ui/hover-card"
 import CreateDataUnitDialog from "@/components/dialog/createdataunit.dialog";
 import DeviceLocationInfo from "@/components/alerts/devicelocation.alert";
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from "@/components/ui/tabs"
 
 export default function DeviceLocationFormPage() {
     const [loading, setLoading] = useState(false);
@@ -92,77 +105,93 @@ export default function DeviceLocationFormPage() {
             <section className="flex w-full items-center">
                 <div className="w-full">
                     <Card className="p-6">
-                        <Form {...form}>
-                            <form onSubmit={form.handleSubmit(saveData)} className="flex flex-col gap-4">
-                                <div className="flex gap-4 items-end">
-                                    <div className="w-full flex-1">
+                        <Tabs className="mb-4" defaultValue="inputsingledata">
+                            <TabsList className="flex gap-4 justify-center">
+                                <TabsTrigger value="inputsingledata">Input Single Data</TabsTrigger>
+                                <TabsTrigger value="inputmultipledata">Input Multiple Data</TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="inputsingledata">
+                                <Form {...form}>
+                                    <form onSubmit={form.handleSubmit(saveData)} className="flex flex-col gap-4">
+                                        <div className="flex gap-4 items-end">
+                                            <div className="w-full flex-1">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="DataUnitId"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Lokasi Kerja</FormLabel>
+                                                            <FormControl>
+                                                                <DataUnitsSelector 
+                                                                    onValueChange={(value) => form.setValue("DataUnitId", value)} 
+                                                                    value={field.value} 
+                                                                    refresh={refreshDataUnits} // Pass refresh prop
+                                                                />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            <div className="items-end w-7 flex justify-center">
+                                                <HoverCard>
+                                                    <HoverCardTrigger asChild>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setShowCreateDataUnitDialog(true)}
+                                                            className="rounded-full bg-blue-500 p-2 text-white hover:bg-blue-600 focus:outline-none"
+                                                            aria-label="search"
+                                                        >
+                                                            <PlusCircle size={25} />
+                                                        </button>
+                                                    </HoverCardTrigger>
+                                                    <HoverCardContent side="top" arrowPadding={2} className="w-full">
+                                                        Tambah Lokasi Kerja
+                                                    </HoverCardContent>
+                                                </HoverCard>
+                                            </div>
+                                        </div>
                                         <FormField
                                             control={form.control}
-                                            name="DataUnitId"
+                                            name="NameDeviceLocation"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Lokasi Kerja</FormLabel>
+                                                    <FormLabel>Lokasi Utama Perangkat</FormLabel>
                                                     <FormControl>
-                                                        <DataUnitsSelector 
-                                                            onValueChange={(value) => form.setValue("DataUnitId", value)} 
-                                                            value={field.value} 
-                                                            refresh={refreshDataUnits} // Pass refresh prop
-                                                        />
+                                                        <Input placeholder="Nama Lokasi Utama" {...field} />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
                                         />
-                                    </div>
-                                    <div className="items-end w-7 flex justify-center">
-                                        <HoverCard>
-                                            <HoverCardTrigger asChild>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setShowCreateDataUnitDialog(true)}
-                                                    className="rounded-full bg-blue-500 p-2 text-white hover:bg-blue-600 focus:outline-none"
-                                                    aria-label="search"
-                                                >
-                                                    <PlusCircle size={25} />
-                                                </button>
-                                            </HoverCardTrigger>
-                                            <HoverCardContent side="top" arrowPadding={2} className="w-full">
-                                                Tambah Lokasi Kerja
-                                            </HoverCardContent>
-                                        </HoverCard>
-                                    </div>
-                                </div>
-                                <FormField
-                                    control={form.control}
-                                    name="NameDeviceLocation"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Lokasi Utama Perangkat</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Nama Lokasi Utama" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <div className="flex space-x-3">
-                                    <Button 
-                                        type="submit" 
-                                        className="bg-green-700 hover:bg-green-800"
-                                    >
-                                        {showLoadingForSaveData}
-                                        Save
-                                    </Button>
-                                    <Button 
-                                        type="button"
-                                        variant="outline"
-                                        onClick={() => router.push('/devicelocations')}
-                                    >
-                                        Back
-                                    </Button>
-                                </div>
-                            </form>
-                        </Form>
+                                        <div className="flex space-x-3">
+                                            <Button 
+                                                type="submit" 
+                                                className="bg-green-700 hover:bg-green-800"
+                                            >
+                                                {showLoadingForSaveData}
+                                                Save
+                                            </Button>
+                                            <Button 
+                                                type="button"
+                                                variant="outline"
+                                                onClick={() => router.push('/devicelocations')}
+                                            >
+                                                Back
+                                            </Button>
+                                        </div>
+                                    </form>
+                                </Form>
+                            </TabsContent>
+                            <TabsContent value="inputmultipledata">
+                                <CardContent>
+                                    <p>Input Multiple Data</p>
+                                </CardContent>
+                                <CardFooter>
+                                    <Button className="bg-blue-500 hover:bg-blue-600">Save</Button>
+                                </CardFooter>
+                            </TabsContent>
+                        </Tabs>
                     </Card>
                 </div>
             </section>
