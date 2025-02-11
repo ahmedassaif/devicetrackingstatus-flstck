@@ -13,6 +13,7 @@ use App\Http\Queries\DeviceLocations\CreateDeviceLocationCommand;
 use App\Http\Queries\DeviceLocations\UpdateDeviceLocationCommand;
 use App\Http\Queries\DeviceLocations\DeleteDeviceLocationCommand;
 use App\Http\Queries\DeviceLocations\GetLookupDeviceLocationsByDataUnit;
+use App\Http\Queries\DeviceLocations\DownloadBulkTemplateCreateDeviceLocationQuery;
 use OpenApi\Annotations as OA;
 use Illuminate\Http\Request;
 
@@ -26,6 +27,8 @@ class DeviceLocationsController extends Controller
     protected $deleteDeviceLocationCommand;
     protected $getLookupAllDeviceLocationsQuery;
     protected $getLookupDeviceLocationsByDataUnit;
+    protected $downloadBulkTemplateCreateDeviceLocationQuery;
+
     public function __construct(
         GetDeviceLocationsQuery $getDeviceLocationsQuery,
         GetDeviceLocationQuery $getDeviceLocationQuery,
@@ -33,9 +36,8 @@ class DeviceLocationsController extends Controller
         CreateDeviceLocationCommand $createDeviceLocationCommand,
         UpdateDeviceLocationCommand $updateDeviceLocationCommand,
         DeleteDeviceLocationCommand $deleteDeviceLocationCommand,
-        // GetLookupAllDeviceLocationsQuery $getLookupAllDeviceLocationsQuery,
-        GetLookupDeviceLocationsByDataUnit $getLookupDeviceLocationsByDataUnit
-        // GetLookupAllDeviceLocationsQuery $getLookupAllDeviceLocationsQuery
+        GetLookupDeviceLocationsByDataUnit $getLookupDeviceLocationsByDataUnit,
+        DownloadBulkTemplateCreateDeviceLocationQuery $downloadBulkTemplateCreateDeviceLocationQuery
     ) {
         $this->getDeviceLocationsQuery = $getDeviceLocationsQuery;
         $this->getDeviceLocationQuery = $getDeviceLocationQuery;
@@ -43,10 +45,9 @@ class DeviceLocationsController extends Controller
         $this->createDeviceLocationCommand = $createDeviceLocationCommand;
         $this->updateDeviceLocationCommand = $updateDeviceLocationCommand;
         $this->deleteDeviceLocationCommand = $deleteDeviceLocationCommand;
-        // $this->getLookupAllDeviceLocationsQuery = $getLookupAllDeviceLocationsQuery;
         $this->getLookupDeviceLocationsByDataUnit = $getLookupDeviceLocationsByDataUnit;
         $this->deleteDeviceLocationCommand = $deleteDeviceLocationCommand;
-        // $this->getLookupAllDeviceLocationsQuery = $getLookupAllDeviceLocationsQuery;
+        $this->downloadBulkTemplateCreateDeviceLocationQuery = $downloadBulkTemplateCreateDeviceLocationQuery;
     }
 
     /**
@@ -188,6 +189,47 @@ class DeviceLocationsController extends Controller
     public function exportDeviceLocationsToExcel() { 
         
         $fileResponse = $this->getDeviceLocationsExportToExcelQuery->export(); 
+        
+        //if (is_array($fileResponse) && isset($fileResponse['error'])) { 
+        //    return response()->json($fileResponse, 400); // Return the error response if the data is empty 
+        //}
+        
+        // Check if the response is a JsonResponse 
+        if ($fileResponse instanceof \Illuminate\Http\JsonResponse) { 
+            return $fileResponse; // Return the JSON error response
+        }
+
+        return response($fileResponse->content)
+                        ->header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                        ->header('Content-Disposition', 'attachment; filename="'.$fileResponse->fileName.'"'); 
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/downloadBulkTemplateCreateDeviceLocation",
+     *     summary="Download bulk template for creating DeviceLocation",
+     *     description="Downloads a bulk template for creating DeviceLocation",
+     *     tags={"DeviceLocations"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful download",
+     *         @OA\MediaType(
+     *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+     *         )
+     *     ),
+     *     @OA\Response( 
+     *          response=400, 
+     *          description="Empty data" 
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function downloadBulkTemplateCreateDeviceLocation() { 
+        
+        $fileResponse = $this->downloadBulkTemplateCreateDeviceLocationQuery->downloadBulkTemplate(); 
         
         //if (is_array($fileResponse) && isset($fileResponse['error'])) { 
         //    return response()->json($fileResponse, 400); // Return the error response if the data is empty 

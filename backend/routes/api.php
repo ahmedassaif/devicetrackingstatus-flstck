@@ -39,6 +39,7 @@ Route::prefix('v1')->group(function () {
     Route::post('deviceLocation', [DeviceLocationsController::class, 'insertDeviceLocation']);
     Route::put('deviceLocation/{id}', [DeviceLocationsController::class, 'updateDeviceLocation']);
     Route::delete('deviceLocation/{id}', [DeviceLocationsController::class, 'deleteDeviceLocation']);
+    Route::get('downloadBulkTemplateCreateDeviceLocation', [DeviceLocationsController::class, 'downloadBulkTemplateCreateDeviceLocation']);
 });
 
 // Define the routes for the DetailedDeviceLocations API

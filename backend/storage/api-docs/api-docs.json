@@ -1102,6 +1102,30 @@
                 }
             }
         },
+        "/api/v1/downloadBulkTemplateCreateDeviceLocation": {
+            "get": {
+                "tags": [
+                    "DeviceLocations"
+                ],
+                "summary": "Download bulk template for creating DeviceLocation",
+                "description": "Downloads a bulk template for creating DeviceLocation",
+                "operationId": "3b47ae9959bc7b5c3a56425e61d26cdd",
+                "responses": {
+                    "200": {
+                        "description": "Successful download",
+                        "content": {
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {}
+                        }
+                    },
+                    "400": {
+                        "description": "Empty data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
         "/api/v1/deviceLocation": {
             "post": {
                 "tags": [
