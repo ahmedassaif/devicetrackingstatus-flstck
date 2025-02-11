@@ -171,7 +171,7 @@ class DownloadBulkTemplateCreateDeviceLocationQuery{
         // $writer->save($tempFile);
 
         $writer = new Xlsx($spreadsheet);
-        $fileName = 'BulkInsertDeviceIdentityTemplate.xlsx';
+        $fileName = 'BulkInsertDeviceLocationsTemplate.xlsx';
 
         // Save to memory
         $stream = fopen('php://memory', 'w+');
