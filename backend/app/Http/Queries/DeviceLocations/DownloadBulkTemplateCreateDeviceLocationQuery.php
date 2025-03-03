@@ -9,11 +9,13 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Color;
+use PhpOffice\PhpSpreadsheet\Worksheet\Table;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Carbon\Carbon;
 use App\Models\DataUnit;
 use App\Http\Responses\FileResponse;
+use Illuminate\Support\Facades\Response;
 
 class DownloadBulkTemplateCreateDeviceLocationQuery{
 
@@ -30,13 +32,16 @@ class DownloadBulkTemplateCreateDeviceLocationQuery{
                 'message' => 'DataUnit Table is Empty.'
             ], 400); 
         }
+        
+        $dataunitscount = $dataUnits->count();
+        logger($dataunitscount);
 
         // Create a new Spreadsheet
         $spreadsheet = new Spreadsheet();
 
         // Sheet 1: DataUnits
         $sheet1 = $spreadsheet->getActiveSheet();
-        $sheet1->setTitle('Lokasi Kerja');
+        $sheet1->setTitle('LokasiKerja');
 
         // Set headers for Sheet 1
         $sheet1->setCellValue('A1', 'Data Lokasi Kerja');
@@ -52,7 +57,7 @@ class DownloadBulkTemplateCreateDeviceLocationQuery{
 
         // Set header
         $headers = [
-            "No", "ID", "Nama Lokasi Kerja", "Kode Plan"
+            "No", "ID", "Nama Lokasi Kerja", "Kode Plan", "Trimmed_LokasiKerja"
         ];
 
         $headerRow = 5;
@@ -78,9 +83,10 @@ class DownloadBulkTemplateCreateDeviceLocationQuery{
             $sheet1->setCellValue("B{$rowIndex}", $item->id ?? "");
             $sheet1->setCellValue("C{$rowIndex}", $item->NameUnit ?? "");
             $sheet1->setCellValue("D{$rowIndex}", $item->Plan ?? "");
+            $sheet1->setCellValue("E{$rowIndex}", '=TRIM(C' . $rowIndex . ')'); // Assuming C is the column for "Nama Lokasi Kerja"
 
             // Apply alignment for all cells in the row 
-            foreach (range('A', 'D') as $column) { 
+            foreach (range('A', 'E') as $column) { 
                 $sheet1->getStyle("{$column}{$rowIndex}")->getAlignment() 
                         ->setHorizontal(Alignment::HORIZONTAL_LEFT) 
                         ->setVertical(Alignment::VERTICAL_CENTER); 
@@ -91,7 +97,7 @@ class DownloadBulkTemplateCreateDeviceLocationQuery{
         $rowCount = count($dataUnits) + 5; // +4 for starting from row 5
 
         // Apply outside border for each column from A to D
-        $columns = range('A', 'D');
+        $columns = range('A', 'E');
 
         foreach ($columns as $column) {
             $cellRange = "{$column}6:{$column}{$rowCount}";
@@ -101,10 +107,12 @@ class DownloadBulkTemplateCreateDeviceLocationQuery{
         $sheet1->getColumnDimension('A')->setWidth(4);
 
         // Auto-fit columns
-        foreach (range('B', 'D') as $columnID) {
+        foreach (range('B', 'E') as $columnID) {
             $sheet1->getColumnDimension($columnID)->setAutoSize(true);
         }
-        
+
+        $sheet1->getColumnDimension('E')->setVisible(false);
+
         // Sheet 2: DeviceIdentityTemplate
         $sheet2 = $spreadsheet->createSheet();
         $sheet2->setTitle('Input Lokasi Utama Perangkat');
@@ -117,10 +125,10 @@ class DownloadBulkTemplateCreateDeviceLocationQuery{
         $sheet2->getStyle('A1')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
         $headers = [
-            "DataUnit ID", "Lokasi Kerja", "Lokasi Utama Perangkat"
+            "DataUnitID", "Lokasi Kerja", "Lokasi Utama Perangkat"
         ];
 
-        $headerRow = 3;
+        $headerRow = 2;
         foreach ($headers as $index => $header) {
             $column = chr(65 + $index); // Convert index to column letter (A, B, C, etc.)
             $sheet2->setCellValue("{$column}{$headerRow}", $header);
@@ -140,7 +148,7 @@ class DownloadBulkTemplateCreateDeviceLocationQuery{
         $sheet2->getColumnDimension('A')->setVisible(false);
 
         // Add dropdown for Device Category in Sheet 2 (Column B)
-        $validation = $sheet2->getCell('B2')->getDataValidation();
+        $validation = $sheet2->getCell('B3')->getDataValidation();
         $validation->setType(DataValidation::TYPE_LIST);
         $validation->setErrorStyle(DataValidation::STYLE_INFORMATION);
         $validation->setAllowBlank(false);
@@ -149,14 +157,14 @@ class DownloadBulkTemplateCreateDeviceLocationQuery{
         $validation->setShowDropDown(true);
 
         // Set dropdown options (DataUnit)
-        $validation->setFormula1('DataUnit!$B$2:$B$' . ($dataUnits->count() + 1));
+        $validation->setFormula1('LokasiKerja!$C$6:$C$' . ($dataunitscount + 5)); // Adjust the range as needed
 
         // Apply the dropdown to all cells in column B
-        for ($i = 2; $i <= 600; $i++) {
+        for ($i = 3; $i <= 600; $i++) {
+            
             $sheet2->getCell('B' . $i)->setDataValidation(clone $validation);
 
-            // Set formula to display DataUnit based on the selected ID
-            $sheet2->setCellValue('A' . $i, '=IFERROR(VLOOKUP(B' . $i . ', DeviceCategories!$B$2:$C$' . ($dataUnits->count() + 1) . ', 2, FALSE), "")');
+            $sheet2->setCellValue('A' . $i, '=IFERROR(INDEX(LokasiKerja!$B$6:$B$' . ($dataunitscount + 5) . ', MATCH(B' . $i . ', LokasiKerja!$E$6:$E$' . ($dataunitscount + 5) . ', 0)), "")');
         }
 
         // Adjust column widths for Sheet 2
