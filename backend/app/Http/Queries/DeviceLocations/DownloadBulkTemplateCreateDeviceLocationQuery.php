@@ -34,7 +34,7 @@ class DownloadBulkTemplateCreateDeviceLocationQuery{
         }
         
         $dataunitscount = $dataUnits->count();
-        logger($dataunitscount);
+        //logger($dataunitscount);
 
         // Create a new Spreadsheet
         $spreadsheet = new Spreadsheet();
@@ -56,29 +56,30 @@ class DownloadBulkTemplateCreateDeviceLocationQuery{
         $sheet1->getStyle('A3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
         // Set header
-        $headers = [
+        $headers1 = [
             "No", "ID", "Nama Lokasi Kerja", "Kode Plan", "Trimmed_LokasiKerja"
         ];
 
-        $headerRow = 5;
-        foreach ($headers as $index => $header) {
+        $headerRow1 = 5;
+        foreach ($headers1 as $index => $header) {
             $column = chr(65 + $index); // Convert index to column letter (A, B, C, etc.)
-            $sheet1->setCellValue("{$column}{$headerRow}", $header);
-            $sheet1->getStyle("{$column}{$headerRow}")
+            $sheet1->setCellValue("{$column}{$headerRow1}", $header);
+            $sheet1->getStyle("{$column}{$headerRow1}")
                 ->getFont()
                 ->setBold(true);
-            $sheet1->getStyle("{$column}{$headerRow}")
+            $sheet1->getStyle("{$column}{$headerRow1}")
                 ->getAlignment()
                 ->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet1->getStyle("{$column}{$headerRow}")
+            $sheet1->getStyle("{$column}{$headerRow1}")
                 ->getBorders()
                 ->getAllBorders()
                 ->setBorderStyle(Border::BORDER_MEDIUM);
         }
 
         // Fill data
+        $rowdata = 6;
         foreach ($dataUnits as $index => $item) {
-            $rowIndex = $index + 6;
+            $rowIndex = $index + $rowdata;
             $sheet1->setCellValue("A{$rowIndex}", $index + 1);
             $sheet1->setCellValue("B{$rowIndex}", $item->id ?? "");
             $sheet1->setCellValue("C{$rowIndex}", $item->NameUnit ?? "");
@@ -94,12 +95,12 @@ class DownloadBulkTemplateCreateDeviceLocationQuery{
         }
 
         // Get the number of data rows
-        $rowCount = count($dataUnits) + 5; // +4 for starting from row 5
+        $rowCount = count($dataUnits) + 5; // +5 for starting from row 6
 
         // Apply outside border for each column from A to D
-        $columns = range('A', 'E');
+        $columns1 = range('A', 'E');
 
-        foreach ($columns as $column) {
+        foreach ($columns1 as $column) {
             $cellRange = "{$column}6:{$column}{$rowCount}";
             $sheet1->getStyle($cellRange)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
         }
@@ -124,21 +125,21 @@ class DownloadBulkTemplateCreateDeviceLocationQuery{
         $sheet2->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet2->getStyle('A1')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
-        $headers = [
+        $headers2 = [
             "DataUnitID", "Lokasi Kerja", "Lokasi Utama Perangkat"
         ];
 
-        $headerRow = 2;
-        foreach ($headers as $index => $header) {
+        $headerRow2 = 2;
+        foreach ($headers2 as $index => $header) {
             $column = chr(65 + $index); // Convert index to column letter (A, B, C, etc.)
-            $sheet2->setCellValue("{$column}{$headerRow}", $header);
-            $sheet2->getStyle("{$column}{$headerRow}")
+            $sheet2->setCellValue("{$column}{$headerRow2}", $header);
+            $sheet2->getStyle("{$column}{$headerRow2}")
                 ->getFont()
                 ->setBold(true);
-            $sheet2->getStyle("{$column}{$headerRow}")
+            $sheet2->getStyle("{$column}{$headerRow2}")
                 ->getAlignment()
                 ->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet2->getStyle("{$column}{$headerRow}")
+            $sheet2->getStyle("{$column}{$headerRow2}")
                 ->getBorders()
                 ->getAllBorders()
                 ->setBorderStyle(Border::BORDER_MEDIUM);
