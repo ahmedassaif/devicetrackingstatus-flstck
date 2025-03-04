@@ -23,7 +23,7 @@ class GetDataUnitsExportToExcelQuery
             // Check if the data is empty 
             if ($data->isEmpty()) { 
                 return response()->json([
-                    'message' => 'DataUnit Table is Empty.'
+                    'message' => 'Data Lokasi Kerja Kosong!',
                 ], 400); 
             }
 

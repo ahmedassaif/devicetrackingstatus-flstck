@@ -27,7 +27,7 @@ class GetDeviceLocationsExportToExcelQuery
             if (!$deviceLocations->exists()) { 
                 // return response()->json(['error' => 'Main Location Table is Empty'], 400); 
                 return response()->json([
-                    'message' => 'Main Location Table is Empty.'
+                    'message' => 'Data Lokasi Utama Perangkat Kosong',
                 ], 400); 
             }
 
