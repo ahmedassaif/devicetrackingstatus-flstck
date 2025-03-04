@@ -16,6 +16,9 @@ export namespace ApiEndpoint {
             };
             export const LookupAll = {
                 Segment: 'v1/getLookupAllDeviceLocations'
+            };
+            export const DownloadTemplate = {
+                Segment: 'v1/downloadBulkTemplateCreateDeviceLocation'
             }
         }
     }

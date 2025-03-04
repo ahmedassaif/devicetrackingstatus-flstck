@@ -68,6 +68,46 @@ export class DeviceLocationService extends BaseApiService {
         }
     }
 
+    public async downloadDeviceLocationsTemplate(): Promise<AxiosResponse | undefined> {
+        try {
+            const response = await this.api.get(`${ApiEndpoint.V1.DownloadTemplate.Segment}`, {
+                responseType: "blob",
+                validateStatus: (status) => {
+                    return status < 500; // Resolve only if the status code is less than 500
+                }    
+            });
+
+            if (response.status === 200) {
+                // Handle successful file download
+                FileDownloadHelper.downloadExcelFile(response);
+                return response;
+            } else {
+                // Handle error response
+                const reader = new FileReader();
+                return new Promise((resolve, reject) => {
+                    reader.onloadend = () => {
+                        if (reader.result) {
+                            try {
+                                const errorData = JSON.parse(reader.result as string);
+                                console.error("Error data: ", errorData);
+                                resolve({ status: response.status, data: errorData } as AxiosResponse);
+                            } catch (error) {
+                                reject(new Error(`Failed to parse error response: ${error}`));
+                            }
+                        } else {
+                            reject(new Error('Failed to read response'));
+                        }
+                    };
+                    reader.onerror = () => reject(new Error('Failed to read response'));
+                    reader.readAsText(response.data);
+                });
+            }
+        } catch (error) {
+            console.error("Failed to download template: ", error);
+            throw error;
+        }
+    }
+
     public async getLookupAllDeviceLocations(request: GetLookupDeviceLocationsByDataUnitRequest): Promise<ResponseResult<ListResponse<GetLookupDeviceLocationsByDataUnitResponse>>> {
         
         const response = await this.api.get(`${ApiEndpoint.V1.LookupAll.Segment}?${AddQueryParameters(request)}`);

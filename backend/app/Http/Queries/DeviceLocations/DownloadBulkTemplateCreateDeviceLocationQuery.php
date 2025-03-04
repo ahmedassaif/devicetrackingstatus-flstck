@@ -29,7 +29,7 @@ class DownloadBulkTemplateCreateDeviceLocationQuery{
         // Check if the data is empty 
         if ($dataUnits->isEmpty()) { 
             return response()->json([
-                'message' => 'DataUnit Table is Empty.'
+                'message' => 'Data Lokasi Kerja Tidak Ditemukan',
             ], 400); 
         }
         

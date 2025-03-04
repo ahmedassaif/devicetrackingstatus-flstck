@@ -16,13 +16,14 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useRouter } from 'next/navigation';
 import { toast } from "sonner";
 import { Form, FormField, FormItem, FormLabel, FormMessage, FormControl } from "@/components/ui/form";
 import { useState } from "react";
-import { PlusCircle, RotateCw } from "lucide-react";
+import { PlusCircle, RotateCw, SheetIcon } from "lucide-react";
 import DataUnitsSelector from "@/components/selectors/dataunits.selector";
 import {
     HoverCard,
@@ -42,12 +43,27 @@ export default function DeviceLocationFormPage() {
     const [loading, setLoading] = useState(false);
     const [showCreateDataUnitDialog, setShowCreateDataUnitDialog] = useState(false);
     const [refreshDataUnits, setRefreshDataUnits] = useState(false);
+    const [loadingDownloadFile, setLoadingDownloadFile] = useState<boolean>(false);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null); // State for the selected file
 
     const router = useRouter();
     const form = useForm({
         resolver: zodResolver(deviceLocationFormSchema),
         defaultValues: emptyDeviceLocation,
     });
+
+    let showLoadingForDownloadExcel;
+    if (loadingDownloadFile) {
+        showLoadingForDownloadExcel = (
+            <RotateCw className="animate-spin" size={20} />
+        ); 
+    }
+    else
+    {
+        showLoadingForDownloadExcel = (
+            <SheetIcon size={20} />
+        ); 
+    }
 
     const saveData = async (values: z.infer<typeof deviceLocationFormSchema>) => {
         setLoading(true);
@@ -90,6 +106,19 @@ export default function DeviceLocationFormPage() {
             <RotateCw className="animate-spin" size={20} />
         ); 
     }
+    else
+    {
+        showLoadingForDownloadExcel = (
+        <SheetIcon size={20} />
+        ); 
+    }
+
+    let showLoadingForUploadExcel;
+    if (loading) {
+        showLoadingForUploadExcel = (
+            <RotateCw className="animate-spin" size={20} />
+        ); 
+    }
     
     function reloadDataUnitsSelector()
     {
@@ -97,6 +126,61 @@ export default function DeviceLocationFormPage() {
         setTimeout(() => setRefreshDataUnits(false), 2000); // Reset after 2 seconds
     }
         
+
+    const handleDownloadTemplate = async () => {
+        
+        setLoadingDownloadFile(true);
+        
+        try {
+            const deviceLocationService = new DeviceLocationService(); 
+            const response = await deviceLocationService.downloadDeviceLocationsTemplate();
+            
+            if (response?.status === 200) {
+                toast.success("Success", {
+                    description: "Template Excel berhasil diunduh!",
+                });
+                
+            }
+            else if (response?.data?.message) {
+                toast.error("Failed", {
+                    description: response.data.message,
+                });
+            }
+            else
+            {
+                toast.error("Error", {
+                    description: "Failed Export Main Locations",
+                });
+            }
+        } 
+        catch (error) 
+        { 
+            const errorMessage = error instanceof Error ? error.message : "Failed to handle Export DeviceLocations";
+                toast.error("Failed", {
+                    description: errorMessage,
+                });
+                
+        } finally {
+            setLoadingDownloadFile(false);
+        }
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files ? e.target.files[0] : null;
+        setSelectedFile(file);
+    };
+    
+    const handleUploadClick = () => {
+        if (!selectedFile) {
+            toast.error("Please select a file to upload.");
+            return;
+        }
+        if (!/\.(xls|xlsx)$/.test(selectedFile.name)) {
+            toast.error("Please upload a valid Excel file (.xls or .xlsx).");
+            return;
+        }
+        // Proceed with the upload logic
+    };
 
     return (
         <div className="flex flex-1 flex-col gap-4 p-4 pt-4">
@@ -184,12 +268,37 @@ export default function DeviceLocationFormPage() {
                                 </Form>
                             </TabsContent>
                             <TabsContent value="inputmultipledata">
-                                <CardContent>
+                                {/* <CardContent>
                                     <p>Input Multiple Data</p>
                                 </CardContent>
                                 <CardFooter>
                                     <Button className="bg-blue-500 hover:bg-blue-600">Save</Button>
-                                </CardFooter>
+                                </CardFooter> */}
+                                <div className="grid grid-cols-2 gap-4 p-4 shadow-md sm:rounded-lg">
+                                    <div>
+                                        <Label htmlFor="excel" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Upload Data Lokasi Utama Perangkat</Label>
+                                        <div className="flex w-full shrink-0 flex-col items-stretch justify-start space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
+                                            
+                                            <Input 
+                                                id="excel" 
+                                                type="file" 
+                                                onChange={handleFileChange} 
+                                            />
+                                            <div className="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
+                                                <Button onClick={handleUploadClick}>
+                                                    {showLoadingForUploadExcel}
+                                                    Upload
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </div>                                    
+                                    <div className="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-end md:space-x-3 md:space-y-0">
+                                        <Button className="bg-lime-500 pr-2" onClick={handleDownloadTemplate}>
+                                            {showLoadingForDownloadExcel}
+                                            Download Template
+                                        </Button>
+                                    </div>
+                                </div>
                             </TabsContent>
                         </Tabs>
                     </Card>
