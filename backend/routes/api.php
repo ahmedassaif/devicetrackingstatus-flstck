@@ -37,6 +37,7 @@ Route::prefix('v1')->group(function () {
     Route::get('exportDeviceLocationsToExcel', [DeviceLocationsController::class, 'exportDeviceLocationsToExcel']);
     Route::get('getLookupDeviceLocationsByDataUnit', [DeviceLocationsController::class, 'getLookupDeviceLocationsByDataUnit']);
     Route::post('deviceLocation', [DeviceLocationsController::class, 'insertDeviceLocation']);
+    Route::post('createDeviceLocationsFromExcel', [DeviceLocationsController::class, 'insertDeviceLocationsFromExcel']);
     Route::put('deviceLocation/{id}', [DeviceLocationsController::class, 'updateDeviceLocation']);
     Route::delete('deviceLocation/{id}', [DeviceLocationsController::class, 'deleteDeviceLocation']);
     Route::get('downloadBulkTemplateCreateDeviceLocation', [DeviceLocationsController::class, 'downloadBulkTemplateCreateDeviceLocation']);
@@ -44,13 +45,25 @@ Route::prefix('v1')->group(function () {
 
 // Define the routes for the DetailedDeviceLocations API
 Route::prefix('v1')->group(function () {
-    Route::get('detaileddevicelocations', [DetailedDeviceLocationsController::class, 'getDetailedDeviceLocations']);
-    Route::get('detaileddevicelocation/{id}', [DetailedDeviceLocationsController::class, 'getDetailedDeviceLocation']);
-    Route::get('detaileddevicelocations/exporttoexcel', [DetailedDeviceLocationsController::class, 'exportToExcel']);
-    Route::get('detaileddevicelocations/lookup/', [DetailedDeviceLocationsController::class, 'getLookupDetailedDeviceLocationsByDeviceLocation']);
-    Route::post('detaileddevicelocation', [DetailedDeviceLocationsController::class, 'createDetailedDeviceLocation']);
-    Route::put('detaileddevicelocation/{id}', [DetailedDeviceLocationsController::class, 'updateDetailedDeviceLocation']);
-    Route::delete('detaileddevicelocation/{id}', [DetailedDeviceLocationsController::class, 'deleteDetailedDeviceLocation']);
+    Route::prefix('detaileddevicelocations')->group(function () {
+        Route::get('', [DetailedDeviceLocationsController::class, 'getDetailedDeviceLocations']);
+        Route::get('lookup', [DetailedDeviceLocationsController::class, 'getLookupDetailedDeviceLocationsByDeviceLocation']);
+        Route::get('exporttoexcel', [DetailedDeviceLocationsController::class, 'exportToExcel']);
+
+    });
+    Route::prefix('detaileddevicelocation')->group(function () {
+        Route::get('{id}', [DetailedDeviceLocationsController::class, 'getDetailedDeviceLocation']); 
+        Route::post('', [DetailedDeviceLocationsController::class, 'createDetailedDeviceLocation']);
+        Route::put('{id}', [DetailedDeviceLocationsController::class, 'updateDetailedDeviceLocation']);
+        Route::delete('{id}', [DetailedDeviceLocationsController::class, 'deleteDetailedDeviceLocation']);   
+    });
+    // Route::get('detaileddevicelocations', [DetailedDeviceLocationsController::class, 'getDetailedDeviceLocations']);
+    // Route::get('detaileddevicelocation/{id}', [DetailedDeviceLocationsController::class, 'getDetailedDeviceLocation']);
+    // Route::get('detaileddevicelocations/exporttoexcel', [DetailedDeviceLocationsController::class, 'exportToExcel']);
+    // Route::get('detaileddevicelocations/lookup/', [DetailedDeviceLocationsController::class, 'getLookupDetailedDeviceLocationsByDeviceLocation']);
+    // Route::post('detaileddevicelocation', [DetailedDeviceLocationsController::class, 'createDetailedDeviceLocation']);
+    // Route::put('detaileddevicelocation/{id}', [DetailedDeviceLocationsController::class, 'updateDetailedDeviceLocation']);
+    // Route::delete('detaileddevicelocation/{id}', [DetailedDeviceLocationsController::class, 'deleteDetailedDeviceLocation']);
 });
 
 // Route::middleware('auth:sanctum')->apiResource('/audits', AuditsController::class);

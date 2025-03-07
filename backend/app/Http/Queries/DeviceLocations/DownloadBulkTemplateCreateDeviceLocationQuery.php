@@ -114,7 +114,7 @@ class DownloadBulkTemplateCreateDeviceLocationQuery{
 
         $sheet1->getColumnDimension('E')->setVisible(false);
 
-        // Sheet 2: DeviceIdentityTemplate
+        // Sheet 2: DeviceLocationTemplate
         $sheet2 = $spreadsheet->createSheet();
         $sheet2->setTitle('Input Lokasi Utama Perangkat');
 
@@ -126,7 +126,7 @@ class DownloadBulkTemplateCreateDeviceLocationQuery{
         $sheet2->getStyle('A1')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
         $headers2 = [
-            "DataUnitID", "Lokasi Kerja", "Lokasi Utama Perangkat"
+            "ID Lokasi Kerja", "Lokasi Kerja", "Lokasi Utama Perangkat"
         ];
 
         $headerRow2 = 2;

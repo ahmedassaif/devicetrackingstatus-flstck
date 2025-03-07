@@ -14,8 +14,13 @@ use App\Http\Queries\DeviceLocations\UpdateDeviceLocationCommand;
 use App\Http\Queries\DeviceLocations\DeleteDeviceLocationCommand;
 use App\Http\Queries\DeviceLocations\GetLookupDeviceLocationsByDataUnit;
 use App\Http\Queries\DeviceLocations\DownloadBulkTemplateCreateDeviceLocationQuery;
+use App\Http\Queries\DeviceLocations\CreateBulkDeviceLocationsFromExcelQuery;
 use OpenApi\Annotations as OA;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use App\Http\Responses\FileResponse;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
 
 class DeviceLocationsController extends Controller
 {
@@ -28,12 +33,14 @@ class DeviceLocationsController extends Controller
     protected $getLookupAllDeviceLocationsQuery;
     protected $getLookupDeviceLocationsByDataUnit;
     protected $downloadBulkTemplateCreateDeviceLocationQuery;
+    protected $createBulkDeviceLocationsFromExcelQuery;
 
     public function __construct(
         GetDeviceLocationsQuery $getDeviceLocationsQuery,
         GetDeviceLocationQuery $getDeviceLocationQuery,
         GetDeviceLocationsExportToExcelQuery $getDeviceLocationsExportToExcelQuery,
         CreateDeviceLocationCommand $createDeviceLocationCommand,
+        CreateBulkDeviceLocationsFromExcelQuery $createBulkDeviceLocationsFromExcelQuery,
         UpdateDeviceLocationCommand $updateDeviceLocationCommand,
         DeleteDeviceLocationCommand $deleteDeviceLocationCommand,
         GetLookupDeviceLocationsByDataUnit $getLookupDeviceLocationsByDataUnit,
@@ -43,6 +50,7 @@ class DeviceLocationsController extends Controller
         $this->getDeviceLocationQuery = $getDeviceLocationQuery;
         $this->getDeviceLocationsExportToExcelQuery = $getDeviceLocationsExportToExcelQuery;
         $this->createDeviceLocationCommand = $createDeviceLocationCommand;
+        $this->createBulkDeviceLocationsFromExcelQuery = $createBulkDeviceLocationsFromExcelQuery;
         $this->updateDeviceLocationCommand = $updateDeviceLocationCommand;
         $this->deleteDeviceLocationCommand = $deleteDeviceLocationCommand;
         $this->getLookupDeviceLocationsByDataUnit = $getLookupDeviceLocationsByDataUnit;
@@ -276,6 +284,83 @@ class DeviceLocationsController extends Controller
         $deviceLocationResource = $this->createDeviceLocationCommand->handle($createDeviceLocationRequest);
 
         return response()->json($deviceLocationResource, 201);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/createDeviceLocationsFromExcel",
+     *     summary="Create DeviceLocations from an Excel file",
+     *     description="Processes an uploaded Excel file to create DeviceLocations. Returns a success message or a file with error messages if there are duplicates.",
+     *     tags={"DeviceLocations"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(property="file", type="string", format="binary")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="DeviceLocations created successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Successful file download",
+     *         @OA\MediaType(
+     *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Data Empty",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     )
+     * )
+     */
+    public function insertDeviceLocationsFromExcel(Request $request)
+    {
+        try {
+            // Call the query to process the Excel file
+            $response = $this->createBulkDeviceLocationsFromExcelQuery->createDeviceLocationsFromExcel($request);
+
+            // If the response is a FileResponse, return it
+            if ($response instanceof FileResponse) {
+                return response($response->content, 201)
+                    ->header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                    ->header('Content-Disposition', 'attachment; filename="' . $response->fileName . '"');
+            }
+            
+            // If the response is a JsonResponse, return it
+            if ($response instanceof JsonResponse) {
+                return $response;
+            }
+        } catch (ValidationException $e) {
+            return response()->json(['message' => 'Validation error', 'errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Internal server error'], 500);
+        }
     }
 
     /**
