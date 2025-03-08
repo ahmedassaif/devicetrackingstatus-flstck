@@ -19,7 +19,10 @@ export namespace ApiEndpoint {
             };
             export const DownloadTemplate = {
                 Segment: 'v1/downloadBulkTemplateCreateDeviceLocation'
-            }
+            };
+            export const InsertBulkWithExcel = {
+                Segment: 'v1/createDeviceLocationsFromExcel'
+            };
         }
     }
 

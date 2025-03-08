@@ -170,7 +170,7 @@ export default function DeviceLocationFormPage() {
         setSelectedFile(file);
     };
     
-    const handleUploadClick = () => {
+    const handleUploadClick = async () => {
         if (!selectedFile) {
             toast.error("Please select a file to upload.");
             return;
@@ -179,7 +179,32 @@ export default function DeviceLocationFormPage() {
             toast.error("Please upload a valid Excel file (.xls or .xlsx).");
             return;
         }
+        
+        
         // Proceed with the upload logic
+        try {
+
+            setLoading(true);
+            const deviceLocationService = new DeviceLocationService(); 
+            const response = await deviceLocationService.createBulkDeviceLocationsFromExcel(selectedFile);
+    
+            if (response?.status === 200) {
+                toast.success("All data inserted successfully.");
+            } else if (response?.status === 201) {
+                toast.error("Something is wrong with your data. Please check the downloaded Excel file.");
+            } else if (response?.status === 400) {
+                toast.error(response.data.message || "Data is empty.");
+            } else if (response?.status === 422) {
+                toast.error(response.data.message || "Validation error.");
+            } else if (response?.status === 500) {
+                toast.error(response.data.message || "Internal server error.");
+            }
+        } catch (error) {
+            toast.error("Failed to upload file. Please try again.");
+        }
+        finally {
+            setLoading(false);
+        }
     };
 
     return (

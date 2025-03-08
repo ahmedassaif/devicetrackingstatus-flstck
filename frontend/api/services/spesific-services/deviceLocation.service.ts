@@ -116,6 +116,52 @@ export class DeviceLocationService extends BaseApiService {
         
     }
 
+    public async createBulkDeviceLocationsFromExcel(file: File): Promise<AxiosResponse | undefined> {
+        const formData = new FormData();
+        formData.append('file', file);
+    
+        try {
+            const response = await this.api.post(`${ApiEndpoint.V1.InsertBulkWithExcel.Segment}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                responseType: 'blob', // Handle file response
+                validateStatus: (status) => {
+                    return status < 500; // Resolve only if the status code is less than 500
+                },
+            });
+    
+            // Handle file response (status code 201)
+            if (response.status === 201) {
+                FileDownloadHelper.downloadExcelFile(response);
+                return response;
+            }
+    
+            // Handle JSON responses (status codes 200, 400, 422, 500)
+            const reader = new FileReader();
+            return new Promise((resolve, reject) => {
+                reader.onloadend = () => {
+                    if (reader.result) {
+                        try {
+                            const responseData = JSON.parse(reader.result as string);
+                            console.log("Response data: ", responseData);
+                            resolve({ status: response.status, data: responseData } as AxiosResponse);
+                        } catch (error) {
+                            reject(new Error(`Failed to parse response: ${error}`));
+                        }
+                    } else {
+                        reject(new Error('Failed to read response'));
+                    }
+                };
+                reader.onerror = () => reject(new Error('Failed to read response'));
+                reader.readAsText(response.data);
+            });
+        } catch (error) {
+            console.error("Failed to upload file: ", error);
+            throw error;
+        }
+    };
+
     public async createDeviceLocation(request: CreateDeviceLocationRequest): Promise<ResponseResult<GetDeviceLocationsDeviceLocation>> {
         try {
             const response = await this.api.post(`${ApiEndpoint.V1.DeviceLocation.Segment}`, request);

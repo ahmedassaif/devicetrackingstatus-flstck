@@ -133,10 +133,13 @@ class CreateBulkDeviceLocationsFromExcelQuery
                                 'NameDeviceLocation' => $nameDeviceLocation,
                             ]);
                             //Log::info("6. Creating new DeviceLocation entry.");
-                            if ($hasErrorsandData > 0) {
-                                $sheet->setCellValue('D' . $rowCount, 'Input Data Successfully, Please Delete This Row')->getStyle('D' . $rowCount)->getFont()->getColor()->setARGB(Color::COLOR_GREEN);
-                                Log::info("7. Input data successfully, please delete this row.");
-                            }
+                            // if ($hasErrorsandData > 0) {
+                            //     $sheet->setCellValue('D' . $rowCount, 'Input Data Successfully, Please Delete This Row')->getStyle('D' . $rowCount)->getFont()->getColor()->setARGB(Color::COLOR_GREEN);
+                            //     //Log::info("7. Input data successfully, please delete this row.");
+                            // }
+                            $sheet->setCellValue('D' . $rowCount, 'Input Data Successfully')->getStyle('D' . $rowCount)->getFont()->getColor()->setARGB(Color::COLOR_GREEN);
+                                //Log::info("7. Input data successfully, please delete this row.");
+
                         }
                     }
                 }
