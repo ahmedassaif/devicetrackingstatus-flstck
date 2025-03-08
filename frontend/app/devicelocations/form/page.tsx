@@ -138,6 +138,7 @@ export default function DeviceLocationFormPage() {
             if (response?.status === 200) {
                 toast.success("Success", {
                     description: "Template Excel berhasil diunduh!",
+                    position: "top-left",
                 });
                 
             }
@@ -191,7 +192,9 @@ export default function DeviceLocationFormPage() {
             if (response?.status === 200) {
                 toast.success("All data inserted successfully.");
             } else if (response?.status === 201) {
-                toast.error("Something is wrong with your data. Please check the downloaded Excel file.");
+                toast.error("Something is wrong with your data. Please check the downloaded Excel file.",
+                    { position: "top-left" }
+                );
             } else if (response?.status === 400) {
                 toast.error(response.data.message || "Data is empty.");
             } else if (response?.status === 422) {
