@@ -8,88 +8,17 @@ import { PaginatedListRequest } from "@/api/services/types/commonRequest.types";
 import axios, { CancelTokenSource } from "axios";
 import { PaginatedListResponse, ResponseResult, toTableData } from "@/api/services/types/commonResponses.types";
 import { columns } from "./columns";
-import { Button } from "@/components/ui/button";
-import { CircleX, Eye, FilterIcon, RotateCw, SearchIcon, SheetIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import TimeFilter from "@/components/dialog/timefilter.dialog";
 import timeFilterModel from "@/hooks/timeFilterModel";
 import { format } from "date-fns";
 import TableLoading from "@/components/loadings/tableload.loading";
-
-// Extracted components
-const FormSearchData = ({ 
-    query, 
-    setQuery, 
-    searchData, 
-    handleClearInput 
-    }: {
-        query: string;
-        setQuery: (value: string) => void;
-        searchData: (e: { preventDefault: () => void }) => void;
-        handleClearInput: () => void;
-    }) => (
-        <form onSubmit={searchData} className="flex items-center space-x-1">
-        <div className="relative w-full">
-            <input 
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" 
-            placeholder="Ketik pencarian disini..." />
-            {query && (
-            <div className="absolute inset-y-0 end-0 flex items-center pe-3.5">
-                <CircleX
-                className="cursor-pointer" 
-                onClick={handleClearInput} 
-                size={20} 
-                />
-            </div>
-            )}
-        </div>
-        <button
-            type="submit"
-            className="rounded-full bg-blue-500 p-2 text-white hover:bg-blue-600 focus:outline-none"
-            aria-label="search"
-        >
-            <SearchIcon size={25} />
-        </button>
-        </form>
-    );
-    
-    const TimeFilterModel = ({ filterModel }: { filterModel: typeof timeFilterModel }) => (
-        <div className="flex items-center justify-center">
-        <p>Data from <b>{filterModel.from.toLocaleString()}</b> to <b>{filterModel.to.toLocaleString()}</b></p>
-        </div>
-    );
-    
-    const OpenTimeFilterDialogButton = ({ 
-        setIsDialogOpen 
-    }: { 
-        setIsDialogOpen: (value: boolean) => void 
-    }) => (
-        <Button variant={"outline"} onClick={() => setIsDialogOpen(true)}>
-        <FilterIcon size={20} />
-        Open Time Filter
-        </Button>
-    );
-    
-    const ExportAuditsButton = ({ 
-        handleExport, 
-        loadingDownloadFile 
-    }: { 
-        handleExport: () => void;
-        loadingDownloadFile: boolean;
-    }) => (
-        <Button className="bg-lime-500 pr-2" onClick={handleExport}>
-        {loadingDownloadFile ? (
-            <RotateCw className="animate-spin" size={20} />
-        ) : (
-            <SheetIcon size={20} />
-        )}
-        Export Audits
-        </Button>
-    );
+import FormSearchDataInTable from "@/components/maintable/formsearchdata.maintable";
+import TimeFilterForTable from "@/components/maintable/timefilter.maintable";
+import TimeFilterDialogButton from "@/components/maintable/timefilterdialogbutton.maintable";
+import ExportTableButton from "@/components/maintable/exporttablebutton.maintable";
+import { DetailDataButtonFromTable } from "./detaildatabuttonfromtable.maintable";
 
 const MainTable: React.FC = () => {
     const [audits, setAudits] = useState<GetAuditsAudit[]>([]);
@@ -210,89 +139,90 @@ const MainTable: React.FC = () => {
         }
     };
 
-    const searchData = (e: { preventDefault: () => void }) => {
-        e.preventDefault();
+    // const searchData = (e: { preventDefault: () => void }) => {
+    //     e.preventDefault();
         
-        // Check if the query is empty
-        // if (!query.trim()) {
-        //   setNotification("Search text must not be empty!");
-        //   return;
-        // }      
+    //     // Check if the query is empty
+    //     // if (!query.trim()) {
+    //     //   setNotification("Search text must not be empty!");
+    //     //   return;
+    //     // }      
+    //     setCurrentPage(1);
+    //     setKeyword(query);
+    //     setHasSearched(true); 
+    // };
+    const searchData = useCallback((e: { preventDefault: () => void }) => {
+        e.preventDefault();
         setCurrentPage(1);
         setKeyword(query);
         setHasSearched(true); 
-    };
+    }, [query]);
     
-    const handleClearInput = () => {
+    // const handleClearInput = () => {
+    //     if (hasSearched) {
+    //         // If a search has been performed, reset the state to show default data
+    //         setKeyword(""); // Clear the keyword
+    //         setCurrentPage(1); // Reset to the first page
+    //         setHasSearched(false); // Reset the search flag
+    //         setQuery('');
+    
+    //     } else {
+    //         // If no search has been performed, just clear the input
+    //         setQuery('');
+    //     }
+    // };
+    const handleClearInput = useCallback(() => {
         if (hasSearched) {
-            // If a search has been performed, reset the state to show default data
-            setKeyword(""); // Clear the keyword
-            setCurrentPage(1); // Reset to the first page
-            setHasSearched(false); // Reset the search flag
+            setKeyword("");
+            setCurrentPage(1);
+            setHasSearched(false);
             setQuery('');
-    
         } else {
-            // If no search has been performed, just clear the input
             setQuery('');
         }
-    };
+    }, [hasSearched]);
 
-    const LoadingDonwloadFile = () => {
 
-        if (loadingDownloadFile) {
-            console.log("Loading download file...");
-            return (
-                <RotateCw className="animate-spin" size={20} />
-            )
-        }
-        else
-        {
-            console.log("Loading download file finished.");
-            return (
-                <SheetIcon size={20} />
-            )
-        }
-    }        
-
-        const handleExport = async () => {
+    const handleExport = async () => {
     
-            setLoadingDownloadFile(true);
-            
-            try {
-                const auditService = new AuditService(); 
-                const response = await auditService.exportAuditsToExcel(); 
+        setLoadingDownloadFile(true);
+        
+        try {
+            const auditService = new AuditService(); 
+            const response = await auditService.exportAuditsToExcel(); 
 
-                if (response?.status === 200) {
-                    toast.success("Success", {
-                        description: "Data Audit berhasil diexport!",
-                    });
-                    
-                }
-                else if (response?.data?.message) {
-                    toast.error("Failed", {
-                        description: response.data.message,
-                    });
-                }
-                else
-                {
-                    toast.error("Error", {
-                        description: "Failed Export Audits",
-                    });
-                }
-            } 
-            catch (error) 
+            if (response?.status === 200) {
+                toast.success("Success", {
+                    description: "Data Audit berhasil diexport!",
+                    position: "top-left",
+                });
+                
+            }
+            else if (response?.data?.message) {
+                toast.error("Failed", {
+                    description: response.data.message,
+                });
+            }
+            else
             {
-                const errorMessage = error instanceof Error ? error.message : "Failed to handle Export Audits";
-                            toast.error("Handler Failed", {
-                                description: errorMessage,
-                            });
-            } finally {
-            setLoadingDownloadFile(false);
-            } 
-        };
+                toast.error("Error", {
+                    description: "Failed Export Audits",
+                });
+            }
+        } 
+        catch (error) 
+        {
+            const errorMessage = error instanceof Error ? error.message : "Failed to handle Export Audits";
+                        toast.error("Handler Failed", {
+                            description: errorMessage,
+                        });
+        } finally {
+        setLoadingDownloadFile(false);
+        } 
+    };
 
     return (
-        <div className="container mx-auto h-full">
+        <div>
             {loading ? (
                 <TableLoading />
             ) : error ? (
@@ -302,7 +232,7 @@ const MainTable: React.FC = () => {
                     <div className="grid grid-cols-3 gap-4 p-4 shadow-md sm:rounded-lg">
                         <div>
                             <div className="flex w-full shrink-0 flex-col items-stretch justify-start space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
-                                <FormSearchData 
+                                <FormSearchDataInTable 
                                     query={query}
                                     setQuery={setQuery}
                                     searchData={searchData}
@@ -311,12 +241,12 @@ const MainTable: React.FC = () => {
                             </div>
                         </div>
                         <div className="flex items-center justify-center">
-                            <TimeFilterModel filterModel={filterModel} />
+                            <TimeFilterForTable filterModel={filterModel} />
                         </div>
                         <div>
                                     <div className="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
-                                        <OpenTimeFilterDialogButton setIsDialogOpen={setIsDialogOpen} />
-                                        <ExportAuditsButton handleExport={handleExport} loadingDownloadFile={loadingDownloadFile} />
+                                        <TimeFilterDialogButton setIsDialogOpen={setIsDialogOpen} />
+                                        <ExportTableButton handleExport={handleExport} loadingDownloadFile={loadingDownloadFile} nameTable="Audits" />
                                     </div>
                         </div>
                     </div>
@@ -330,14 +260,7 @@ const MainTable: React.FC = () => {
                                             const audit = row.original;
                                             return (
                                                 <div className="flex space-x-2">
-                                                    <Button
-                                                        onClick={() => handleDetail(audit.id)} // Use handleDetail here
-                                                        variant="outline" 
-                                                        size="icon"
-                                                        title="View details"
-                                                    >
-                                                        <Eye />
-                                                    </Button>
+                                                    <DetailDataButtonFromTable onClick={() => handleDetail(audit.id)} />
                                                 </div>
                                             );
                                         },
@@ -371,4 +294,12 @@ const MainTable: React.FC = () => {
     );
 };
 
-export default MainTable;
+const AuditMainTable = () => {
+    return (
+        <div className="container mx-auto h-full">
+            <MainTable />
+        </div>
+    );
+};
+
+export default AuditMainTable;
