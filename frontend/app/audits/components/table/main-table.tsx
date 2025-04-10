@@ -158,29 +158,29 @@ const MainTable: React.FC = () => {
         setHasSearched(true); 
     }, [query]);
     
-    // const handleClearInput = () => {
-    //     if (hasSearched) {
-    //         // If a search has been performed, reset the state to show default data
-    //         setKeyword(""); // Clear the keyword
-    //         setCurrentPage(1); // Reset to the first page
-    //         setHasSearched(false); // Reset the search flag
-    //         setQuery('');
-    
-    //     } else {
-    //         // If no search has been performed, just clear the input
-    //         setQuery('');
-    //     }
-    // };
-    const handleClearInput = useCallback(() => {
+    const handleClearInput = () => {
         if (hasSearched) {
-            setKeyword("");
-            setCurrentPage(1);
-            setHasSearched(false);
+            // If a search has been performed, reset the state to show default data
+            setKeyword(""); // Clear the keyword
+            setCurrentPage(1); // Reset to the first page
+            setHasSearched(false); // Reset the search flag
             setQuery('');
+    
         } else {
+            // If no search has been performed, just clear the input
             setQuery('');
         }
-    }, [hasSearched]);
+    };
+    // const handleClearInput = useCallback(() => {
+    //     if (hasSearched) {
+    //         setKeyword("");
+    //         setCurrentPage(1);
+    //         setHasSearched(false);
+    //         setQuery('');
+    //     } else {
+    //         setQuery('');
+    //     }
+    // }, [hasSearched]);
 
 
     const handleExport = async () => {
