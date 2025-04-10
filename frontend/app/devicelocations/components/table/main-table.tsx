@@ -8,16 +8,15 @@ import { PaginatedListRequest } from "@/api/services/types/commonRequest.types";
 import axios, { CancelTokenSource } from "axios";
 import { PaginatedListResponse, ResponseResult, SuccessResponse, toTableData } from "@/api/services/types/commonResponses.types";
 import { columns } from "./columns";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { CircleX, Eye, RotateCw, SearchIcon, SheetIcon, Trash2, FilterIcon, LucidePencil } from "lucide-react";
-import loadingBackground from "@/public/images/beams.jpg";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import DeleteDialog from "@/components/dialog/confirmtodelete.dialog";
 import TimeFilter from "@/components/dialog/timefilter.dialog";
 import timeFilterModel from "@/hooks/timeFilterModel";
 import { format } from "date-fns";
+import TableLoading from "@/components/loadings/tableload.loading";
 
 const MainTable: React.FC = () => {
 
@@ -247,23 +246,7 @@ const MainTable: React.FC = () => {
     return (
         <div className="container h-full">
             {loading ? (
-                <div className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12">
-                    <Image
-                        // eslint-disable-next-line @typescript-eslint/no-require-imports
-                        src={loadingBackground}
-                        alt="Loading Screen"
-                        fill
-                        className="h-full w-full rounded-md object-cover"                        
-                    />
-                    <div className="relative px-6 pb-8 pt-10 shadow-xl sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
-                        <div className="mx-auto max-w-md">
-                            <Button disabled>
-                                <RotateCw size="sm" className="animate-spin" />
-                                <span className="pl-3">Loading...</span>
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+                <TableLoading />
             ) : error ? (
                 <p className="text-red-600">Error: {error}</p>
             ) : (

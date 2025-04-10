@@ -8,16 +8,15 @@ import { PaginatedListRequest } from "@/api/services/types/commonRequest.types";
 import axios, { CancelTokenSource } from "axios";
 import { PaginatedListResponse, ResponseResult, SuccessResponse, toTableData } from "@/api/services/types/commonResponses.types";
 import { columns } from "./columns";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { CircleX, Eye, RotateCw, SearchIcon, SheetIcon, Trash2,CircleCheck, LucidePencil, FilterIcon } from "lucide-react";
-import loadingBackground from "@/public/images/beams.jpg";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import DeleteDialog from "@/components/dialog/confirmtodelete.dialog";
 import TimeFilter from "@/components/dialog/timefilter.dialog";
 import timeFilterModel from "@/hooks/timeFilterModel";
 import { format } from "date-fns";
+import TableLoading from "@/components/loadings/tableload.loading";
 
 const MainTable: React.FC = () => {
 
@@ -48,27 +47,28 @@ const MainTable: React.FC = () => {
     const handleDataUnitResponse = useCallback(
         (response: ResponseResult<PaginatedListResponse<GetDataUnitsDataUnit>>) => {
         
-        if (response.error) {
-            setError(response.error.detail || 'Failed to fetch DataUnits.');
-            setDataUnits([]); // Clear DataUnits on error
-            setTotalPages(1); // Reset total pages to default
-            return;
-        }
-        
-        if (response.result) {
-            const tableData = toTableData(response.result); // Convert response using toTableData
-        
-            if (tableData.items.length > 0) {
-            setDataUnits(tableData.items); // Update DataUnits with fetched data
+            if (response.error) {
+                setError(response.error.detail || 'Failed to fetch DataUnits.');
+                setDataUnits([]); // Clear DataUnits on error
+                setTotalPages(1); // Reset total pages to default
+                return;
+            }
+            
+            if (response.result) {
+                const tableData = toTableData(response.result); // Convert response using toTableData
+            
+                if (tableData.items.length > 0) {
+                    setDataUnits(tableData.items); // Update DataUnits with fetched data
+                } else {
+                    setDataUnits([]); // Clear DataUnits when no data is returned
+                }  
+                
+                setRows(tableData.totalItems);
+                setTotalPages(Math.ceil(tableData.totalItems / pageSize)); // Update total pages
             } else {
-            setDataUnits([]); // Clear DataUnits when no data is returned
-            }  
-            setRows(tableData.totalItems);
-            setTotalPages(Math.ceil(tableData.totalItems / pageSize)); // Update total pages
-        } else {
-            setDataUnits([]); // Clear DataUnits on unexpected response
-            setTotalPages(1); // Reset total pages to default
-        }
+                setDataUnits([]); // Clear DataUnits on unexpected response
+                setTotalPages(1); // Reset total pages to default
+            }
         },
         [pageSize] // Add pageSize in dependency array to ensure it triggers when pageSize changes
     );
@@ -249,23 +249,7 @@ const MainTable: React.FC = () => {
     return (
         <div className="container h-full">
             {loading ? (
-                <div className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12">
-                    <Image
-                        // eslint-disable-next-line @typescript-eslint/no-require-imports
-                        src={loadingBackground}
-                        alt="Loading Screen"
-                        fill
-                        className="h-full w-full rounded-md object-cover"                        
-                    />
-                    <div className="relative px-6 pb-8 pt-10 shadow-xl sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
-                        <div className="mx-auto max-w-md">
-                            <Button disabled>
-                                <RotateCw size="sm" className="animate-spin" />
-                                <span className="pl-3">Loading...</span>
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+                <TableLoading />
             ) : error ? (
                 <p className="text-red-600">Error: {error}</p>
             ) : (

@@ -8,15 +8,14 @@ import { PaginatedListRequest } from "@/api/services/types/commonRequest.types";
 import axios, { CancelTokenSource } from "axios";
 import { PaginatedListResponse, ResponseResult, toTableData } from "@/api/services/types/commonResponses.types";
 import { columns } from "./columns";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { CircleCheck, CircleX, Eye, FilterIcon, RotateCw, SearchIcon, SheetIcon } from "lucide-react";
-import loadingBackground from "@/public/images/beams.jpg";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import TimeFilter from "@/components/dialog/timefilter.dialog";
 import timeFilterModel from "@/hooks/timeFilterModel";
 import { format } from "date-fns";
+import TableLoading from "@/components/loadings/tableload.loading";
 
 const MainTable: React.FC = () => {
     const [audits, setAudits] = useState<GetAuditsAudit[]>([]);
@@ -46,27 +45,28 @@ const MainTable: React.FC = () => {
     const handleAuditResponse = useCallback(
         (response: ResponseResult<PaginatedListResponse<GetAuditsAudit>>) => {
         
-        if (response.error) {
-            setError(response.error.detail || 'Failed to fetch audits.');
-            setAudits([]); // Clear audits on error
-            setTotalPages(1); // Reset total pages to default
-            return;
-        }
-        
-        if (response.result) {
-            const tableData = toTableData(response.result); // Convert response using toTableData
-        
-            if (tableData.items.length > 0) {
-            setAudits(tableData.items); // Update audits with fetched data
+            if (response.error) {
+                setError(response.error.detail || 'Failed to fetch audits.');
+                setAudits([]); // Clear audits on error
+                setTotalPages(1); // Reset total pages to default
+                return;
+            }
+            
+            if (response.result) {
+                const tableData = toTableData(response.result); // Convert response using toTableData
+            
+                if (tableData.items.length > 0) {
+                    setAudits(tableData.items); // Update audits with fetched data
+                } else {
+                    setAudits([]); // Clear audits when no data is returned
+                }  
+                
+                setRows(tableData.totalItems);
+                setTotalPages(Math.ceil(tableData.totalItems / pageSize)); // Update total pages
             } else {
-            setAudits([]); // Clear audits when no data is returned
-            }  
-            setRows(tableData.totalItems);
-            setTotalPages(Math.ceil(tableData.totalItems / pageSize)); // Update total pages
-        } else {
-            setAudits([]); // Clear audits on unexpected response
-            setTotalPages(1); // Reset total pages to default
-        }
+                setAudits([]); // Clear audits on unexpected response
+                setTotalPages(1); // Reset total pages to default
+            }
         },
         [pageSize] // Add pageSize in dependency array to ensure it triggers when pageSize changes
     );
@@ -80,50 +80,49 @@ const MainTable: React.FC = () => {
         const source: CancelTokenSource = axios.CancelToken.source();
 
         const fetchAudits = async () => {
-        setLoading(true);
-        setError(null); // Reset previous errors on new fetch
-        
-        // Example usage
-        const fromDateFormatted = formatDateToCustomFormat(filterModel.from);
-        const toDateFormatted = formatDateToCustomFormat(filterModel.to);
-        
-        const request: PaginatedListRequest = {
-            page: currentPage,
-            pageSize: pageSize,
-            searchText: keyword?.trim() ? keyword : undefined,
-            sortField: sortField,
-            sortOrder: sortOrder,
-            from: fromDateFormatted, // Use the `from` value from filterModel
-            to: toDateFormatted, // Use the `to` value from filterModel
-            cancelToken: source.token, // Add cancel token directly
-        };
+            setLoading(true);
+            setError(null); // Reset previous errors on new fetch
+            
+            // Example usage
+            const fromDateFormatted = formatDateToCustomFormat(filterModel.from);
+            const toDateFormatted = formatDateToCustomFormat(filterModel.to);
+            
+            const request: PaginatedListRequest = {
+                page: currentPage,
+                pageSize: pageSize,
+                searchText: keyword?.trim() ? keyword : undefined,
+                sortField: sortField,
+                sortOrder: sortOrder,
+                from: fromDateFormatted, // Use the `from` value from filterModel
+                to: toDateFormatted, // Use the `to` value from filterModel
+                cancelToken: source.token, // Add cancel token directly
+            };
 
-        console.log(request);
+            console.log(request);
+            
+            try {
+                const auditService = new AuditService();
+                const response: ResponseResult<PaginatedListResponse<GetAuditsAudit>> = await auditService.getAudits({
+                    ...request,
+                cancelToken: source.token, // Add cancel token to the request
+                });
         
-        try {
-            const auditService = new AuditService();
-            const response: ResponseResult<PaginatedListResponse<GetAuditsAudit>> = await auditService.getAudits({
-                ...request,
-              cancelToken: source.token, // Add cancel token to the request
-            });
-    
-            handleAuditResponse(response); // Call the improved function
-    
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : "Failed to handle load Audits";
-            toast.error("Failed", {
-                description: errorMessage,
-            });
-        } finally {
-            setLoading(false);
-          }
+                handleAuditResponse(response); // Call the improved function
+        
+            } catch (error) {
+                const errorMessage = error instanceof Error ? error.message : "Failed to handle load Audits";
+                toast.error("Failed", {
+                    description: errorMessage,
+                });
+            } finally {
+                setLoading(false);
+            }
         };
         
-      
         fetchAudits();
-      
+
         return () => source.cancel('Request canceled by the user.');
-      }, [currentPage, handleAuditResponse, pageSize, keyword, sortField, sortOrder, filterModel]);
+    }, [currentPage, handleAuditResponse, pageSize, keyword, sortField, sortOrder, filterModel]);
 
     
 
@@ -152,30 +151,34 @@ const MainTable: React.FC = () => {
     
     const handleClearInput = () => {
         if (hasSearched) {
-          // If a search has been performed, reset the state to show default data
-          setKeyword(""); // Clear the keyword
-          setCurrentPage(1); // Reset to the first page
-          setHasSearched(false); // Reset the search flag
-          setQuery('');
+            // If a search has been performed, reset the state to show default data
+            setKeyword(""); // Clear the keyword
+            setCurrentPage(1); // Reset to the first page
+            setHasSearched(false); // Reset the search flag
+            setQuery('');
     
         } else {
-          // If no search has been performed, just clear the input
-          setQuery('');
+            // If no search has been performed, just clear the input
+            setQuery('');
         }
-      };
+    };
 
-        let showLoadingForDownloadExcel;
+    const LoadingDonwloadFile = () => {
+
         if (loadingDownloadFile) {
-            showLoadingForDownloadExcel = (
-            <RotateCw className="animate-spin" size={20} />
-            ); 
+            console.log("Loading download file...");
+            return (
+                <RotateCw className="animate-spin" size={20} />
+            )
         }
         else
         {
-            showLoadingForDownloadExcel = (
-            <SheetIcon size={20} />
-            ); 
+            console.log("Loading download file finished.");
+            return (
+                <SheetIcon size={20} />
+            )
         }
+    }        
 
         const handleExport = async () => {
     
@@ -217,23 +220,7 @@ const MainTable: React.FC = () => {
     return (
         <div className="container mx-auto h-full">
             {loading ? (
-                <div className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12">
-                    <Image
-                        // eslint-disable-next-line @typescript-eslint/no-require-imports
-                        src={loadingBackground}
-                        alt="Loading Screen"
-                        fill
-                        className="h-full w-full rounded-md object-cover"                        
-                    />
-                    <div className="relative px-6 pb-8 pt-10 shadow-xl sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
-                        <div className="mx-auto max-w-md">
-                            <Button disabled>
-                                <RotateCw size="sm" className="animate-spin" />
-                                <span className="pl-3">Loading...</span>
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+                <TableLoading />
             ) : error ? (
                 <p className="text-red-600">Error: {error}</p>
             ) : (
@@ -281,7 +268,7 @@ const MainTable: React.FC = () => {
                                             Open Time Filter
                                         </Button>
                                         <Button className="bg-lime-500 pr-2" onClick={handleExport}>
-                                            {showLoadingForDownloadExcel}
+                                            <LoadingDonwloadFile />
                                             Export Audits
                                         </Button>
                                     </div>
