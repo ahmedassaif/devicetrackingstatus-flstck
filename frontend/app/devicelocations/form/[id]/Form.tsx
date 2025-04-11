@@ -17,14 +17,14 @@ import { RotateCw, PlusCircle } from 'lucide-react';
 import loadingBackground from "@/public/images/beams.jpg";
 import Image from "next/image";
 import { Form, FormField, FormItem, FormLabel, FormMessage, FormControl } from "@/components/ui/form";
-import DataUnitsSelector from '@/components/selectors/dataunits.selector';
-import DeviceLocationInfo from "@/components/alerts/devicelocation.alert";
 import {
     HoverCard,
     HoverCardContent,
     HoverCardTrigger,
-} from "@/components/ui/hover-card"
-import CreateDataUnitDialog from "@/components/dialog/createdataunit.dialog";
+} from "@/components/ui/hover-card";
+import DeviceLocationInfo from '@/components/alerts/deviceLocationInfo.alert';
+import DataUnitsSelector from '@/components/selectors/dataUnit.selector';
+import CreateDataUnitDialog from '@/components/dialog/createDataUnitForm.dialog';
 
 interface DeviceLocationEditFormProps {
     deviceLocationId: string;

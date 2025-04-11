@@ -13,7 +13,7 @@ export const DetailDataButtonFromTable = ({ onClick }: DetailDataButtonProps) =>
         size="icon"
         title="View details"
         >
-        <Eye />
+            <Eye />
         </Button>
     );
 };

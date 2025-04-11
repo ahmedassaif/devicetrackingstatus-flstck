@@ -2,21 +2,25 @@
 "use client"
 import React, { useCallback, useEffect, useState } from "react";
 import { GetDeviceLocationsDeviceLocation } from "@/api/services/types/deviceLocation.types";
-import { DataTable } from "@/components/data-table"; // Import your DataTable component
 import { DeviceLocationService } from "@/api/services/spesific-services/deviceLocation.service"; // Import the DeviceLocationService
 import { PaginatedListRequest } from "@/api/services/types/commonRequest.types";
 import axios, { CancelTokenSource } from "axios";
 import { PaginatedListResponse, ResponseResult, SuccessResponse, toTableData } from "@/api/services/types/commonResponses.types";
 import { columns } from "./columns";
-import { Button } from "@/components/ui/button";
-import { CircleX, Eye, RotateCw, SearchIcon, SheetIcon, Trash2, FilterIcon, LucidePencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import DeleteDialog from "@/components/dialog/confirmtodelete.dialog";
-import TimeFilter from "@/components/dialog/timefilter.dialog";
+import TimeFilter from "@/components/dialog/timeFilter.dialog";
 import timeFilterModel from "@/hooks/timeFilterModel";
 import { format } from "date-fns";
-import TableLoading from "@/components/loadings/tableload.loading";
+import DeleteDialog from "@/components/dialog/confirmToDeleteData.dialog";
+import { DataTable } from "@/components/main_table/dataTable.main-table";
+import TableLoading from "@/components/loadings/loadToShowDataOnTable.loading";
+import FormSearchDataInTable from "@/components/main_table/formSearchDataInTable.main-table";
+import TimeFilterForTable from "@/components/main_table/timeFilterForTable.main-table";
+import TimeFilterDialogButton from "@/components/main_table/timeFilterDialogButton.main-table";
+import ExportTableButton from "@/components/main_table/exportTableButton.main-table";
+import { DetailDataButtonFromTable } from "@/components/main_table/detailedDataButtonFromTable.main-table";
+import { DeleteDataButtonFromTable } from "@/components/main_table/deleteDataFromTable.main-table";
 
 const MainTable: React.FC = () => {
 
@@ -160,19 +164,6 @@ const MainTable: React.FC = () => {
         }
     };
 
-    let showLoadingForDownloadExcel;
-    if (loadingDownloadFile) {
-        showLoadingForDownloadExcel = (
-            <RotateCw className="animate-spin" size={20} />
-        ); 
-    }
-    else
-    {
-        showLoadingForDownloadExcel = (
-        <SheetIcon size={20} />
-        ); 
-    }
-
     const handleExport = async () => {
     
         setLoadingDownloadFile(true);
@@ -254,50 +245,22 @@ const MainTable: React.FC = () => {
                     <div className="grid grid-cols-3 gap-4 p-4 shadow-md sm:rounded-lg">
                         <div>
                             <div className="flex w-full shrink-0 flex-col items-stretch justify-start space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
-                                <form onSubmit={searchData} className="flex items-center space-x-1">
-                                    <div className="relative w-full">
-                                    <input 
-                                        type="text"
-                                        value={query}
-                                        onChange={(e) => setQuery(e.target.value)}
-                                        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500  dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" 
-                                        placeholder="Ketik pencarian disini..." />
-                                        {query && (
-                                                <div className="absolute inset-y-0 end-0 flex items-center pe-3.5">
-                                                <CircleX
-                                                    className="cursor-pointer" 
-                                                    onClick={handleClearInput} 
-                                                    size={20} 
-                                                    />
-                                                </div>
-                                                )}
-                                            </div>
-
-                                            {/* Custom button */}
-                                            <button
-                                                type="submit"
-                                                className="rounded-full bg-blue-500 p-2 text-white hover:bg-blue-600 focus:outline-none"
-                                                aria-label="search"
-                                            >
-                                                <SearchIcon size={25} />
-                                            </button>
-                                </form>
+                                <FormSearchDataInTable 
+                                    query={query}
+                                    setQuery={setQuery}
+                                    searchData={searchData}
+                                    handleClearInput={handleClearInput}
+                                />
                             </div>
                         </div>
                         <div className="flex items-center justify-center">
-                            <p>Data from <b>{filterModel.from.toLocaleString()}</b> to <b>{filterModel.to.toLocaleString()}</b> </p>
+                            <TimeFilterForTable filterModel={filterModel} />
                         </div>
                         <div>
-                                    <div className="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
-                                        <Button variant={"outline"} onClick={() => setIsTimeFilterDialogOpen(true)}>
-                                            <FilterIcon size={20} />
-                                            Open Time Filter
-                                        </Button>
-                                        <Button className="bg-lime-500 pr-2" onClick={handleExport}>
-                                            {showLoadingForDownloadExcel}
-                                            Export Main Location
-                                        </Button>
-                                    </div>
+                            <div className="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
+                                <TimeFilterDialogButton setIsDialogOpen={() => setIsTimeFilterDialogOpen(true)} />
+                                <ExportTableButton handleExport={handleExport} loadingDownloadFile={loadingDownloadFile} nameTable="Main Location" />
+                            </div>                    
                         </div>
                     </div>
                     <div className="container mx-auto pt-4 overflow-x-auto">
@@ -310,22 +273,8 @@ const MainTable: React.FC = () => {
                                             const deviceLocation = row.original;
                                             return (
                                                 <div className="flex items-center space-x-2">
-                                                    <Button
-                                                        onClick={() => handleForm(deviceLocation.id)} // Use handleDetail here
-                                                        variant="outline" 
-                                                        size="icon"
-                                                        title="View details"
-                                                    >
-                                                        <LucidePencil />
-                                                    </Button>
-                                                    <Button
-                                                        onClick={() => handleClickToDelete(deviceLocation.id)}
-                                                        variant="destructive" 
-                                                        size="icon"
-                                                        title="Delete Data"
-                                                    >
-                                                        <Trash2 />
-                                                    </Button>
+                                                    <DetailDataButtonFromTable onClick={() => handleForm(deviceLocation.id)} />
+                                                    <DeleteDataButtonFromTable onClick={() => handleClickToDelete(deviceLocation.id)} />
                                                 </div>
                                             );
                                         },

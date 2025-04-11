@@ -2,7 +2,6 @@
 "use client"
 import React, { useCallback, useEffect, useState } from "react";
 import { GetAuditsAudit } from "@/api/services/types/audit.types";
-import { DataTable } from "@/components/data-table"; // Import your DataTable component
 import { AuditService } from "@/api/services/spesific-services/audit.service"; // Import the AuditService
 import { PaginatedListRequest } from "@/api/services/types/commonRequest.types";
 import axios, { CancelTokenSource } from "axios";
@@ -10,15 +9,16 @@ import { PaginatedListResponse, ResponseResult, toTableData } from "@/api/servic
 import { columns } from "./columns";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import TimeFilter from "@/components/dialog/timefilter.dialog";
+import TimeFilter from "@/components/dialog/timeFilter.dialog";
 import timeFilterModel from "@/hooks/timeFilterModel";
 import { format } from "date-fns";
-import TableLoading from "@/components/loadings/tableload.loading";
-import FormSearchDataInTable from "@/components/maintable/formsearchdata.maintable";
-import TimeFilterForTable from "@/components/maintable/timefilter.maintable";
-import TimeFilterDialogButton from "@/components/maintable/timefilterdialogbutton.maintable";
-import ExportTableButton from "@/components/maintable/exporttablebutton.maintable";
-import { DetailDataButtonFromTable } from "./detaildatabuttonfromtable.maintable";
+import FormSearchDataInTable from "@/components/main_table/formSearchDataInTable.main-table";
+import TimeFilterForTable from "@/components/main_table/timeFilterForTable.main-table";
+import TimeFilterDialogButton from "@/components/main_table/timeFilterDialogButton.main-table";
+import ExportTableButton from "@/components/main_table/exportTableButton.main-table";
+import { DetailDataButtonFromTable } from "@/components/main_table/detailedDataButtonFromTable.main-table";
+import { DataTable } from "@/components/main_table/dataTable.main-table";
+import TableLoading from "@/components/loadings/loadToShowDataOnTable.loading";
 
 const MainTable: React.FC = () => {
     const [audits, setAudits] = useState<GetAuditsAudit[]>([]);

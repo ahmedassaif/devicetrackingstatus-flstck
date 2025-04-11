@@ -9,14 +9,7 @@ import { DeviceLocationService } from "@/api/services/spesific-services/deviceLo
 import { CreateDeviceLocationRequest, GetDeviceLocationsDeviceLocation, deviceLocationFormSchema, emptyDeviceLocation } from '@/api/services/types/deviceLocation.types';
 import { ResponseResult } from '@/api/services/types/commonResponses.types';
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from 'next/navigation';
@@ -24,20 +17,20 @@ import { toast } from "sonner";
 import { Form, FormField, FormItem, FormLabel, FormMessage, FormControl } from "@/components/ui/form";
 import { useState } from "react";
 import { PlusCircle, RotateCw, SheetIcon } from "lucide-react";
-import DataUnitsSelector from "@/components/selectors/dataunits.selector";
 import {
     HoverCard,
     HoverCardContent,
     HoverCardTrigger,
-} from "@/components/ui/hover-card"
-import CreateDataUnitDialog from "@/components/dialog/createdataunit.dialog";
-import DeviceLocationInfo from "@/components/alerts/devicelocation.alert";
+} from "@/components/ui/hover-card";
 import {
     Tabs,
     TabsContent,
     TabsList,
     TabsTrigger,
-} from "@/components/ui/tabs"
+} from "@/components/ui/tabs";
+import DeviceLocationInfo from '@/components/alerts/deviceLocationInfo.alert';
+import DataUnitsSelector from '@/components/selectors/dataUnit.selector';
+import CreateDataUnitDialog from '@/components/dialog/createDataUnitForm.dialog';
 
 export default function DeviceLocationFormPage() {
     const [loading, setLoading] = useState(false);
