@@ -131,15 +131,15 @@ const MainTable: React.FC = () => {
         return () => source.cancel('Request canceled by the user.');
     }, [currentPage, handleDataUnitResponse, pageSize, keyword, sortField, sortOrder, filterModel]);
 
-    const handleSort = (field: string) => {
-        if (sortField === field) {
-            setSortField(field);
-            setSortOrder(sortOrder === "asc" ? "desc" : "asc"); // Toggle sort direction
-        } else {
-            setSortField(field);
-            setSortOrder("asc"); // Default to ascending
-        }
-    };
+    // const handleSort = (field: string) => {
+    //     if (sortField === field) {
+    //         setSortField(field);
+    //         setSortOrder(sortOrder === "asc" ? "desc" : "asc"); // Toggle sort direction
+    //     } else {
+    //         setSortField(field);
+    //         setSortOrder("asc"); // Default to ascending
+    //     }
+    // };
 
     const searchData = (e: { preventDefault: () => void }) => {
         e.preventDefault();
@@ -168,19 +168,6 @@ const MainTable: React.FC = () => {
             setQuery('');
         }
     };
-
-    let showLoadingForDownloadExcel;
-    if (loadingDownloadFile) {
-        showLoadingForDownloadExcel = (
-            <RotateCw className="animate-spin" size={20} />
-        ); 
-    }
-    else
-    {
-        showLoadingForDownloadExcel = (
-        <SheetIcon size={20} />
-        ); 
-    }
 
     const handleExport = async () => {
     

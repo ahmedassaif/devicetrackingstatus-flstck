@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
 import { toast } from "sonner";
-import { CircleAlert, CircleCheck, CircleX, RotateCw } from 'lucide-react';
+import { RotateCw } from 'lucide-react';
 
 
 export default function DataUnitFormPage() {
@@ -69,7 +69,7 @@ export default function DataUnitFormPage() {
                 }
             }
         } catch (error: unknown) { 
-            const errorMessage = error instanceof Error ? error.message : "Failed to handle Create DataUnits";
+            const errorMessage = error instanceof Error ? error.message : "Gagal untuk menambahkan data! Ada masalah pada server";
                             toast.error("Failed", {
                                 description: errorMessage,
                             });
@@ -80,54 +80,54 @@ export default function DataUnitFormPage() {
 
     return (
             <div className="container mx-auto p-4">
-            <h1 className="mb-4 text-2xl font-bold">Form Lokasi Kerja</h1>
-            <section className="flex w-full items-center">
-                <div className="w-full">
-                <Card className="p-6">
-                    <form className="flex flex-col gap-4" onSubmit={saveData}>
-                        <div className="space-y-2">
-                            <Label htmlFor="NameUnit">Nama</Label>
-                            <Input
-                            id="NameUnit"
-                            name="NameUnit"
-                            value={model.NameUnit}
-                            onChange={handleInputChange}
-                            required
-                            placeholder="Nama Lokasi Kerja"
-                            />
-                        </div>
-            
-                        <div className="space-y-2">
-                            <Label htmlFor="Plan">Kode Plan</Label>
-                            <Input
-                            id="Plan"
-                            name="Plan"
-                            value={model.Plan}
-                            onChange={handleInputChange}
-                            placeholder="Kode Plan"
-                            />
-                        </div>
-            
-                        <div className="flex space-x-3">
-                            <Button 
-                            type="submit" 
-                            className="bg-green-700 hover:bg-green-800"
-                            disabled={loading}
-                            >
-                                {loading ? (<div className='flex items-center gap-2'><RotateCw className="animate-spin" size={20} /> Save</div>) : "Save"}
-                            </Button>
-                            <Button 
-                            type="button"
-                            variant="outline"
-                            onClick={backToIndex}
-                            >
-                            Back
-                            </Button>
-                        </div>
-                    </form>
-                </Card>
-                </div>
-            </section>
+                <h1 className="mb-4 text-2xl font-bold">Form Lokasi Kerja</h1>
+                <section className="flex w-full items-center">
+                    <div className="w-full">
+                    <Card className="p-6">
+                        <form className="flex flex-col gap-4" onSubmit={saveData}>
+                            <div className="space-y-2">
+                                <Label htmlFor="NameUnit">Nama</Label>
+                                <Input
+                                id="NameUnit"
+                                name="NameUnit"
+                                value={model.NameUnit}
+                                onChange={handleInputChange}
+                                required
+                                placeholder="Nama Lokasi Kerja"
+                                />
+                            </div>
+                
+                            <div className="space-y-2">
+                                <Label htmlFor="Plan">Kode Plan</Label>
+                                <Input
+                                id="Plan"
+                                name="Plan"
+                                value={model.Plan}
+                                onChange={handleInputChange}
+                                placeholder="Kode Plan"
+                                />
+                            </div>
+                
+                            <div className="flex space-x-3">
+                                <Button 
+                                type="submit" 
+                                className="bg-green-700 hover:bg-green-800"
+                                disabled={loading}
+                                >
+                                    {loading ? (<div className='flex items-center gap-2'><RotateCw className="animate-spin" size={20} /> Save</div>) : "Save"}
+                                </Button>
+                                <Button 
+                                type="button"
+                                variant="outline"
+                                onClick={backToIndex}
+                                >
+                                    Back
+                                </Button>
+                            </div>
+                        </form>
+                    </Card>
+                    </div>
+                </section>
             </div>
     );
 }
