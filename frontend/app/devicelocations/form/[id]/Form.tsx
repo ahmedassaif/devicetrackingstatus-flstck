@@ -100,13 +100,13 @@ const DeviceLocationEditForm : React.FC<DeviceLocationEditFormProps> = ({ device
                 });
                 router.push(`/devicelocations/form/${response.result.id}`);
             } else {
-                const errorText = response?.error?.detail || "Failed to Update DeviceLocations";
+                const errorText = response?.error?.detail || "Failed to Update Detail Lokasi Kerja";
                 toast.error("Failed", {
                 description: errorText,
                 });
             }
         } catch (error: unknown) { 
-            const errorMessage = error instanceof Error ? error.message : "Failed to update DeviceLocations";
+            const errorMessage = error instanceof Error ? error.message : "Failed to update Detail Lokasi Kerja";
             toast.error("Failed", {
                 description: errorMessage,
             });
@@ -144,7 +144,7 @@ const DeviceLocationEditForm : React.FC<DeviceLocationEditFormProps> = ({ device
 
     return (
         <div className="flex flex-1 flex-col gap-4 p-4 pt-4">
-            <h1 className="mb-4 text-2xl font-bold">Edit Lokasi Utama Perangkat</h1>
+            <h1 className="mb-4 text-2xl font-bold">Edit Detail Lokasi Kerja</h1>
             <DeviceLocationInfo />
             <section className="flex w-full items-center">
                 <div className="w-full">
@@ -194,9 +194,9 @@ const DeviceLocationEditForm : React.FC<DeviceLocationEditFormProps> = ({ device
                         name="NameDeviceLocation"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Nama Lokasi Utama</FormLabel>
+                                <FormLabel>Detail Lokasi Kerja</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Nama Lokasi Utama" {...field} />
+                                    <Input placeholder="Nama Detail Lokasi Kerja" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

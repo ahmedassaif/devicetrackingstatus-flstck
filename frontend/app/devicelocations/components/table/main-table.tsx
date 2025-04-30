@@ -218,11 +218,11 @@ const MainTable: React.FC = () => {
             }
             else{
                 toast.error("Failed", {
-                    description: response.error?.detail || "Failed to delete DeviceLocation",
+                    description: response.error?.detail || "Failed to delete Detail Lokasi Kerja",
                 });
             }
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : "Failed to handle delete DeviceLocation";
+            const errorMessage = error instanceof Error ? error.message : "Failed to handle delete Detail Lokasi Kerja";
             toast.error("Failed", {
                 description: errorMessage,
             });
@@ -257,9 +257,9 @@ const MainTable: React.FC = () => {
                             <TimeFilterForTable filterModel={filterModel} />
                         </div>
                         <div>
-                            <div className="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
+                            <div className="flex flex-wrap w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0 gap-1">
                                 <TimeFilterDialogButton setIsDialogOpen={() => setIsTimeFilterDialogOpen(true)} />
-                                <ExportTableButton handleExport={handleExport} loadingDownloadFile={loadingDownloadFile} nameTable="Main Location" />
+                                <ExportTableButton handleExport={handleExport} loadingDownloadFile={loadingDownloadFile} nameTable="Detail Lokasi Kerja" />
                             </div>                    
                         </div>
                     </div>

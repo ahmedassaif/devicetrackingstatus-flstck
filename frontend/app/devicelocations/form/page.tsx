@@ -143,13 +143,13 @@ export default function DeviceLocationFormPage() {
             else
             {
                 toast.error("Error", {
-                    description: "Failed Export Main Locations",
+                    description: "Failed Export Detail Lokasi Kerja",
                 });
             }
         } 
         catch (error) 
         { 
-            const errorMessage = error instanceof Error ? error.message : "Failed to handle Export DeviceLocations";
+            const errorMessage = error instanceof Error ? error.message : "Failed to handle Export Detail Lokasi Kerja";
                 toast.error("Failed", {
                     description: errorMessage,
                 });
@@ -205,7 +205,7 @@ export default function DeviceLocationFormPage() {
 
     return (
         <div className="flex flex-1 flex-col gap-4 p-4 pt-4">
-            <h1 className="mb-4 text-2xl font-bold">Form Lokasi Utama Perangkat</h1>
+            <h1 className="mb-4 text-2xl font-bold">Form Detail Lokasi Kerja</h1>
             <DeviceLocationInfo />
             <section className="flex w-full items-center">
                 <div className="w-full">
@@ -261,9 +261,9 @@ export default function DeviceLocationFormPage() {
                                             name="NameDeviceLocation"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Lokasi Utama Perangkat</FormLabel>
+                                                    <FormLabel>Detail Lokasi Kerja</FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="Nama Lokasi Utama" {...field} />
+                                                        <Input placeholder="Nama Detail Lokasi Kerja" {...field} />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
