@@ -16,6 +16,7 @@ import {
   Settings2,
   SquareTerminal,
   MapPinHouse,
+  MapPin,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -161,9 +162,14 @@ const data = {
       icon: Factory,
     },
     {
-      name: "Lokasi Utama Perangkat",
+      name: "Detail Lokasi Kerja",
       url: "/devicelocations",
       icon: MapPinHouse,
+    },
+    {
+      name: "Detail Lokasi Perangkat",
+      url: "/detaileddevicelocations",
+      icon: MapPin,
     },
   ],
 }

@@ -7,7 +7,7 @@ interface TimeFilterProps {
 
 const TimeFilterForTable: React.FC<TimeFilterProps> = ({ filterModel }) => {
     return (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center text-wrap">
         <p>
             Data from <b>{filterModel.from.toLocaleString()}</b> to{' '}
             <b>{filterModel.to.toLocaleString()}</b>
